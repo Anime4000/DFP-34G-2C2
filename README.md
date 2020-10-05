@@ -8,9 +8,15 @@ This project just education, setup Enterprise Grade equipment at Home with minim
 In this repo, I managed extract some readable file via TFTP, so anyone can hack, reverse engineering for better.
 
 # Problem
-This ONT Stick only works when OLT provision Internet on LAN 1 port (`eth0`) and making passthrough full bridge with `nbif0`.
+This ONT Stick only works when OLT provision Internet on **LAN 1** port (`eth0`) and making passthrough full bridge with `nbif0`.
 
-If your ISP Provision other than `LAN 1` port, it wont work, this need to hack to making it work, or override OLT provision.
+```
+  |---br0---|
+  |         |
+ eth0     nbif0
+```
+
+If your ISP Provision other than **LAN 1** port, it wont work, this need to hack to making it work, or override OLT provision.
 
 # Hardware
 ## SoC
