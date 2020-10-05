@@ -1,0 +1,24 @@
+<%
+IMPORT FILE "common_gch.gch";
+function host_func(FP_ACTION, FP_INDEX, FP_ERRORSTR)
+{
+var FP_OBJNAME      = "OBJ_DHCP6S_ID";
+var FP_MULTIDISPLAY = 0;
+var FP_PARANUM      = 7;
+var PARA[7] =
+{
+"ViewName",
+"LandViewName",
+"ServerEnable",
+"DnsRefreshTime",
+"Prefer",
+"ConflictAddrHoldingTime",
+"DomainName"
+};
+if(NULL == FP_INDEX)
+{
+FP_INDEX = -1;
+}
+return getFunctionGCH(FP_OBJNAME, FP_MULTIDISPLAY, PARA, FP_PARANUM, FP_ACTION, FP_INDEX, FP_ERRORSTR);
+}
+%>

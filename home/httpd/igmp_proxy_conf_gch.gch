@@ -1,0 +1,15 @@
+<%
+IMPORT FILE "common_gch.gch";
+function igmpproxy(FP_ACTION, FP_INDEX, FP_ERRORSTR)
+{
+var FP_OBJNAME      = "OBJ_IGMPPROXYC_ID";
+var FP_MULTIDISPLAY = 0;
+var FP_PARANUM      = 2;
+var PARA[2] =
+{
+"ProxyEnable",
+"WanCID"
+};
+return getFunctionGCH(FP_OBJNAME, FP_MULTIDISPLAY, PARA, 1, FP_ACTION, FP_INDEX, FP_ERRORSTR);
+}
+%>

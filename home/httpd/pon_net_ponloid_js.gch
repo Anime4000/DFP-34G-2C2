@@ -1,0 +1,196 @@
+<script language="javascript">
+var PON_PARA = new Array(
+"PonLoid",
+"LoidPasswd",
+"LoidState"
+);
+function checkString(value)
+{
+var length = value.length;
+for(var j = 0 ;j < length; j++)
+{
+var xx = value.charCodeAt(j);
+if(!(xx >= 0 && xx <= 255))
+{
+return false;
+}
+}
+return true;
+}
+function getmsg(id)
+{
+var str  = new Array();
+str[0]   = new Array(101, "&?error_101;");
+str[1]   = new Array(102, "&?error_102;");
+str[2]   = new Array(103, "&?error_103;");
+str[3]   = new Array(114, "&?error_114;");
+str[4]   = new Array(118, "&?error_118;");
+str[5]   = new Array(119, "&?error_119;");
+str[6]   = new Array(122, "&?error_122;");
+str[7]   = new Array(123, "&?error_123;");
+str[8]   = new Array(1006, "&?1006;");
+str[9]   = new Array(009, "&?ponerror_009;");
+return getMsgFormArray(str, arguments);
+}
+function pageLoad(url)
+{
+getObj("fSubmit").action = url;
+var errstr= getValue("IF_ERRORSTR");
+if (errstr != "SUCC")
+{
+var errpara = getValue("IF_ERRORPARAM");
+if (errpara != "SUCC")
+{
+if (document.getElementById("Fnt"+errpara) == null)
+{
+msg = getmsg(122);
+ShowErrorForCom(null, null, msg);
+}
+else
+{
+msg = getmsg(118, "Fnt"+errpara);
+ShowErrorForCom("Frm"+errpara, null, msg);
+}
+}
+else
+{
+msg = getmsg(122);
+ShowErrorForCom(null, null, msg);
+}
+}
+pageGetValue();
+}
+function pageGetValue()
+{
+<%
+var uright=getenv("Right");
+var cver=getenv("CurrentVersionInfo");
+%>
+var userright="<%=uright;%>";
+var currentver="<%=cver;%>";
+if(userright == 1)
+{
+jslEnable("Frm_PonLoid","Frm_LoidPasswd");
+}
+else
+{
+jslDisable("Frm_PonLoid","Frm_LoidPasswd");
+jslDisable("Btn_Submit","Btn_Cancel");
+}
+jslSetValue("Frm_PonLoid","PonLoid");
+jslSetValue("Frm_LoidPasswd","LoidPasswd");
+var LoidState = getValue("LoidState");
+switch (LoidState)
+{
+case "0":
+{
+setFont("Fnt_LoidState", "&?ponloid003;");
+break;
+}
+case "1":
+{
+setFont("Fnt_LoidState", "&?ponloid004;");
+break;
+}
+case "2":
+{
+setFont("Fnt_LoidState", "&?ponloid005;");
+break;
+}
+case "3":
+{
+setFont("Fnt_LoidState", "&?ponloid006;");
+break;
+}
+case "4":
+{
+setFont("Fnt_LoidState", "&?ponloid007;");
+break;
+}
+default:
+{
+setFont("Fnt_LoidState", "");
+break;
+}
+}
+}
+function setFont(id,text)
+{
+document.getElementById(id).innerHTML = text;
+}
+function pageCheckValue()
+{
+var msg = "";
+var Loid = getValue("Frm_PonLoid");
+var Passwd = getValue("Frm_LoidPasswd");
+var len = Passwd.length;
+if(checkString(Loid) != true)
+{
+msg = getmsg(114);
+ShowErrorForCom("Frm_PonLoid","Fnt_PonLoid",msg);
+return false;
+}
+if(Loid == "NULL")
+{
+msg = getmsg(1006);
+ShowErrorForCom("Frm_PonLoid","Fnt_PonLoid",msg);
+return false;
+}
+var ckresult = checkStrLengthRange(Loid, 1, 24);
+if (ckresult == -3)
+{
+msg = getmsg(102,1,24);
+ShowErrorForCom("Frm_PonLoid","Fnt_PonLoid",msg);
+return false;
+}
+if(ckresult == -1)
+{
+msg = getmsg(101);
+ShowErrorForCom("Frm_PonLoid","Fnt_PonLoid",msg);
+return false;
+}
+for(var i=0;i<Loid.length;i++)
+{
+if(Loid.charCodeAt(i) == 32)
+{
+msg = getmsg(009);
+ShowErrorForCom("Frm_PonLoid","Fnt_PonLoid",msg);
+return false;
+}
+}
+if(checkString(Passwd) != true)
+{
+msg = getmsg(114);
+ShowErrorForCom("Frm_LoidPasswd","Fnt_LoidPasswd",msg);
+return false;
+}
+if((len < 0) || (len > 12))
+{
+msg = getmsg(102,0,12);
+ShowErrorForCom("Frm_LoidPasswd","Fnt_LoidPasswd",msg);
+return false;
+}
+return true;
+}
+function pageSetValue()
+{
+HiddenParaInit(PON_PARA);
+jslSetValue("PonLoid","Frm_PonLoid");
+jslSetValue("LoidPasswd","Frm_LoidPasswd");
+}
+function pageSubmit()
+{
+if(pageCheckValue() == true)
+{
+DisableALL();
+pageSetValue();
+setValue("IF_ACTION", "apply");
+getObj("fSubmit").submit();
+}
+}
+function pageCancel()
+{
+DisableALL();
+getObj("fSubmit").submit();
+}
+</script>

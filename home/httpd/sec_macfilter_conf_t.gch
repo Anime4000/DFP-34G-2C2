@@ -1,0 +1,122 @@
+<SCRIPT LANGUAGE="javascript" src ="./js/pro_commom.js"></SCRIPT>
+<SCRIPT LANGUAGE="javascript" src ="./js/common_check.js"></SCRIPT>
+<SCRIPT LANGUAGE="javascript" src ="./js/common.js"></SCRIPT>
+<%
+IMPORT FILE "all_mac_gch.gch";
+IMPORT FILE "sec_macfilter_conf_js.gch";
+%>
+<!--add by panxiancai 20110906,
+目前只有本页面用到这两个class，后续用的多的话，需移到css里实现-->
+<style type="text/CSS">
+.info, .warninfo {
+padding-top:4px;
+padding-bottom:4px;
+text-align:left;
+margin-left:5px;
+}
+.warninfo {
+color:#FF0000;
+}
+</style>
+<div class="space_0">
+<table width="450px" border="0" class="table">
+<tbody>
+<tr>
+<td valign="top" style="width:30px;"><img src="img/info.gif"></td>
+<td align="left">
+<ol>
+<li class="warninfo">1. &?maco018;</li>
+<li class="info">2. &?maco019;</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!--end by panxiancai 20110906-->
+<table id="TestContent"  class="table" width="450px" border="0">
+<tr>
+<td class="td11"></td>
+<td class="td2">&nbsp;</td>
+</tr>
+<tr>
+<td class="td11"><font id="Fnt_Enable">&?comm001;</font></td>
+<td class="td2"><input name="Frm_Enable" id="Frm_Enable" type="checkbox" value=""  onclick= "Slect_Enable()"/></td>
+</tr>
+<tr>
+<td class="td11"><font id="Fnt_Mode">&?url02;</font></td>
+<td class="td2">
+<select name="Frm_Mode" id="Frm_Mode" size="1" class="list_1"  onchange= "Slect_Mode()">
+<option value="Discard">&?maco004;</option>
+<option value="Permit">&?url04;</option>
+</select>
+</td>
+</tr>
+<tr>
+<td class="td11">&nbsp;</td>
+<td class="td2">&nbsp;</td>
+</tr>
+<tr id="TR_Type" style="display:">
+<td class="td11"><font id="Fnt_Type">&?maco008;</font></td>
+<td class="td2">
+<select name="Frm_Type" id="Frm_Type" size="1" class="list_1" onchange="ctlsByMode(value);">
+<option value="Bridge">&?maco009;</option>
+<option value="Route">&?maco010;</option>
+<option value="Bridge+Route">&?maco011;</option>
+</select>
+</td>
+</tr>
+<tr>
+<td class="td11"><font id="Fnt_Protocol">&?comm004;</font></td>
+<td class="td2">
+<select name="Frm_Protocol" id="Frm_Protocol" size="1" class="list_1">
+</select>
+</td>
+</tr>
+<tr>
+<td class="td1"><font id="Frm_MAC">&?maco006;</font></td>
+<td class="td2">
+<input name="mac1" type="text" class="inputId3"   size="15" maxlength="2" id="mac1" onkeyup="CheckLen(this,this.value)"  /> :
+<input name="mac2" type="text" class="inputId3"   size="15" maxlength="2" id="mac2" onkeyup="CheckLen(this,this.value)"  /> :
+<input name="mac3" type="text" class="inputId3"   size="15" maxlength="2" id="mac3" onkeyup="CheckLen(this,this.value)"  /> :
+<input name="mac4" type="text" class="inputId3"   size="15" maxlength="2" id="mac4" onkeyup="CheckLen(this,this.value)"  /> :
+<input name="mac5" type="text" class="inputId3"   size="15" maxlength="2" id="mac5" onkeyup="CheckLen(this,this.value)"  /> :
+<input name="mac6" type="text" class="inputId3"   size="15" maxlength="2" id="mac6" onkeyup="CheckLen(this,this.value)"  />
+</td>
+</tr>
+<tr id="TR_DES_MAC" style="display:">
+<td class="td1"><font id="Frm_DES_MAC">&?maco017;</font></td>
+<td class="td2">
+<input name="mac7" type="text" class="inputId3"   size="15" maxlength="2" id="mac7" onkeyup="CheckLen(this,this.value)"  /> :
+<input name="mac8" type="text" class="inputId3"   size="15" maxlength="2" id="mac8" onkeyup="CheckLen(this,this.value)"  /> :
+<input name="mac9" type="text" class="inputId3"   size="15" maxlength="2" id="mac9" onkeyup="CheckLen(this,this.value)"  /> :
+<input name="mac10" type="text" class="inputId3"   size="15" maxlength="2" id="mac10" onkeyup="CheckLen(this,this.value)"  /> :
+<input name="mac11" type="text" class="inputId3"   size="15" maxlength="2" id="mac11" onkeyup="CheckLen(this,this.value)"  /> :
+<input name="mac12" type="text" class="inputId3"   size="15" maxlength="2" id="mac12" onkeyup="CheckLen(this,this.value)"  />
+</td>
+</tr>
+<tr>
+<td class="td1"></td>
+<td class="td2">
+<input name="Btn_Add" type="submit" id="Btn_Add" class="button2" value="&?btn007;" onclick="pageAdd()"/>
+<input name="Btn_Edit" type="submit" id="Btn_Edit" class="button2" value="&?btn003;" onclick="pageEdit()" style="display:none" />
+<input name="back" type="button" id="back" value="&?btn004;"  class="button2" onclick="back4add()" style="display:none"/>
+</td>
+</tr>
+<tr>
+<td class="td1"></td>
+<td class="td2"></td>
+</tr>
+</table>
+<table id="MAC_Table" class="item_2" border="0" cellpadding="0" cellspacing="1" bgcolor="#979797">
+<tr class="h2_s title_1">
+<!--<td width="">&?comm001;</td>-->
+<td width="">&?maco008;</td>
+<td width="">&?comm004;</td>
+<td width="">&?maco006;</td>
+<td width="">&?maco017;</td>
+<td width="">&?btn003;</td>
+<td width="">&?btn006;</td>
+</tr>
+</table>
+<div id="div4"></div>

@@ -1,0 +1,128 @@
+<%
+IMPORT FILE "common_gch.gch";
+function tr069_func(ACTION, FP_ERRORSTR)
+{
+var FP_ACTION, FP_IDENTITY, FP_HANDLE, FP_INDEX, FP_OBJNAME, FP_ERRORSTR, FP_ERRORTYPE;
+var FP_MULTIDISPLAY, FP_INSTNUM, FP_PARANUM, FP_ERRORPARAM, FP_PAGE;
+var PARA[13] =
+{
+"URL",
+"UserName",
+"UserPassword",
+"PeriodicInformEnable",
+"PeriodicInformInterval",
+"ParameterKey",
+"ConnectionRequestURL",
+"ConnectionRequestUsername",
+"ConnectionRequestPassword",
+"UpgradesManaged",
+"DefaultWan",
+"SupportCertAuth",
+"ConnectionRequestPort"
+
+
+};
+FP_OBJNAME = "OBJ_MANAGESERVER_ID";
+FP_PARANUM = 13;
+FP_IDENTITY = "";
+
+FP_INDEX = request("IF_INDEX");
+if (FP_INDEX IS NULL)
+{
+FP_INDEX = -1;
+}
+FP_PAGE = request("IF_PAGE");
+if (FP_PAGE IS NULL)
+{
+FP_PAGE = "";
+}
+FP_MULTIDISPLAY = 0;
+FP_ACTION = ACTION;
+FP_INSTNUM = query_list(FP_OBJNAME, "IGD");
+
+if (FP_INSTNUM != 888 && FP_INSTNUM >0 && FP_INDEX >=0 && FP_ACTION != "new")
+{
+FP_IDENTITY = query_identity(FP_INDEX);
+}
+
+if (FP_ACTION == "apply" || FP_ACTION == "new")
+{
+
+FP_HANDLE = create_paralist();
+for(var i=0; i< FP_PARANUM; i++)
+{
+setpara(FP_HANDLE, PARA[i]);
+}
+if("NotTr069" == FP_PAGE)
+{
+set_para(FP_HANDLE, "UserPassword", strdecode(request("UserPassword")));
+set_para(FP_HANDLE, "ConnectionRequestPassword", strdecode(request("ConnectionRequestPassword")));
+}
+FP_IDENTITY = set_inst(FP_HANDLE, FP_OBJNAME, FP_IDENTITY);
+if (FP_ACTION == "new")
+{
+if (get_error() != "SUCC")
+{
+FP_INDEX = -1;
+FP_IDENTITY = "";
+}
+}
+}
+
+
+create_hidden_newpara(PARA, FP_PARANUM);
+
+if (FP_MULTIDISPLAY == 0)
+{
+FP_HANDLE = create_paralist();
+get_inst(FP_HANDLE, FP_OBJNAME, FP_IDENTITY);
+
+var UserPsd = get_para(FP_HANDLE, "UserPassword");
+set_para(FP_HANDLE, "UserPassword", strencode(UserPsd));
+var ConReqPsd = get_para(FP_HANDLE, "ConnectionRequestPassword");
+set_para(FP_HANDLE, "ConnectionRequestPassword", strencode(ConReqPsd));
+cover_hidden(FP_HANDLE, PARA, FP_PARANUM);
+destroy_paralist(FP_HANDLE);
+}
+
+else if (FP_MULTIDISPLAY == 1)
+{
+FP_INSTNUM = query_list(FP_OBJNAME, "IGD");
+for (var i=0; i<FP_INSTNUM; i++)
+{
+FP_HANDLE = create_paralist();
+FP_IDENTITY = query_identity(i);
+get_inst(FP_HANDLE, FP_OBJNAME, FP_IDENTITY);
+create_hidden_multiinstpara(FP_HANDLE, PARA, i, FP_PARANUM);
+destroy_paralist(FP_HANDLE);
+}
+}
+FP_INSTNUM = query_list(FP_OBJNAME, "IGD");
+create_hidden_sep("IF_PAGE", "");
+FP_ERRORSTR = get_cmret();
+if (FP_ERRORSTR != "SUCC")
+{
+if (FP_ERRORSTR != "FAIL")
+{
+var cmret = "cmret_"+FP_ERRORSTR;
+FP_ERRORSTR = load_string(cmret);
+}
+FP_ERRORPARAM = get_errorparam();
+FP_ERRORTYPE = get_cmret_type();
+set_hidden("IF_ERRORSTR", FP_ERRORSTR);
+set_hidden("IF_ERRORPARAM", FP_ERRORPARAM);
+set_hidden("IF_ERRORTYPE", FP_ERRORTYPE);
+}
+var FP_URLATTR                       = attr("InternetGatewayDevice.ManagementServer.URL");
+var FP_UsernameATTR                  = attr("InternetGatewayDevice.ManagementServer.Username");
+var FP_PasswordATTR                  = attr("InternetGatewayDevice.ManagementServer.Password");
+var FP_ConnectionRequestUsernameATTR = attr("InternetGatewayDevice.ManagementServer.ConnectionRequestUsername");
+var FP_ConnectionRequestPasswordATTR = attr("InternetGatewayDevice.ManagementServer.ConnectionRequestPassword");
+create_hidden_sep("IF_URLATTR"                      , FP_URLATTR);
+create_hidden_sep("IF_UsernameATTR"                 , FP_UsernameATTR);
+create_hidden_sep("IF_PasswordATTR"                 , FP_PasswordATTR);
+create_hidden_sep("IF_ConnectionRequestUsernameATTR", FP_ConnectionRequestUsernameATTR);
+create_hidden_sep("IF_ConnectionRequestPasswordATTR", FP_ConnectionRequestPasswordATTR);
+return FP_ERRORSTR;
+}
+%>

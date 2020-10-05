@@ -1,0 +1,131 @@
+#!/bin/sh
+#	$Id: rcS,v 1.7 2007/10/25 21:58:06 jwessel Exp $
+# This is a minmal rcS file for target startup
+# Make sure that /proc is mounted.
+mount -a
+
+#
+#	Assign an address to the loopback device.
+#
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+runlevel=S
+prevlevel=N
+umask 022
+export PATH runlevel prevlevel
+
+#
+#	Source defaults.
+#
+. /etc/default/rcS
+export VERBOSE
+
+#. /etc/default/S00tagparam
+
+#
+#	Trap CTRL-C &c only in this shell so we can interrupt subprocesses.
+#
+trap ":" INT QUIT TSTP
+
+#
+#	check and mount /userconfig
+#
+. /etc/default/S01userconfig
+
+#
+#	Call all parts in order.
+#
+for i in /etc/rcS.d/S??*
+do
+	# Ignore dangling symlinks for now.
+	[ ! -f "$i" ] && continue
+
+	case "$i" in
+		*.sh)
+			# Source shell script for speed.
+			(
+				trap - INT QUIT TSTP
+				set start
+				. $i
+			)
+			;;
+		*)
+			# No sh extension, so fork subprocess.
+			$i start
+
+			;;
+	esac
+done
+
+#
+# Resume default configuration file
+# 0 - Default, 1 - Russia, 2 - Lithuania, 3 - Romania, 4 - Singapore
+#
+USR_DB_CFG_TYPE_MAX=300
+USR_DB_DEFAULT_CFG_XML=/userconfig/cfg/db_default_cfg.xml
+USR_DB_USER_CFG_XML=$USR_DB_USER_CFG_XML
+USR_DB_BACKUP_CFG_XML=/userconfig/cfg/db_backup_cfg.xml
+USR_CFG_TYPE_FILE=/userconfig/flag_type
+
+### ¹ú¼ÒÂë
+ETC_DB_DEFAULT_CFG_XML=/etc/db_default_cfg.xml
+
+ETC_DB_REGIONCODE=/etc/init.d/regioncode
+
+copy_CFGFILE_by_REGIONCODE() {
+
+	regioncode=$1	
+	regionname=`busybox awk -F: -v regioncode="$regioncode" '$1==regioncode {print $2}' $ETC_DB_REGIONCODE`		
+	echo "==================================================================="	
+	echo "region code:$regioncode"	
+	echo "region name:$regionname"			
+	ETC_DB_CFG_XML=/etc/db_default_${regionname}_cfg.xml	
+	if [ -f "$ETC_DB_CFG_XML" ]; then		
+		echo "cp $ETC_DB_CFG_XML to $USR_DB_DEFAULT_CFG_XML "		
+		cp -f $ETC_DB_CFG_XML  $USR_DB_DEFAULT_CFG_XML	
+	else	    
+		echo "current : 0" > $USR_CFG_TYPE_FILE	
+	fi	
+	echo "==================================================================="
+}
+
+if [ ! -f $USR_DB_DEFAULT_CFG_XML ]; then
+  cp -f $ETC_DB_DEFAULT_CFG_XML $USR_DB_DEFAULT_CFG_XML
+  if [ -f $USR_DB_BACKUP_CFG_XML ]; then
+	echo "  $USR_DB_BACKUP_CFG_XML found, deleted"
+    rm -f $USR_DB_BACKUP_CFG_XML
+  fi
+fi
+  
+if [ ! -f $USR_CFG_TYPE_FILE ]; then
+	echo "current : 0" > $USR_CFG_TYPE_FILE
+	cp -f $ETC_DB_DEFAULT_CFG_XML $USR_DB_DEFAULT_CFG_XML
+else
+	idx=`cat $USR_CFG_TYPE_FILE | grep 'current' | sed -e 's/^current \: /\1/'`
+	if [ -n "$idx" ]; then
+	   
+	  copy_CFGFILE_by_REGIONCODE $idx
+	  
+	  if [ $idx -gt $USR_DB_CFG_TYPE_MAX ]; then
+	    echo "current : 0" > $USR_CFG_TYPE_FILE
+		echo "  Warning: $idx unsupported, using default setting"
+	  fi
+	else
+	  echo "current : 0" > $USR_CFG_TYPE_FILE
+	fi
+	
+	idx=`cat $USR_CFG_TYPE_FILE | grep 'current' | sed -e 's/^current \: /\1/'`
+	if [ $idx -eq 0 ]; then
+	  cp -f $ETC_DB_DEFAULT_CFG_XML $USR_DB_DEFAULT_CFG_XML
+	fi
+fi
+echo "  Database default setting is [`cat $USR_CFG_TYPE_FILE`]"
+
+#
+# auto-start cspd
+#
+pc&
+
+#
+# hostname
+#
+hostname "zxic"

@@ -1,0 +1,68 @@
+
+<%
+IMPORT FILE "common_gch.gch";
+var FP_OBJNAME      = "OBJ_ROUTETABLE_ID";
+var FP_MULTIDISPLAY = 1;
+var FP_PARANUM      = 4;
+var FP_ERRORSTR     = "SUCC";
+var MGetFlag        = 1;    
+var FP_INSTNUM, FP_IFNAME;
+var FP_HANDLE;
+var PARA[4] =
+{
+"DestIP",
+"DestIPMask",
+"GWIP",
+"Interface"
+};
+var FP_INDEX = getInstIndex("new");
+create_form_start("fSubmit", "");
+createSubmitHidden(FP_MULTIDISPLAY, PARA, FP_PARANUM, "");
+if (FP_MULTIDISPLAY == 1)
+{
+if (1 == MGetFlag)
+{
+FP_HANDLE = create_paralist();
+get_inst(FP_HANDLE, FP_OBJNAME, "MGet");
+FP_INSTNUM = get_para(FP_HANDLE, "MGET_INST_NUM");
+FP_INSTNUM = integer(FP_INSTNUM);
+for (var i=0; i<FP_INSTNUM; i++)
+{
+create_hidden_multiinstpara1(FP_HANDLE, PARA, i,  FP_PARANUM);
+FP_IFNAME = get_para(FP_HANDLE, "Interface"+i);
+var WancId = getenv("ObjWancId");
+query_list(WancId, "IGD");
+var WAN_HANDLE = create_paralist();
+var TMP_IFNAME = identity2name(FP_IFNAME);
+if (0 == strlen(TMP_IFNAME))
+{
+var FP_LAN_INSTNUM = query_list("OBJ_WANLAN_ID", "IGD");
+for(var i = 0; i < FP_LAN_INSTNUM; i++ )
+{
+var LAN_HANDLE   = create_paralist();
+var LAN_identity = query_identity(i);
+if(FP_IFNAME == LAN_identity)
+{
+get_inst(LAN_HANDLE, "OBJ_WANLAN_ID", LAN_identity);
+TMP_IFNAME = get_para(LAN_HANDLE, "Name");
+}
+destroy_paralist(LAN_HANDLE);
+}
+if(0 == strlen(TMP_IFNAME))
+{
+if(0 == strlen(TMP_IFNAME))
+{
+TMP_IFNAME = FP_IFNAME;
+}
+}
+}
+create_hidden_sep("Interfacename"+i, TMP_IFNAME);
+destroy_paralist(WAN_HANDLE);
+}
+destroy_paralist(FP_HANDLE);
+}
+}
+getDisplayInstError(FP_ERRORSTR);
+set_hidden("IF_INSTNUM", FP_INSTNUM);
+create_form_end();
+%>

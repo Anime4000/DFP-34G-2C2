@@ -1,0 +1,755 @@
+<script language="javascript">
+var FWIPSTATIC_PARA = new Array(
+"Enable",
+"Protocol",
+"Name",
+"FilterTarget",
+"MinSrcIp",
+"MaxSrcIp",
+"MinSrcPort",
+"MaxSrcPort",
+"MinDstIp",
+"MaxDstIp",
+"MinDstPort",
+"MaxDstPort",
+"INCName",
+"OUTCName"
+);
+var OTHER_PARA = new Array(
+"INCViewName",
+"OUTCViewName",
+"ViewName",
+"MinSrcMask",
+"MinDstMask",
+"FilterType",
+"FilterIndex",
+"FilterAction"
+);
+var index ="";
+function pageLoad(url)
+{
+getObj("fSubmit").action = url;
+var msg = "";
+copySelList(getObj("Frm_INCViewName"), getObj("Frm_OUTCViewName"));
+var errstr= getValue("IF_ERRORSTR");
+var errpara = getValue("IF_ERRORPARAM");
+OldProcessRet(errstr, errpara);
+moveErrLayer(588,40);
+showTable();
+}
+function getNameValue(id, size, value)
+{
+return ("<input type=\"text\" class=\"uiNoBorder\" size=\"" + size +"\" value=\""
++ value + "\"  id=\"" + id + "\"  readonly>");
+}
+function addline(index)
+{
+var newline  = getObj("SecPort_Table").insertRow(-1);
+var newline2 = getObj("SecPort_Table").insertRow(-1);
+var cellId = "";
+var cellSize = 0;
+var cellValue = "";
+newline.setAttribute("class", "white");
+newline.setAttribute("className", "white");
+for(var i = 0; i < FWIPSTATIC_PARA.length ; i+=2)
+{
+cellId = "Line_" + index + "_" + FWIPSTATIC_PARA[i] + "_" + i;
+if(4 == i || 8 == i)
+{
+cellSize = 12;
+}
+else
+if(12 == i)
+{
+cellSize = 8;
+}
+else
+{
+cellSize = 6;
+}
+cellValue = getValue(FWIPSTATIC_PARA[i]+index);
+if((4 == i || 8 == i) && cellValue == "0.0.0.0")
+{
+cellValue = "";
+}
+if((6 == i || 10 == i) && parseInt(cellValue) == -1)
+{
+cellValue = "";
+}
+if(0 == i)
+{
+newline.insertCell(-1).innerHTML = showIsEnableImage(cellValue, cellId);
+}
+else
+{
+newline.insertCell(-1).innerHTML = getNameValue(cellId, cellSize, "");
+setValue(cellId, cellValue);
+}
+}
+newCell = newline.insertCell(-1);
+newCell.innerHTML = getImagefrmClass("multiImg_modify", "Modify("+index+")", "modify" + index);
+newCell.id = "modify_" + (2*index).toString();
+newCell = newline.insertCell(-1);
+newCell.innerHTML = getImagefrmClass("multiImg_delete", "pageDel("+index+")", "delete" + index);
+newCell.id = "delete_" + (2*index).toString();
+newline2.setAttribute("class", "white");
+newline2.setAttribute("className", "white");
+for(var i = 1; i < FWIPSTATIC_PARA.length ; i+=2)
+{
+cellId = "Line_" + index + "_" + FWIPSTATIC_PARA[i] + "_" + i;
+if(5 == i || 9 == i)
+{
+cellSize = 12;
+}
+else
+if(13 == i)
+{
+cellSize = 8;
+}
+else
+{
+cellSize = 6;
+}
+if(1 == i || 3 == i)
+{
+cellValue = TransferList(i,getValue(FWIPSTATIC_PARA[i]+index));
+}
+else
+{
+cellValue = getValue(FWIPSTATIC_PARA[i]+index);
+}
+if((5 == i || 9 == i) && cellValue == "0.0.0.0")
+{
+cellValue = "";
+}
+if((7 == i || 11 == i) && parseInt(cellValue) == -1)
+{
+cellValue = "";
+}
+newline2.insertCell(-1).innerHTML = getNameValue(cellId, cellSize, "");
+setValue(cellId, cellValue);
+}
+newCell = newline2.insertCell(-1);
+newCell.id = "modify_" + (2*index+1).toString();
+newCell = newline2.insertCell(-1);
+newCell.id = "delete_" + (2*index+1).toString();
+var obj0 = document.getElementById("modify_" + (2*index).toString());
+var obj1 = document.getElementById("modify_" + (2*index+1).toString());
+obj0.rowSpan++;
+obj1.parentNode.removeChild(obj1);
+var obj0 = document.getElementById("delete_" + (2*index).toString());
+var obj1 = document.getElementById("delete_" + (2*index+1).toString());
+obj0.rowSpan++;
+obj1.parentNode.removeChild(obj1);
+}
+function TransferList(i,para_i)
+{
+if(1 == i)
+{
+if(0 == para_i)
+{
+return "TCP";
+}
+else
+if(1 == para_i)
+{
+return "UDP";
+}
+else
+if(2 == para_i)
+{
+return "TCP AND UDP";
+}
+else
+if(3 == para_i)
+{
+return "ICMP";
+}
+else
+if(4 == para_i)
+{
+return "ANY";
+}
+}
+else
+if(3 == i)
+{
+if(0 == para_i)
+{
+return "&?maco004;";
+}
+else
+if(1 == para_i)
+{
+return "&?url04;";
+}
+}
+return  null;
+}
+function showTable()
+{
+var num = getValue("IF_INSTNUM");
+if( num > 0)
+{
+for(var i = 0; i < num; i++)
+{
+addline(i);
+}
+}
+else
+{
+var newline = getObj("SecPort_Table").insertRow(-1);
+newline.setAttribute("align", "center");
+newline.setAttribute("class", "white");
+newline.setAttribute("className", "white");
+var objcell =  newline.insertCell(-1);
+objcell.colSpan = 9;
+objcell.innerHTML= "&?note_007;";
+}
+}
+function getmsg(id)
+{
+var str      = new Array();
+str[0]   = new Array(101, "&?error_101;");
+str[1]   = new Array(102, "&?error_102;");
+str[2]   = new Array(103, "&?error_103;");
+str[3]   = new Array(108, "&?error_108;");
+str[4]   = new Array(115, "&?error_115;");
+str[5]   = new Array(116, "&?error_116;");
+str[6]   = new Array(117, "&?error_117;");
+str[7]   = new Array(118, "&?error_118;");
+str[8]   = new Array(119, "&?error_119;");
+str[9]   = new Array(122, "&?error_122;");
+str[10]  = new Array(137, "&?error_137;");
+str[11]  = new Array(139, "&?error_139;");
+str[12]  = new Array(140, "&?error_140;");
+str[13]  = new Array(141, "&?error_141;");
+str[14]  = new Array(144, "&?error_144;");
+str[15]  = new Array(114, "&?error_114;");
+str[16]  = new Array(149, "&?error_149;");
+str[17]  = new Array(150, "&?error_150;");
+str[18]  = new Array(161, "&?error_161;");
+str[19]  = new Array(162, "&?error_162;");
+str[20]  = new Array(163, "&?error_163;");
+str[21]  = new Array(154, "&?error_154;");
+str[22]  = new Array(155, "&?error_155;");
+str[23]  = new Array(156, "&?error_156;");
+str[24]  = new Array(157, "&?error_157;");
+str[25]  = new Array(158, "&?error_158;");
+str[26]  = new Array(127, "&?error_127;");
+return getMsgFormArray(str, arguments);
+}
+function setPort(postId, viewId)
+{
+if( "" == getValue(viewId) )
+{
+setValue(postId, "-1");
+}
+else
+{
+jslSetValue(postId, viewId);
+}
+}
+function pageSetValue()
+{
+HiddenParaInit(FWIPSTATIC_PARA);
+HiddenParaInit(OTHER_PARA);
+if( parseInt(getValue("Frm_Protocol")) == 3 || parseInt(getValue("Frm_Protocol")) == 4 )
+{
+setValue("MinSrcPort", "-1");
+setValue("MaxSrcPort", "-1");
+setValue("MinDstPort", "-1");
+setValue("MaxDstPort", "-1");
+}
+else
+{
+setPort("MinSrcPort", "Frm_MinSrcPort");
+setPort("MinDstPort", "Frm_MinDstPort");
+setPort("MaxSrcPort", "Frm_MaxSrcPort");
+setPort("MaxDstPort", "Frm_MaxDstPort");
+}
+if( "" != getValue("Frm_MinSrcIp"))
+jslSetValue("MinSrcIp", "Frm_MinSrcIp");
+else
+setValue("MinSrcIp", "0.0.0.0");
+if( "" != getValue("Frm_MinDstIp"))
+jslSetValue("MinDstIp", "Frm_MinDstIp");
+else
+setValue("MinDstIp", "0.0.0.0");
+if( "" != getValue("Frm_MaxSrcIp"))
+jslSetValue("MaxSrcIp", "Frm_MaxSrcIp");
+else
+setValue("MaxSrcIp", "0.0.0.0");
+if( "" != getValue("Frm_MaxDstIp"))
+jslSetValue("MaxDstIp", "Frm_MaxDstIp");
+else
+setValue("MaxDstIp", "0.0.0.0");
+jslViewToPostCheckBox("Enable", "Frm_Enable");
+jslSetValue("Protocol", "Frm_Protocol");
+jslSetValue("Name", "Frm_Name");
+jslSetValue("INCViewName", "Frm_INCViewName");
+jslSetValue("OUTCViewName", "Frm_OUTCViewName");
+var obj = getObj("Frm_INCViewName");
+if(null != obj.selectedIndex)
+setValue("INCName", obj.options[obj.selectedIndex].text);
+obj = getObj("Frm_OUTCViewName");
+if(null != obj.selectedIndex)
+setValue("OUTCName", obj.options[obj.selectedIndex].text);
+jslSetValue("FilterTarget", "Frm_FilterTarget");
+}
+function pageCheckValue(insId)
+{
+var msg = "";
+if(false == PageResetValueRmZero("Frm_MinSrcPort","Fnt_MinSrcPort"))
+{
+return  false;
+}
+if(false == PageResetValueRmZero("Frm_MaxSrcPort","Fnt_MaxSrcPort"))
+{
+return  false;
+}
+if(false == PageResetValueRmZero("Frm_MinDstPort","Fnt_MinDstPort"))
+{
+return  false;
+}
+if(false == PageResetValueRmZero("Frm_MaxDstPort","Fnt_MaxDstPort"))
+{
+return  false;
+}
+ReSetIpRmZero("Frm_MinSrcIp","Frm_MinDstIp");
+ReSetIpRmZero("Frm_MaxSrcIp","Frm_MaxDstIp");
+if( false == checkName("Frm_Name", "Fnt_Name", 1, 1, 32) )
+{
+return  false;
+}
+if( false == isSameElement("Frm_Name", "Name", insId) )
+{
+if( -1 == insId)   msg = getmsg(139);
+else               msg = getmsg(140);
+ShowErrorForCom("Frm_Name", "", msg);
+return false;
+}
+if( getValue("Frm_INCViewName") == getValue("Frm_OUTCViewName")
+&& getValue("Frm_INCViewName") != "" )
+{
+msg = getmsg(137);
+ShowErrorForCom(null, null, msg);
+var obj = getObj("Frm_INCViewName");
+obj.focus();
+return false;
+}
+if( false == checkIP("Frm_MinSrcIp", "Fnt_MinSrcIp", 0) )
+{
+return  false;
+}
+if( false == checkIP("Frm_MaxSrcIp", "Fnt_MaxSrcIp", 0) )
+{
+return  false;
+}
+if( false == checkIP("Frm_MinDstIp", "Fnt_MinDstIp", 0) )
+{
+return  false;
+}
+if( false == checkIP("Frm_MaxDstIp", "Fnt_MaxDstIp", 0) )
+{
+return  false;
+}
+if(getValue("Frm_Protocol") != 3 && getValue("Frm_Protocol") != 4)
+{
+if( false == checkPort("Frm_MinSrcPort", "Fnt_MinSrcPort", 0, 1, 65535) )
+{
+return  false;
+}
+if( false == checkPort("Frm_MaxSrcPort", "Fnt_MaxSrcPort", 0, 1, 65535) )
+{
+return  false;
+}
+if( false == checkPort("Frm_MinDstPort", "Fnt_MinDstPort", 0, 1, 65535) )
+{
+return  false;
+}
+if( false == checkPort("Frm_MaxDstPort", "Fnt_MaxDstPort", 0, 1, 65535) )
+{
+return  false;
+}
+}
+if( getValue("Frm_MinSrcIp") != "" && getValue("Frm_MaxSrcIp") != "")
+{
+if( compareIP(getValue("Frm_MinSrcIp"), getValue("Frm_MaxSrcIp")) > 0)
+{
+msg = getmsg(149);
+ShowErrorForCom("Frm_MinSrcIp", null, msg);
+return false;
+}
+}
+else
+if( getValue("Frm_MinSrcIp") == "" && getValue("Frm_MaxSrcIp") != "")
+{
+msg = getmsg(157);
+ShowErrorForCom("Frm_MinSrcIp", null, msg);
+return false;
+}
+if( getValue("Frm_MinDstIp") != "" && getValue("Frm_MaxDstIp") != "" )
+{
+if( compareIP(getValue("Frm_MinDstIp"), getValue("Frm_MaxDstIp")) > 0 )
+{
+msg = getmsg(150);
+ShowErrorForCom("Frm_MinDstIp", null, msg);
+return false;
+}
+}
+else
+if( getValue("Frm_MinDstIp") == "" && getValue("Frm_MaxDstIp") != "" )
+{
+msg = getmsg(158);
+ShowErrorForCom("Frm_MinDstIp", null, msg);
+return false;
+}
+if(getValue("Frm_Protocol") != 3 && getValue("Frm_Protocol") != 4)
+{
+if( getValue("Frm_MinSrcPort") != "" && getValue("Frm_MaxSrcPort") != "")
+{
+if( parseInt(getValue("Frm_MinSrcPort")) > parseInt(getValue("Frm_MaxSrcPort")) )
+{
+msg = getmsg(161);
+ShowErrorForCom("Frm_MinSrcPort", null, msg);
+return false;
+}
+}
+else
+if( getValue("Frm_MinSrcPort") == "" && getValue("Frm_MaxSrcPort") != "")
+{
+msg = getmsg(163);
+ShowErrorForCom("Frm_MinSrcPort", null, msg);
+return false;
+}
+if( parseInt(getValue("Frm_MinDstPort")) != ""
+&& parseInt(getValue("Frm_MaxDstPort")) != "" )
+{
+if( parseInt(getValue("Frm_MinDstPort")) > parseInt(getValue("Frm_MaxDstPort")) )
+{
+msg = getmsg(162);
+ShowErrorForCom("Frm_MinDstPort", null, msg);
+return false;
+}
+}
+if( getValue("Frm_MinDstPort") == "" && getValue("Frm_MaxDstPort") != "" )
+{
+msg = getmsg(154);
+ShowErrorForCom("Frm_MinDstPort", null, msg);
+return false;
+}
+}
+return true;
+}
+function PageResetValueRmZero(frm_id, fnt_id)
+{
+if( false == ReSetValueRmZero(frm_id) )
+{
+var msg = getmsg(144);
+ShowErrorForCom(frm_id, fnt_id, msg);
+return false;
+}
+return true;
+}
+function checkName(frm_id, fnt_id, isNull, minLength, maxLength)
+{
+var msg = "";
+if( 0 == isNull && false == checkNull(getValue(frm_id)) )
+{
+return true;
+}
+var  nameCheck = checkStrLengthRange(getValue(frm_id), minLength, maxLength);
+if("-1" == nameCheck)
+{
+msg = getmsg(101);
+ShowErrorForCom(frm_id, fnt_id, msg);
+return false;
+}
+else
+if(false == checkGenStringForASC(getValue(frm_id)))
+{
+msg = getmsg(114);
+ShowErrorForCom(frm_id, fnt_id, msg);
+return false;
+}
+if("-3" == nameCheck)
+{
+msg = getmsg(102, minLength, maxLength);
+ShowErrorForCom(frm_id, fnt_id, msg);
+return false;
+}
+return true;
+}
+function checkPort(frm_id, fnt_id, isNull, minValue, maxValue)
+{
+var msg = "";
+if( 0 == isNull && false == checkNull(getValue(frm_id)) )
+{
+return true;
+}
+var portCheck = checkIntegerRange(getValue(frm_id), minValue, maxValue);
+if("-1" == portCheck)
+{
+msg = getmsg(101);
+ShowErrorForCom(frm_id, fnt_id, msg);
+return false;
+}
+if("-2" == portCheck)
+{
+msg = getmsg(115);
+ShowErrorForCom(frm_id, fnt_id, msg);
+return false;
+}
+else
+if("-3" == portCheck)
+{
+msg = getmsg(116, minValue, maxValue);
+ShowErrorForCom(frm_id, fnt_id, msg);
+return false;
+}
+return true;
+}
+function  checkIP(frm_id, fnt_id, isNull, num)
+{
+var msg = "";
+if( 0 == isNull && false == checkNull(getValue(frm_id)) )
+{
+return true;
+}
+if(false == checkNull(getValue(frm_id)))
+{
+msg = getmsg(101);
+ShowErrorForCom(frm_id, fnt_id, msg);
+return  false;
+}
+if(false == checkIpAddress(getValue(frm_id), num))
+{
+msg = getmsg(108);
+ShowErrorForCom( frm_id, fnt_id, msg);
+return  false;
+}
+if( false == checkIPZero( getValue(frm_id) ) )
+{
+msg = getmsg(108);
+ShowErrorForCom( frm_id, fnt_id, msg);
+return  false;
+}
+if( "127.0.0.1" == getValue(frm_id) )
+{
+msg = getmsg(155);
+ShowErrorForCom( frm_id, fnt_id, msg);
+return  false;
+}
+if( "255.255.255.255" == getValue(frm_id) )
+{
+msg = getmsg(156);
+ShowErrorForCom( frm_id, fnt_id, msg);
+return  false;
+}
+return true;
+}
+function compareIP(minIP, maxIP)
+{
+var minParts = minIP.split(".");
+var maxParts = maxIP.split(".");
+for( var i = 0; i < 4; i++)
+{
+if( parseInt((minParts[i]),10) != parseInt((maxParts[i]),10) )
+{
+return (parseInt((minParts[i]),10) - parseInt((maxParts[i]),10));
+}
+}
+}
+function  checkIPZero(value)
+{
+var ipaddr = value;
+var parts = ipaddr.split(".");
+for( var i = 0; i < 4; i++)
+{
+if( parseInt((parts[i]),10) != 0 )
+{
+return true;
+}
+}
+return false;
+}
+function  isSameElement(frm_id, id, modify_i)
+{
+var num = getValue("IF_INSTNUM");
+for(var i = 0; i < num; i++)
+{
+if( i == modify_i )
+{
+continue;
+}
+if( getValue(frm_id) == getValue(id + i) )
+{
+return false;
+}
+}
+return true;
+}
+function pageAdd()
+{
+jslEnDisplay("Btn_Add");
+jslDiDisplay("Btn_Edit");
+if(true == pageCheckValue(-1))
+{
+disableAllButton();
+pageSetValue();
+setValue("IF_ACTION", "new");
+setValue("IF_INDEX", "-1");
+getObj("fSubmit").submit();
+}
+else
+{
+}
+}
+function pageEdit()
+{
+if(true == pageCheckValue(index))
+{
+disableAllButton();
+pageSetValue();
+setValue("IF_ACTION", "apply");
+setValue("IF_INDEX", index);
+getObj("fSubmit").submit();
+}
+else
+{
+}
+}
+function showPort(viewId, postId)
+{
+if(parseInt(getValue(postId)) == -1)
+{
+setValue(viewId, "");
+}
+else
+{
+jslSetValue(viewId, postId);
+}
+}
+function showIP(viewId, postId)
+{
+if(getValue(postId) == "0.0.0.0")
+{
+setValue(viewId, "");
+}
+else
+{
+jslSetValue(viewId, postId);
+}
+}
+function Modify(i)
+{
+jslDiDisplay("Btn_Add");
+jslEnDisplay("Btn_Edit");
+document.getElementById("back").style.display="";
+ModifyGetValue(i);
+index = i;
+}
+function ModifyGetValue(i)
+{
+jslPostToViewCheckBox("Frm_Enable", "Enable"+i);
+var prtcObj = getObj("Frm_Protocol");
+jslDoShowComboBox("Frm_Protocol", "Protocol"+i);
+if(-1 == prtcObj.selectedIndex)
+{
+setSelOtherValue(prtcObj, "", null);
+prtcObj.selectedIndex = 0;
+}
+jslSetValue("Frm_Name", "Name"+i);
+showPort("Frm_MinSrcPort", "MinSrcPort"+i);
+showPort("Frm_MinDstPort", "MinDstPort"+i);
+showPort("Frm_MaxSrcPort", "MaxSrcPort"+i);
+showPort("Frm_MaxDstPort", "MaxDstPort"+i);
+if( parseInt(getValue("Protocol"+i)) == 3 || parseInt(getValue("Protocol"+i)) == 4 )
+{
+jslDisable("Frm_MinSrcPort", "Frm_MaxSrcPort", "Frm_MinDstPort", "Frm_MaxDstPort");
+}
+else
+{
+jslEnable("Frm_MinSrcPort", "Frm_MaxSrcPort", "Frm_MinDstPort", "Frm_MaxDstPort");
+}
+showIP("Frm_MinSrcIp", "MinSrcIp"+i);
+showIP("Frm_MinDstIp", "MinDstIp"+i);
+showIP("Frm_MaxSrcIp", "MaxSrcIp"+i);
+showIP("Frm_MaxDstIp", "MaxDstIp"+i);
+var incObj = getObj("Frm_INCViewName");
+jslDoShowComboBox("Frm_INCViewName", "INCViewName"+i);
+if(-1 == incObj.selectedIndex)
+{
+setSelOtherValue(incObj, "", null);
+incObj.selectedIndex = 0;
+}
+var outcObj = getObj("Frm_OUTCViewName");
+jslDoShowComboBox("Frm_OUTCViewName", "OUTCViewName"+i);
+if(-1 == outcObj.selectedIndex)
+{
+setSelOtherValue(outcObj, "", null);
+outcObj.selectedIndex = 0;
+}
+var filtarObj = getObj("Frm_FilterTarget");
+jslDoShowComboBox("Frm_FilterTarget", "FilterTarget"+i);
+if(-1 == filtarObj.selectedIndex)
+{
+setSelOtherValue(filtarObj, "", null);
+filtarObj.selectedIndex = 0;
+}
+}
+function pageDel(i)
+{
+disableAllButton();
+setValue("IF_ACTION", "delete");
+setValue("IF_INDEX",i);
+getObj("fSubmit").submit();
+}
+function disableAllButton()
+{
+jslDisable("Btn_Add","Btn_Edit", "back");
+var num = getValue("IF_INSTNUM");
+for( var btn_i = 0; btn_i < num; btn_i++)
+{
+jslDisable("delete" + btn_i);
+jslDisable("modify" + btn_i);
+}
+}
+function changeProtocol()
+{
+if(getValue("Frm_Protocol") == 3 || getValue("Frm_Protocol") == 4)
+{
+setValue("Frm_MinSrcPort", "");
+setValue("Frm_MaxSrcPort", "");
+setValue("Frm_MinDstPort", "");
+setValue("Frm_MaxDstPort", "");
+jslDisable("Frm_MinSrcPort", "Frm_MaxSrcPort", "Frm_MinDstPort", "Frm_MaxDstPort");
+}
+else
+{
+jslEnable("Frm_MinSrcPort", "Frm_MaxSrcPort", "Frm_MinDstPort", "Frm_MaxDstPort");
+}
+}
+function copySelList(srcObj, dstObj)
+{
+dstObj.length = srcObj.length;
+for( i = 0; i < dstObj.length; i++)
+{
+dstObj.options[i] = new Option();
+dstObj.options[i].value = srcObj.options[i].value;
+dstObj.options[i].text  = srcObj.options[i].text;
+}
+}
+function back4add()
+{
+var number = getValue("IF_INSTNUM");
+jslDisable("Btn_Add","Btn_Edit", "back");
+for(var i = 0; i < number; i++)
+{
+jslDisable("modify" + i);
+jslDisable("delete" + i);
+}
+getObj("fSubmit").submit();
+}
+</script>

@@ -1,0 +1,53 @@
+<%
+IMPORT FILE "wan_func.gch";
+IMPORT FILE "mirror_gch.gch";
+IMPORT FILE "manager_mirro_js.gch";
+%>
+<div id="note" class="space_0">
+<table width="450px" border="0" class="table">
+<tr>
+<td valign="top" style="width:30px;"><img src="img/info.gif"></td>
+<td height="18" align="left" style="padding-left:10px;">&?mirro004;</td>
+</tr>
+</table>
+</div>
+<div id="div4"></div>
+<table id="TestContent"  class="table" width="450px" border="0">
+<tr>
+<td class="td1">&?mirro002;</td>
+<td class="td2" >
+<select size="1" class="list_2" id="Frm_MirrorSrc">
+<%
+MirrorWANQuery();
+
+%>
+</select>
+</td>
+</tr>
+<tr>
+<td class="td1">&?mirro003;</td>
+<td class="td2" >
+<select size="1" class="list_2" id="Frm_MirrorDest">
+<%
+LANQuery();
+%>
+</select>
+</td>
+</tr>
+<tr>
+<td class="td1"></td>
+<td class="td2">
+<input name="" type="button" id="add" value="&?btn007;"  class="button2" onclick="Add()"/>
+</td>
+</tr>
+</table>
+<div class="space_0">
+<table id="Dhcp_Table" class="item" border="0" cellpadding="0" cellspacing="1" bgcolor="#979797">
+<tr class="h2_s title_1">
+<td>&?mirro002;</td>
+<td>&?mirro003;</td>
+<td>&?btn006;</td>
+</tr>
+</table>
+</div>
+<div id="div4"></div>

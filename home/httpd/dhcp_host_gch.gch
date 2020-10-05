@@ -1,0 +1,40 @@
+<%
+IMPORT FILE "common_gch.gch";
+function host_func(FP_ACTION, FP_INDEX, FP_ERRORSTR)
+{
+var FP_OBJNAME      = "OBJ_DHCPHOST_ID";
+var FP_MULTIDISPLAY = 0;
+var FP_PARANUM      = 23;
+var PARA[23] =
+{
+"ViewName",
+"LANDViewName",
+"Configurable",
+"ServerEnable",
+"RelayEnable",
+"PoolName",
+"MinAddress",
+"MaxAddress",
+"ReservedAddresses",
+"SubnetMask",
+"DNSServer1",
+"DNSServer2",
+"DNSServer3",
+"DomainName",
+"IPRouters",
+"LeaseTime",
+"UseAllocatedWAN",
+"AssociatedConnection",
+"PassthroughLease",
+"PassthroughCSP_MACAddress",
+"AllowedCSP_MACAddresses",
+"DHCPConditionalServing",
+"DnsServerSource"
+};
+if(NULL == FP_INDEX)
+{
+FP_INDEX = -1;
+}
+return getFunctionGCH(FP_OBJNAME, FP_MULTIDISPLAY, PARA, FP_PARANUM, FP_ACTION, FP_INDEX, FP_ERRORSTR);
+}
+%>

@@ -1,0 +1,91 @@
+
+<%
+IMPORT FILE "fw_pm_gch.gch";
+IMPORT FILE "app_virtual_conf_js.gch";
+%>
+<table id="TestContent"  class="table" width="450px" border="0">
+<tr>
+<td class="td1"><font id="Fnt_Enable">&?comm001;</font></td>
+<td class="td2"><input name="Frm_Enable" id="Frm_Enable" type="checkbox" value="" /></td>
+</tr>
+<tr>
+<td class="td1"><font id="Fnt_Name">&?comm003;</font></td>
+<td class="td2"><input name="Frm_Name" id="Frm_Name" type="text" class="inputId5"  value="" size="15" /></td>
+</tr>
+<tr>
+<td class="td1"><font id="Fnt_Protocol">&?comm004;</font></td>
+<td class="td2">
+<select  name="Frm_Protocol" id="Frm_Protocol" size="1" class="list_1">
+<option value="0">TCP</option>
+<option value="1">UDP</option>
+<option value="2">TCP AND UDP</option>
+</select></td>
+</tr>
+<tr>
+<td class="td1"><font id="Fnt_RemoteHost">&?virt001;</font></td>
+<td class="td2"><input name="Frm_RemoteHost" id="Frm_RemoteHost" type="text" class="inputId5"  value="" size="15" /></td>
+</tr>
+<tr>
+<tr>
+<td class="td1"><font id="Fnt_EndRemoteHost">&?virt006;</font></td>
+<td class="td2"><input name="Frm_EndRemoteHost" id="Frm_EndRemoteHost" type="text" class="inputId5"  value="" size="15" /></td>
+</tr>
+<tr>
+<td class="td1"><font id="Fnt_WANCViewName">&?comm002;</font></td>
+<td class="td2">
+<select name="Frm_WANCViewName" id="Frm_WANCViewName"  size="1" class="list_2">
+<% IMPORT FILE "wan_func.gch";
+wanV4QueryByApp("firewall");
+%>
+</select>
+</td>
+</tr>
+<tr>
+<td class="td1"><font id="Fnt_MinExtPort">&?virt002;</font></td>
+<td class="td2"><input name="Frm_MinExtPort" id="Frm_MinExtPort" type="text" class="inputId5"  value="" size="15" />(1 ~ 65535)</td>
+</tr>
+<tr>
+<td class="td1"><font id="Fnt_MaxExtPort">&?virt003;</font></td>
+<td class="td2"><input name="Frm_MaxExtPort" id="Frm_MaxExtPort" type="text" class="inputId5"  value="" size="15" />(1 ~ 65535)</td>
+</tr>
+<tr id="TR_InternalHost" style="display:">
+<td class="td1"><font id="Fnt_InternalHost">&?virt004;</font></td>
+<td class="td2"><input name="Frm_InternalHost" id="Frm_InternalHost" type="text" class="inputId5"  value="" size="15" /></td>
+</tr>
+<tr>
+<td class="td1"><font id="Fnt_MinIntPort">&?virt005;</font></td>
+<td class="td2"><input name="Frm_MinIntPort" id="Frm_MinIntPort" type="text" class="inputId5"  value="" size="15" />(1 ~ 65535)</td>
+</tr>
+<tr>
+<td class="td1"><font id="Fnt_MaxIntPort">&?virt007;</font></td>
+<td class="td2"><input name="Frm_MaxIntPort" id="Frm_MaxIntPort" type="text" class="inputId5"  value="" size="15" />(1 ~ 65535)</td>
+</tr>
+<tr>
+<td class="td3" colspan="4">
+<input  type="button" name="Btn_Add" id="Btn_Add" class="button2" value="&?btn007;" onclick="pageAdd()"/>
+<input  type="button" name="Btn_Edit" id="Btn_Edit" class="button2" value="&?btn003;" onclick="pageEdit()" style="display:none" />
+<input name="back" type="button" id="back" value="&?btn004;"  class="button2" onclick="back4add()" style="display:none"/>
+</td>
+</tr>
+<tr><td class="td1" colspan="4"></td></tr>
+</table>
+<table id="fwpm_Table" class="item" width="530px" border="0" cellpadding="0" cellspacing="1" bgcolor="#979797">
+<tr class="h2_s title_1">
+<td width="50" rowspan="2">&?comm001;</td>
+<td width="">&?comm003;</td>
+<td width="">&?virt001;</td>
+<td width="">&?virt002;</td>
+<td width="">&?virt005;</td>
+<td>&?comm002;</td>
+<td width="50" rowspan="2">&?btn003;</td>
+<td width="50" rowspan="2">&?btn006;</td>
+</tr>
+<tr class="h2_s title_1">
+<td>&?comm004;</td>
+<td>&?virt006;</td>
+<td>&?virt003;</td>
+<td>&?virt007;</td>
+<td>&?virt010;</td>
+</tr>
+</table>
+<div id="div4"></div>

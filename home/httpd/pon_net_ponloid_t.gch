@@ -1,0 +1,27 @@
+<%
+IMPORT FILE "pon_loid_conf_gch.gch";
+IMPORT FILE "pon_net_ponloid_js.gch";
+%>
+<div class="space_0">
+<table id="ponloid"  class="table" width="450px" border="0">
+<tr height="20px" ><td colspan="2"></td></tr>
+<tr>
+<td class="td1"><font id="Fnt_PonLoid">&?ponloid001;</font></td>
+<td class="td2"><input name="Frm_PonLoid" id="Frm_PonLoid" type="text" value="" class="inputId" /></td>
+</tr>
+<tr>
+<td class="td1"><font id="Fnt_LoidPasswd">&?ddns003;</font></td>
+<td class="td2"><input type="text" name="Frm_LoidPasswd" id="Frm_LoidPasswd"  value="" class="inputId" /></td>
+</tr>
+<tr>
+<td class="td1">&nbsp;</td>
+<td class="td2">&nbsp;</td>
+</tr>
+</table>
+<table id="TestContent" class="infor" id="TABLE_LOID" width="450" border="0" cellpadding="0" cellspacing="1" bgcolor="#979797">
+<tr class="white_1" style="display:none">
+<td class="tdleft">&?ponloid002;</td>
+<td class="tdright"><font id="Fnt_LoidState"></font></td>
+</tr>
+</table>
+</div>

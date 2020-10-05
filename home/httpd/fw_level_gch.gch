@@ -1,0 +1,13 @@
+<%
+IMPORT FILE "common_gch.gch";
+var FP_OBJNAME      = "OBJ_FWLEVEL_ID";
+var FP_MULTIDISPLAY = 0;
+var FP_PARANUM      = 3;
+var PARA[3] =
+{
+"Level",
+"AntiAttack",
+
+};
+getPageGCH(FP_OBJNAME, FP_MULTIDISPLAY, PARA, FP_PARANUM);
+%>

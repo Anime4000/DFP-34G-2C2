@@ -1,0 +1,59 @@
+<%
+IMPORT FILE "net_tr069_cafile_js.gch";
+IMPORT FILE "auth/api.gch";
+var session_token = get_csrf_session_token();
+setenv("UPLOAD_ENV",session_token);
+%>
+<div id="t_warn" class="space_0">
+<table width="450px" border="0" class="table">
+<tr>
+<td valign="top" style="width:30px;"><img src="img/info.gif"></td>
+<td height="18" align="left" style="padding-left:10px;" id="tipLi">&?pwa241;&?pub001;</td>
+</tr>
+</table>
+</div>
+<div id="div4"></div>
+<div id="CertChainTbl" class="space_0" style="display:none">
+<table class="table" width="530px" border="0">
+<tr>
+<td class="td1">&?trbs011;</td>
+<td class="td2">
+<select size="1" class="list_1" id="Frm_CertID" name="Frm_CertID">
+</select>
+</td>
+</tr>
+</table>
+</div>
+<!--内容开始-->
+<div id="div4"></div>
+<form name="fUpload" id="fUpload" method="POST" action="getpage.gch?pid=100" enctype="multipart/form-data" onsubmit="return false;">
+<table id="ftable" class="item_3"  border="0" cellpadding="0" cellspacing="1" bgcolor="#979797">
+<tr class="white">
+<td>&?dev_m018;
+<input  type="file" name="CertUpload" id="CertUpload" value="">
+</td>
+</tr>
+<tr class="blue">
+<td>
+<input class="button6" type="button" name="upload" id="upload" value="&?dev_m019;" onclick="myUploadFile();">
+</td>
+</tr>
+</table>
+<input type="hidden" id="UPLOAD_SESSION_TOKEN" name="UPLOAD_SESSION_TOKEN" value="<%=session_token;%>">
+</form>
+<%
+var st = getenv("status");
+var tp = getenv("type");
+var sta = getenv("state");
+if(sta != "N/A" && tp != "N/A" && st != "N/A")
+{
+%>
+<script>
+document.getElementById("ftable").style.display = "none";
+document.getElementById("t_warn").style.display = "none";
+</script>
+<iframe name="upload_query" id="upload_query" width="500" src="manager_dev_query_t.gch?pid=1002&callPage=<%=encodeHTML(request("nextpage"));%>" scrolling="no" frameborder="0" allowTransparency="true"></iframe>
+<%
+}
+%>
+<!--内容结束-->

@@ -1,0 +1,36 @@
+<%
+IMPORT FILE "v6_br0_dhcp_gch.gch";
+IMPORT FILE "net_v6_dhcp_dynamic_js.gch";
+%>
+<table id="DHCP_DYNAMIC_V6_TABLE"  class="table" width="450px" border="0">
+<tr>
+<td id="Fnt_IPv6Addr" class="td1">&?dhcp_b000;</td>
+<td class="td2">
+<input name="Frm_IPv6Addr" id="Frm_IPv6Addr" type="text" class="inputId" value="" size="15" />
+/ <input name="Frm_IPv6PrefLen" id="Frm_IPv6PrefLen" type="text" value="" class="inputId7" />
+</td>
+</tr>
+<tr>
+<td class="td1"><font id="Fnt_ServerEnable">&?dhcp_d001;</font></td>
+<td class="td2"><input type="checkbox"  id="Frm_ServerEnable" name="Frm_ServerEnable"/></td>
+</tr>
+<tr>
+<td class="td1"><font id="Fnt_DnsRefreshTime">&?dhcp_d015;</font></td>
+<td class="td2"><input type="text" class="inputId2" id="Frm_DnsRefreshTime" name="Frm_DnsRefreshTime" size="15" />&?wan029;</td>
+</tr>
+<tr>
+<td class="td1">&nbsp;</td>
+</tr>
+</table>
+<table id="TestContent1" class="item">
+<tr>
+<td>&?dhcp_d005;</td>
+</tr>
+</table>
+<table id="Dhcp_Table"  class="item" border="0" cellpadding="0" cellspacing="1" bgcolor="#979797">
+<tr class="h2_s title_1">
+<td>DUID</td>
+<td>&?wan035;</td>
+<td>&?wan047;</td>
+</tr>
+</table>

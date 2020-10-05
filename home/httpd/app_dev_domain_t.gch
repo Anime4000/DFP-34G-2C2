@@ -1,0 +1,12 @@
+<%
+IMPORT FILE "dns_gch.gch";
+IMPORT FILE "app_dev_domain_js.gch";
+%>
+<table id="TestContent"  class="table" width="450px" border="0">
+<tr>
+<td class="td1"><font id="Fnt_DomainName">&?dena001;</font></td>
+<td class="td2">
+<input id="Frm_DomainName" name="Frm_DomainName" type="text" class="inputId" value="" size="15" />
+</td>
+</tr>
+</table>

@@ -1,0 +1,13 @@
+<%
+var Language  = request("_lang");
+var FP_HANDLE;
+if (Language is NOT NULL)
+{
+FP_HANDLE = create_paralist();
+set_para(FP_HANDLE, "Timeout",  request("Timeout"));
+set_para(FP_HANDLE, "Language", Language);
+set_inst(FP_HANDLE, "OBJ_USERIF_ID", "");
+unsetenv("gw_lang");
+}
+IMPORT FILE "login.gch";
+%>

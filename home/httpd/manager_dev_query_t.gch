@@ -1,0 +1,261 @@
+<%
+var head      = "<!DOCTYPE html PUBLIC \"-\/\/W3C\/\/DTD XHTML 1.0 Transitional\/\/EN\"";
+var head1     = "\"http:\/\/www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">";
+var head_html = "<html xmlns=\"http:\/\/www.w3.org/1999/xhtml\">";
+=head + head1;
+=head_html;
+IMPORT FILE "auth/api.gch";
+auth_expiretime_renew();
+%>
+<head>
+<META HTTP-EQUIV="pragma" CONTENT="no-cache">
+<META HTTP-EQUIV="Cache-Control" CONTENT="no-cache, must-revalidate">
+<meta http-equiv="Content-Type" content="text/html; charset=&?LANG;" />
+</head>
+<body>
+<%
+IMPORT FILE "common_gch.gch";
+%>
+<style>
+.item {
+width:450px;
+}
+.white {
+background-color:#FFFFFF;
+text-align:center;
+height:25px;
+}
+.button2{
+height:20px;
+vertical-align:middle;
+text-align:center;
+font-size: 12px;
+font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+width:61px;
+}
+.infor1 {
+font-size: 12px;
+font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+}
+</style>
+<!--内容开始-->
+<table id="TestContent"  class="infor1" width="450px" border="0" cellpadding="0" cellspacing="0" style="font-size:12px">
+<tr id="upload_query_title"  style="text-align:center;height:25px;display: none;" allowTransparency="true">
+<td><font id="query_title" style="display: ;"></font>&nbsp;&nbsp;<img src="img/uploading.gif"></td>
+</tr>
+<tr id="upload_query_status"  style="text-align:center;height:25px; display: none;"allowTransparency="true">
+<td><font id="query_status" style="display: ;"></font></td>
+</tr>
+</table>
+<div id="Table_Back" style="width:450px;text-align:center;height:40px;padding-top:8px;display:none;">
+<input id="" name="" type="submit" class="button2" value="&?btn013;" onclick="PageBack()"/>
+</div>
+<form id="fSubmit" method="post" action="">
+<input type="hidden" id="IF_PAGEBACK" name="IF_PAGEBACK" value="0">
+</form>
+<!--内容结束-->
+<script type="text/javascript">
+try
+{
+window.parent.callbackfuncReset();
+}
+catch(e){}
+<%
+IMPORT FILE "js/menu.js";
+%>
+function PageBack()
+{
+document.getElementById("IF_PAGEBACK").value = "1";
+document.getElementById("fSubmit").submit();
+}
+<%
+var pageback = request("IF_PAGEBACK");
+if(pageback == "1")
+{
+%>
+parent.location.href = getURL("<%=request("callPage");%>");
+<%
+}
+else
+{
+%>
+document.getElementById("upload_query_title").style.display = "";
+document.getElementById("upload_query_status").style.display = "";
+document.getElementById("query_title").innerHTML = "&?dev_m008;";
+<%
+var UPGRADE_OBJNAME,UPGRADE_IDENTITY,UPGRADE_HANDLE;
+var UpgardeStatus,Percent;
+var UPGRADE_PARA[2] =
+{
+"UpgardeStatus",
+"Percent"
+};
+var upload_status, upload_type, upload_state, upgrade_status;
+upload_status   = getenv("status");
+upload_type     = getenv("type");
+upload_state    = getenv("state");
+var restart_timeout, version_timeout;
+restart_timeout = get_config("restart_relogin");
+version_timeout = get_config("version_relogin");
+if((restart_timeout == "N/A") || (restart_timeout == "NULL") || (restart_timeout IS NULL))
+{
+restart_timeout = 3;
+}
+if((version_timeout == "N/A") || (version_timeout == "NULL") || (version_timeout IS NULL))
+{
+version_timeout = 5;
+}
+if(upload_state != "N/A" && upload_status != "N/A" && upload_type != "N/A")
+{
+if (upload_state == "2")
+{
+UPGRADE_HANDLE = create_paralist();
+get_inst(UPGRADE_HANDLE, "OBJ_UPGRADE_ID", "IGD");
+Percent         = get_para(UPGRADE_HANDLE, "Percent");
+UpgardeStatus   = get_para(UPGRADE_HANDLE, "UpgardeStatus");
+destroy_paralist(UPGRADE_HANDLE);
+if (UpgardeStatus == "SUCC" || UpgardeStatus == "UPLOAD_FINISH" || UpgardeStatus == "REBOOTING")
+{
+upgrade_status = UpgardeStatus;
+if (upgrade_status != "SUCC")
+{
+unsetenv("Uploading");
+setenv("status2", getenv("status"));
+setenv("state2", getenv("state"));
+setenv("type2", getenv("type"));
+unsetenv("status");
+unsetenv("state");
+unsetenv("type");
+%>
+parent.document.getElementById("IF_UPLOADING").value = "0";
+<%
+}
+}
+else
+{
+if (Percent == "508")
+{
+upgrade_status = load_string("upg_508");
+}
+else
+{
+upgrade_status = load_string("upg_401");
+}
+unsetenv("Uploading");
+setenv("status2", getenv("status"));
+setenv("state2", getenv("state"));
+setenv("type2", getenv("type"));
+unsetenv("status");
+unsetenv("state");
+unsetenv("type");
+%>
+parent.document.getElementById("IF_UPLOADING").value = "0";
+<%
+}
+}
+if (upload_status != "SUCC")
+{
+if(upload_status == "414")
+{
+upload_status = load_string("upg_515");
+}
+else if(upload_status == "417")
+{
+upload_status = load_string("upg_507");
+}
+else
+{
+upload_status = load_string("upg_401");
+}
+unsetenv("Uploading");
+setenv("status2", getenv("status"));
+setenv("state2", getenv("state"));
+setenv("type2", getenv("type"));
+unsetenv("status");
+unsetenv("state");
+unsetenv("type");
+%>
+parent.document.getElementById("IF_UPLOADING").value = "0";
+<%
+}
+%>
+var js_status, js_type, js_state, status_info;
+js_status           = "<%=upload_status;%>";
+js_state            = "<%=upload_state;%>";
+js_type             = "<%=upload_type;%>";
+if (js_status != "SUCC")
+{
+document.getElementById("upload_query_title").style.display = "none";
+document.getElementById("query_status").innerHTML = js_status;
+document.getElementById("Table_Back").style.display = "";
+}
+else
+{
+if (js_state == "2" || js_state == "4")
+{
+var js_upgrade_status   = "<%=upgrade_status;%>";
+function OnSubmit()
+{
+parent.frames["upload_query"].location.href = parent.frames["upload_query"].location.href;
+}
+function jump()
+{
+parent.top.location.href = "/";
+}
+if (js_upgrade_status == "SUCC" )
+{
+var timeout = <%=version_timeout;%>;
+setTimeout("jump();", timeout*60*1000+5000);
+if (js_type == "1")
+{
+document.getElementById("query_title").innerHTML = "&?dev_m009;";
+}
+else
+{
+document.getElementById("query_title").innerHTML = "&?dev_m014;";
+}
+setTimeout("OnSubmit();", 2000);
+}
+else if(js_upgrade_status == "UPLOAD_FINISH")
+{
+document.getElementById("upload_query_title").style.display = "none";
+document.getElementById("query_status").innerHTML = "&?dev_m020;";
+document.getElementById("Table_Back").style.display = "";
+}
+else if(js_upgrade_status == "REBOOTING")
+{
+var timeout = <%=restart_timeout;%>;
+if (js_type == "1")
+{
+document.getElementById("upload_query_title").style.display = "none";
+document.getElementById("query_status").innerHTML = "&?dev_m010;";
+setTimeout("jump();", timeout*60*1000+5000);
+}
+else if (js_type == "3" || js_type == "4"  || js_type == "5")
+{
+document.getElementById("upload_query_title").style.display = "none";
+document.getElementById("query_status").innerHTML = "&?dev_m015;";
+setTimeout("jump();", timeout*60*1000+5000);
+}
+else
+{
+document.getElementById("upload_query_title").style.display = "none";
+document.getElementById("query_status").innerHTML = "&?dev_m020;";
+document.getElementById("Table_Back").style.display = "";
+}
+}
+else
+{
+document.getElementById("upload_query_title").style.display = "none";
+document.getElementById("query_status").innerHTML = js_upgrade_status;
+document.getElementById("Table_Back").style.display = "";
+}
+}
+}
+<%
+}
+}
+%>
+</script>
+</body>
+</html>

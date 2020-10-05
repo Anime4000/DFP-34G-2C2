@@ -1,0 +1,15 @@
+<%
+IMPORT FILE "bpdu_conf_gch.gch";
+IMPORT FILE "app_bpdu_conf_js.gch";
+%>
+<table id="TestContent"  class="table" width="450px" border="0">
+<tr>
+<td class="td11"><font id="Fnt_BPDUEnable">&?cbpdu3;</font></td>
+<td class="td2"><input id="Frm_BPDUEnable" name="Frm_BPDUEnable" type="checkbox"/></td>
+</tr>
+<tr>
+<td height="4"></td>
+<td></td>
+</tr>
+</table>
+<div id="div4"></div>

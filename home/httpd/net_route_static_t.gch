@@ -1,0 +1,47 @@
+<%
+IMPORT FILE "route_static_gch.gch";
+IMPORT FILE "net_route_static_js.gch";
+%>
+<table id="TestContent"  class="table" width="450px" border="0">
+<tr>
+<td class="td1">&?sr01;</td>
+<td class="td2"><form name="form1" id="form1" method="post" action="">
+<select id="Frm_Interface" name="Frm_Interface" class="list_2">
+<%IMPORT FILE "IPv4_wan_query.gch";%>
+</select>
+</form></td>
+</tr>
+<tr>
+<td id="Fnt_DestIP" class="td1">&?sr02;</td>
+<td class="td2"><input name="Frm_DestIP" id="Frm_DestIP" type="text" class="inputId"  value="" size="15" /></td>
+</tr>
+<tr>
+<td id="Fnt_DestIPMask" class="td1">&?dhcp_b002;</td>
+<td class="td2"><input name="Frm_DestIPMask" id="Frm_DestIPMask" type="text" class="inputId"  value="" size="15" /></td>
+</tr>
+<tr>
+<td id="Fnt_GWIP" class="td1">&?wan037;</td>
+<td class="td2"><input name="Frm_GWIP" id="Frm_GWIP" type="text" class="inputId"  value="" size="15" />
+</td>
+</tr>
+<tr>
+<td class="td1"></td>
+<td class="td2">
+<input name="Input2" type="button" id="Btn_Add" value="&?btn007;" onclick="Add()" class="button2" />
+<input name="Input" type="button" id="Btn_Modify" value="&?btn003;" onclick="ModifySubmit()" class="button2" style="display:none" />
+<input name="back" type="button" id="back" value="&?btn004;"  class="button2" onclick="back4add()" style="display:none"/>
+</td>
+</tr>
+</table>
+<table id="Static_rt_Table" class="item" border="0" cellpadding="0" cellspacing="1" bgcolor="#979797">
+<tr class="h2_s title_1">
+<td width="90">&?sr02;</td>
+<td width="90">&?dhcp_b002;</td>
+<td width="90">&?wan037;</td>
+<td width="45">&?sr01;</td>
+<td width="45">&?sr06;</td>
+<td width="40">&?va04;</td>
+<td width="40">&?sr08;</td>
+</tr>
+</table>
+<div id="div4"></div>

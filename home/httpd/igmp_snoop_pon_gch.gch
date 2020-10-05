@@ -1,0 +1,18 @@
+<%
+IMPORT FILE "common_gch.gch";
+function igmpsnoop(FP_ACTION, FP_INDEX, FP_ERRORSTR)
+{
+var FP_OBJNAME      = "OBJ_IGMPBASIC_ID";
+var FP_MULTIDISPLAY = 0;
+var FP_PARANUM      = 4;
+var PARA[4] =
+{
+"IgmpMode",
+"LeaveMode",
+"Agtime",
+"QueryTime"
+};
+FP_INDEX=0;
+return getOldFunctionGCH(FP_OBJNAME, FP_MULTIDISPLAY, PARA, FP_PARANUM, FP_ACTION, FP_INDEX, FP_ERRORSTR);
+}
+%>

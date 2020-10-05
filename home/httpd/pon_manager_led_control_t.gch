@@ -1,0 +1,15 @@
+<%
+IMPORT FILE "pon_manager_led_control_gch.gch";
+IMPORT FILE "pon_manager_led_control_js.gch";
+%>
+<div class="space_0">
+<table id="LedControl"  class="table" width="465px" border="0">
+<tr height="20px" ><td colspan="2"></td></tr>
+<tr>
+<td class="td1"><font id="Fnt_LedControl">&?pdt007;</font></td>
+<td class="td2">
+<input type="checkbox" name="Frm_LedControl" id="Frm_LedControl" />
+</td>
+</tr>
+</table>
+</div>

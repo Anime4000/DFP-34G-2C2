@@ -1,0 +1,85 @@
+<script language="javascript">
+var USERIF_PARA = new Array(
+"Level",
+"AntiAttack"
+
+);
+function getmsg(id)
+{
+var str      = new Array();
+str[0]   = new Array(118, "&?error_118;");
+str[1]   = new Array(119, "&?error_119;");
+str[2]   = new Array(122, "&?error_122;");
+return getMsgFormArray(str, arguments);
+}
+function pageLoad(url)
+{
+getObj("fSubmit").action = url;
+var errstr= getValue("IF_ERRORSTR");
+var errpara = getValue("IF_ERRORPARAM");
+OldProcessRet(errstr, errpara);
+pageGetValue();
+}
+function pageGetValue()
+{
+var val = getValue("Level0");
+var levelObjs = document.getElementsByName("Frm_level");
+var len = levelObjs.length;
+for (var i=0; i<len; i++)
+{
+if (levelObjs[i].value ==  val)
+{
+levelObjs[i].checked = true;
+break;
+}
+}
+var tag = getValue("AntiAttack0");
+if(1 == tag)
+setChecked("Frm_IsProtect",true);
+else if(0 == tag)
+setChecked("Frm_IsProtect",false);
+else
+{
+msg = getmsg(122);
+ShowErrorForCom(null, null, msg);
+}
+}
+function pageSetValue()
+{
+if (getChecked("Frm_IsProtect") == true)
+{
+setValue("AntiAttack0","1");
+}
+else
+{
+setValue("AntiAttack0","0");
+}
+var levelObjs = document.getElementsByName("Frm_level");
+var len = levelObjs.length;
+for (var i=0; i<len; i++)
+{
+if (levelObjs[i].checked)
+{
+setValue("Level0", levelObjs[i].value);
+break;
+}
+}
+}
+function pageSubmit()
+{
+pageSetValue();
+setValue("IACTION0", "apply");
+DisableALL();
+getObj("fSubmit").submit();
+}
+function pageCancel()
+{
+DisableALL();
+getObj("fSubmit").submit();
+}
+function go2RuleMgrPage(level)
+{
+DisableALL();
+location.href = getURL("sec_firewallRule_conf_t.gch", "fwLevel", level);
+}
+</script>

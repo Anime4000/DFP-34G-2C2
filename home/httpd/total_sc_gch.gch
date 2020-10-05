@@ -1,0 +1,29 @@
+<%
+IMPORT FILE "common_gch.gch";
+IMPORT FILE "sc_gch.gch";
+var FP_OBJNAME = "";
+var FP_ACTION = request("IF_ACTION");
+var FP_INDEX  = request("IF_INDEX");
+var PF_IPMode  =  request("IF_IPMode");
+if ( PF_IPMode IS NULL )
+{
+PF_IPMode = "IPV4";
+}
+create_form_start("fSubmit", "");
+createBasicHidden();
+var FP_ERRORSTR = "SUCC";
+if(PF_IPMode == "IPV6")
+{
+FP_OBJNAME = "OBJ_FWSCv6_ID";
+FP_ERRORSTR = sc6(FP_ACTION,FP_INDEX , FP_ERRORSTR);
+}
+else
+{
+FP_OBJNAME = "OBJ_FWSC_ID";
+FP_ERRORSTR = sc(FP_ACTION,FP_INDEX , FP_ERRORSTR);
+}
+create_hidden_sep("IF_INDEX", FP_INDEX);
+create_hidden_sep("IF_IPMode", PF_IPMode);
+create_hidden_sep("IF_INSTNUM", getInstNum(FP_OBJNAME));
+create_form_end();
+%>

@@ -1,0 +1,166 @@
+<%
+var FP_HANDLE, FP_OBJNAME;
+FP_OBJNAME = "OBJ_tr069Stat_ID";
+FP_HANDLE = create_paralist();
+get_inst(FP_HANDLE, FP_OBJNAME, "");
+var infmStat = get_para(FP_HANDLE, "InfoStat");
+var infmDesc = get_para(FP_HANDLE, "InfoDesc");
+var AcsStat  = get_para(FP_HANDLE, "AcsStat");
+var AcsDesc  = get_para(FP_HANDLE, "AcsDesc");
+destroy_paralist(FP_HANDLE);
+%>
+<div class="space_0">
+<table id="TestContent" class="infor" id="TABLE_ITMS" width="410" border="0" cellpadding="0" cellspacing="1" bgcolor="#979797">
+<tr class="white_1">
+<td class="tdleft">&?pi1;</td>
+<td class="tdright"><font id="Fnt_InfmSta"></font></td>
+</tr>
+<tr class="blue_1">
+<td class="tdleft">&?pi15;</td>
+<td class="tdright"><font id="Fnt_AcsSta"></font></td>
+</tr>
+</table>
+</div>
+<div id="div4"></div>
+<form id="fSubmit" method="post" action="">
+</form>
+<SCRIPT language="javascript">
+function setFont(id,text)
+{
+document.getElementById(id).innerHTML = text;
+}
+function doInfmStartShow(infmDscp)
+{
+switch (infmDscp)
+{
+case "0":
+{
+setFont("Fnt_InfmSta", "&?pi8;&?pi3;");
+break;
+}
+case "2":
+{
+setFont("Fnt_InfmSta", "&?pi8;&?pi4;");
+break;
+}
+case "3":
+{
+setFont("Fnt_InfmSta", "&?pi8;&?pi5;");
+break;
+}
+case "4":
+{
+setFont("Fnt_InfmSta", "&?pi8;&?pi6;");
+break;
+}
+case "5":
+{
+setFont("Fnt_InfmSta", "&?pi8;&?pi7;");
+break;
+}
+case "1":
+{
+setFont("Fnt_InfmSta", "&?pi8;");
+break;
+}
+default:
+break;
+}
+}
+function doInfmFailShow(infmDscp)
+{
+switch (infmDscp)
+{
+case "6":
+{
+setFont("Fnt_InfmSta", "&?pi11;");
+break;
+}
+case "7":
+{
+setFont("Fnt_InfmSta", "&?pi12;");
+break;
+}
+case "8":
+{
+setFont("Fnt_InfmSta", "&?pi13;");
+break;
+}
+case "9":
+{
+setFont("Fnt_InfmSta", "&?pi8;&?pi14;");
+break;
+}
+default:
+break;
+}
+}
+function informGet()
+{
+var infmStat = "<%=infmStat;%>";
+var infmDscp = "<%=infmDesc;%>";
+switch (infmStat)
+{
+case "0":
+{
+doInfmStartShow(infmDscp);
+break;
+}
+case "1":
+{
+setFont("Fnt_InfmSta", "&?pi9;");
+break;
+}
+case "2":
+{
+doInfmFailShow(infmDscp);
+break;
+}
+case "3":
+{
+setFont("Fnt_InfmSta", "&?pi10;");
+break;
+}
+default:
+setFont("Fnt_InfmSta", "");
+break;
+}
+}
+function itmsGet()
+{
+var acsStat = "<%=AcsStat;%>";
+var acsDesc = "<%=AcsDesc;%>";
+var st  = "";
+if (acsStat == "0")
+{
+st = "&?pa0;";
+}
+else if (acsStat == "1")
+{
+st = "&?pa1;";
+}
+else if (acsStat == "2")
+{
+st = "&?pa2;";
+}
+else
+{
+}
+setFont("Fnt_AcsSta", st);
+}
+function pageGetValues()
+{
+informGet();
+itmsGet();
+}
+function pageLoad(url)
+{
+document.getElementById("fSubmit").action = url;
+pageGetValues();
+}
+function pageReFresh()
+{
+jslDisable("Btn_ReFresh");
+document.getElementById("fSubmit").submit();
+}
+</SCRIPT>

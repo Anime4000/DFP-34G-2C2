@@ -1,0 +1,23 @@
+<%
+IMPORT FILE "common_gch.gch";
+IMPORT FILE "dhcp_basic_gch.gch";
+IMPORT FILE "v6_dhcps_gch.gch";
+IMPORT FILE "v6_dhcpc_gch.gch";
+var FP_ACTION   = request("IF_ACTION");
+var FP_INDEX    = request("IF_INDEX");
+var FP_ERRORSTR = "SUCC";
+create_form_start("fSubmit", "");
+createHigherHidden(FP_INDEX);
+FP_ERRORSTR = basic_func(FP_ACTION, FP_INDEX, FP_ERRORSTR);
+if (("apply" == FP_ACTION) && ("SUCC" != FP_ERRORSTR))
+{
+FP_ERRORSTR = host_func("" , FP_INDEX , FP_ERRORSTR);
+}
+else
+{
+FP_ERRORSTR = host_func(FP_ACTION, FP_INDEX , FP_ERRORSTR);
+}
+FP_ERRORSTR = hostinfo_func(FP_ACTION, FP_INDEX, FP_ERRORSTR);
+
+create_form_end();
+%>

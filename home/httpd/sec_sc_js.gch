@@ -1,0 +1,648 @@
+<script language="javascript">
+function fwCfgServPort()
+{
+DisableALL();
+window.location.href = getURL("sec_fw_servport_t.gch");
+}
+var SC_PARA = new Array
+(
+"ViewName",
+"Enable",
+"INCViewName",
+"INCName",
+"MinSrcIp",
+"MinSrcMask",
+"MaxSrcIp",
+"FilterTarget",
+"Servise",
+"IPMode",
+"Prefix",
+"PrefixLen"
+);
+var count = 6;
+var hexVal = new Array();
+hexVal[0]=1;
+hexVal[1]=2;
+hexVal[2]=4;
+hexVal[3]=8;
+hexVal[4]=16;
+hexVal[5]=32;
+var hexValStr = new Array();
+hexValStr[0]="HTTP";
+hexValStr[1]="FTP";
+hexValStr[2]="SSH";
+hexValStr[3]="TELNET";
+hexValStr[4]="HTTPS";
+hexValStr[5]="SNMP";
+var index ="";
+function getmsg(id)
+{
+var str      = new Array();
+str[0]       = new Array(101, "&?error_101;");
+str[1]       = new Array(105, "&?error_105;");
+str[2]       = new Array(118, "&?error_118;");
+str[3]       = new Array(119, "&?error_119;");
+str[4]       = new Array(122, "&?error_122;");
+str[5]       = new Array(127, "&?error_127;");
+str[6]       = new Array(143, "&?error_143;");
+str[7]       = new Array(102, "&?error_102;");
+str[8]       = new Array(103, "&?error_103;");
+str[9]       = new Array(149, "&?error_149;");
+str[10]      = new Array(157, "&?error_157;");
+str[11]      = new Array(108, "&?error_108;");
+str[12]      = new Array(155, "&?error_155;");
+str[13]      = new Array(156, "&?error_156;");
+str[14]      = new Array(100, "&?error_100;");
+str[15]      = new Array(115, "&?error_115;");
+str[16]      = new Array(116, "&?error_116;");
+str[17]      = new Array(117, "&?error_117;");
+str[18]      = new Array(200, "&?error_200;");
+str[19]      = new Array(243, "&?error_243;");
+return getMsgFormArray(str, arguments);
+}
+function pageLoad(url)
+{
+getObj("fSubmit").action = url;
+var msg = "";
+var errstr= getValue("IF_ERRORSTR");
+var errpara = getValue("IF_ERRORPARAM");
+OldProcessRet(errstr, errpara);
+pageGetValue();
+moveErrLayer(570,4);
+showTable();
+var IPMode = getValue("IF_IPMode");
+if(IPMode == "IPV6")
+{
+setValue("Frm_SCIPMode","1");
+jslDiDisplay("TR_MinSrcIp","TR_MaxSrcIp");
+jslEnDisplay("TR_SrcIpV6");
+}
+else
+{
+setValue("Frm_SCIPMode","0");
+jslEnDisplay("TR_MinSrcIp","TR_MaxSrcIp");
+jslDiDisplay("TR_SrcIpV6");
+}
+}
+function addlineV4(index)
+{
+var newline = getObj("Sc_Table").insertRow(-1);
+newline.setAttribute("class", "white");
+newline.setAttribute("className", "white");
+cellId = "Line_" + index + "_" + SC_PARA[1] + "_" + 0;
+newline.insertCell(-1).innerHTML = showIsEnableImage(getValue("Enable"+index), cellId);
+cellId = "Line_" + index + "_" + SC_PARA[3] + "_" + 1;
+newline.insertCell(-1).innerHTML = getNameValue(cellId, 6, getValue("INCName"+index));
+if("0.0.0.0" == getValue("MinSrcIp"+index))
+setValue("MinSrcIp"+index,"");
+cellId = "Line_" + index + "_" + SC_PARA[4] + "_" + 2;
+newline.insertCell(-1).innerHTML = getNameValue(cellId, 14, getValue("MinSrcIp"+index));
+if("0.0.0.0" == getValue("MaxSrcIp"+index))
+setValue("MaxSrcIp"+index,"");
+cellId = "Line_" + index + "_" + SC_PARA[6] + "_" + 3;
+newline.insertCell(-1).innerHTML = getNameValue(cellId, 14, getValue("MaxSrcIp"+index));
+cellId = "Line_" + index + "_" + SC_PARA[7] + "_" + 4;
+if("0" == getValue("FilterTarget"+index))
+{
+newline.insertCell(-1).innerHTML = getNameValue(cellId, 6, "&?maco004;");
+}
+else
+{
+newline.insertCell(-1).innerHTML = getNameValue(cellId, 6, "&?url04;");
+}
+cellId = "Line_" + index + "_" + SC_PARA[8] + "_" + 5;
+newline.insertCell(-1).innerHTML = getNameValue(cellId, 6, ServiseGet(index));
+newline.insertCell(-1).innerHTML=getImagefrmClass("multiImg_modify", "Modify("+index+")", "Btn_Modify"+index);
+newline.insertCell(-1).innerHTML=getImagefrmClass("multiImg_delete", "Delete("+index+")", "Btn_Delete"+index);
+}
+function addlineV6(index)
+{
+var strTemp = "";
+var newline = getObj("Sc_Table").insertRow(-1);
+newline.setAttribute("class", "white");
+newline.setAttribute("className", "white");
+cellId = "Line_" + index + "_" + SC_PARA[1] + "_" + 0;
+newline.insertCell(-1).innerHTML = showIsEnableImage(getValue("Enable"+index), cellId);
+cellId = "Line_" + index + "_" + SC_PARA[3] + "_" + 1;
+newline.insertCell(-1).innerHTML = getNameValue(cellId, 6, getValue("INCName"+index));
+if("::" == getValue("Prefix"+index))
+setValue("Prefix"+index,"");
+if("0" == getValue("PrefixLen"+index))
+setValue("PrefixLen"+index,"");
+if(getValue("PrefixLen"+index) == "" && getValue("Prefix"+index) == "")
+{
+strTemp = "";
+}
+else
+{
+strTemp = getValue("Prefix"+index)+"/"+getValue("PrefixLen"+index);
+}
+cellId = "Line_" + index + "_" + SC_PARA[10] + "_" + 2;
+newline.insertCell(-1).innerHTML = getNameValue(cellId, 14, strTemp);
+cellId = "Line_" + index + "_" + SC_PARA[7] + "_" + 4;
+if("0" == getValue("FilterTarget"+index))
+{
+newline.insertCell(-1).innerHTML = getNameValue(cellId, 6, "&?maco004;");
+}
+else
+{
+newline.insertCell(-1).innerHTML = getNameValue(cellId, 6, "&?url04;");
+}
+cellId = "Line_" + index + "_" + SC_PARA[8] + "_" + 5;
+newline.insertCell(-1).innerHTML = getNameValue(cellId, 6, ServiseGet(index));
+newline.insertCell(-1).innerHTML=getImagefrmClass("multiImg_modify", "Modify("+index+")", "Btn_Modify"+index);
+newline.insertCell(-1).innerHTML=getImagefrmClass("multiImg_delete", "Delete("+index+")", "Btn_Delete"+index);
+}
+function addline(index)
+{
+if(getValue("IF_IPMode") == "IPV6")
+{
+addlineV6(index);
+}
+else
+{
+addlineV4(index);
+}
+}
+function showTable()
+{
+var num = getValue("IF_INSTNUM");
+if(num != 0 )
+{
+for(var i = 0; i < num; i++)
+{
+addline(i);
+}
+}
+else
+{
+var newline = getObj("Sc_Table").insertRow(-1);
+newline.setAttribute("align", "center");
+newline.setAttribute("class", "white");
+newline.setAttribute("className", "white");
+var objcell =  newline.insertCell(-1);
+objcell.colSpan = 8;
+objcell.innerHTML= "&?note_007;"
+}
+}
+function getNameValue(id, size, value)
+{
+return ("<input type=\"text\" class=\"uiNoBorder\" size=\"" + size +"\" value=\""
++ value + "\"  id=\"" + id + "\"  readonly>");
+}
+function Add()
+{
+var number = getValue("IF_INSTNUM");
+document.getElementById("add").style.display="";
+document.getElementById("modify").style.display="none";
+if(pageCheckValue(-1) == true)
+{
+pageSetValue();
+setValue("IF_ACTION", "new");
+setValue("IF_INDEX", "-1");
+DisableALL();
+getObj("fSubmit").submit();
+}
+else
+{
+}
+}
+function modify()
+{
+var number = getValue("IF_INSTNUM");
+if(pageCheckValue(index) == true)
+{
+pageSetValue();
+setValue("IF_ACTION", "apply");
+setValue("IF_INDEX", index);
+DisableALL();
+getObj("fSubmit").submit();
+}
+else
+{
+}
+}
+function pageSetValue()
+{
+HiddenParaInit(SC_PARA);
+jslViewToPostCheckBox("Enable", "Frm_Enable");
+jslSetValue("INCViewName", "Frm_INCViewName");
+var obj = getObj("Frm_INCViewName");
+if(null != obj.selectedIndex)
+setValue("INCName", obj.options[obj.selectedIndex].text);
+if(getValue("IF_IPMode") == "IPV6")
+{
+setValue("IPMode", "2");
+if( "" != getValue("Frm_SrcIpV6"))
+jslSetValue("Prefix", "Frm_SrcIpV6");
+else
+setValue("Prefix", "::");
+if( "" != getValue("Frm_SrcPrefixLen"))
+jslSetValue("PrefixLen", "Frm_SrcPrefixLen");
+else
+setValue("PrefixLen", "0");
+}
+else
+{
+setValue("IPMode", "1");
+if( "" != getValue("Frm_MinSrcIp"))
+jslSetValue("MinSrcIp", "Frm_MinSrcIp");
+else
+setValue("MinSrcIp", "0.0.0.0");
+if( "" != getValue("Frm_MaxSrcIp"))
+jslSetValue("MaxSrcIp", "Frm_MaxSrcIp");
+else
+setValue("MaxSrcIp", "0.0.0.0");
+}
+jslSetValue("FilterTarget","Frm_Mode");
+pageSetServiceValue();
+}
+function pageGetValue()
+{
+}
+function Delete(i)
+{
+var number = getValue("IF_INSTNUM");
+setValue("IF_ACTION", "delete");
+setValue("IF_INDEX",i);
+DisableALL();
+getObj("fSubmit").submit();
+}
+function Modify(i)
+{
+jslDiDisplay("add");
+jslEnDisplay("modify", "back");
+ModifyGetValue(i);
+ServiseGetValues(i);
+index = i;
+}
+function pageSetServiceValue()
+{
+var res=0;
+var flag=0;
+var x;
+if(getObj("ServiceType"+0).checked == true)
+{
+flag = 1;
+res = res | parseInt(hexVal[0]);
+}
+if(getValue("IF_IPMode") == "IPV6")
+{
+}
+else
+{
+if(getObj("ServiceType"+1).checked == true)
+{
+flag = 1;
+res = res | parseInt(hexVal[1]);
+}
+if(getObj("ServiceType"+2).checked == true)
+{
+flag = 1;
+res = res | parseInt(hexVal[2]);
+}
+if(getObj("ServiceType"+3).checked == true)
+{
+flag = 1;
+res = res | parseInt(hexVal[3]);
+}
+}
+if(getObj("ServiceType"+4).checked == true)
+{
+flag = 1;
+res = res | parseInt(hexVal[4]);
+}
+x=res.toString(10);
+setValue("Servise",x);
+}
+function ModifyGetValue(i)
+{
+jslPostToViewCheckBox("Frm_Enable", "Enable"+i);
+if(getValue("IF_IPMode") == "IPV6")
+{
+if(getValue("Prefix"+i) == "::")
+{
+setValue("Frm_SrcIpV6","");
+}
+else
+{
+setValue("Frm_SrcIpV6",getValue("Prefix"+i));
+}
+if(getValue("PrefixLen"+i) == "0")
+{
+setValue("Frm_SrcPrefixLen","");
+}
+else
+{
+setValue("Frm_SrcPrefixLen",getValue("PrefixLen"+i));
+}
+}
+else
+{
+showIP("Frm_MinSrcIp", "MinSrcIp"+i);
+showIP("Frm_MaxSrcIp", "MaxSrcIp"+i);
+}
+var incObj = getObj("Frm_INCViewName");
+jslDoShowComboBox("Frm_INCViewName", "INCViewName"+i);
+if(-1 == incObj.selectedIndex)
+{
+setSelOtherValue(incObj, "", null);
+incObj.selectedIndex = 0;
+}
+jslSetValue( "Frm_Mode","FilterTarget"+i);
+}
+function showIP(viewId, postId)
+{
+if(getValue(postId) == "0.0.0.0")
+{
+setValue(viewId, "");
+}
+else
+{
+jslSetValue(viewId, postId);
+}
+}
+function pageCheckValue(insId)
+{
+if(getValue("Frm_INCViewName")=="")
+{
+msg = getmsg(100);
+ShowErrorForCom("Frm_INCViewName", "Fnt_INCViewName", msg);
+return false;
+}
+if(false == Check_IPV46())
+{
+return false;
+}
+pageSetServiceValue();
+if(getValue("Servise")=="0")
+{
+msg = getmsg(101);
+ShowErrorForCom("Frm_ServiceType", "Fnt_ServiceType", msg);
+return false;
+}
+return true;
+}
+function  checkIP(frm_id, fnt_id, isNull, num)
+{
+var msg = "";
+if( 0 == isNull && false == checkNull(getValue(frm_id)) )
+{
+return true;
+}
+if(false == checkNull(getValue(frm_id)))
+{
+msg = getmsg(101);
+ShowErrorForCom(frm_id, fnt_id, msg);
+return  false;
+}
+if(false == checkIpAddress(getValue(frm_id), num))
+{
+msg = getmsg(108);
+ShowErrorForCom( frm_id, fnt_id, msg);
+return  false;
+}
+if( false == checkIPZero( getValue(frm_id) ) )
+{
+msg = getmsg(108);
+ShowErrorForCom( frm_id, fnt_id, msg);
+return  false;
+}
+if( "127.0.0.1" == getValue(frm_id) )
+{
+msg = getmsg(155);
+ShowErrorForCom( frm_id, fnt_id, msg);
+return  false;
+}
+if( "255.255.255.255" == getValue(frm_id) )
+{
+msg = getmsg(156);
+ShowErrorForCom( frm_id, fnt_id, msg);
+return  false;
+}
+return true;
+}
+function  checkIPZero(value)
+{
+var ipaddr = value;
+var parts = ipaddr.split(".");
+for( var i = 0; i < 4; i++)
+{
+if( parseInt((parts[i]),10) != 0 )
+{
+return true;
+}
+}
+return false;
+}
+function ServiseGetValues(i)
+{
+var k = 0;
+var cmpStrTemp = getValue("Servise"+i);
+setChecked("ServiceType"+0, false);
+if(getValue("IF_IPMode") == "IPV6")
+{
+}
+else
+{
+setChecked("ServiceType"+1, false);
+setChecked("ServiceType"+2, false);
+setChecked("ServiceType"+3, false);
+}
+setChecked("ServiceType"+4, false);
+if(((hexVal[0] != 0) && ((cmpStrTemp & hexVal[0] ) == hexVal[0])) )
+{
+setChecked("ServiceType"+0, true);
+}
+if(getValue("IF_IPMode") == "IPV6")
+{
+}
+else
+{
+if(((hexVal[1] != 0) && ((cmpStrTemp & hexVal[1] ) == hexVal[1])) )
+{
+setChecked("ServiceType"+1, true);
+}
+if(((hexVal[2] != 0) && ((cmpStrTemp & hexVal[2] ) == hexVal[2])) )
+{
+setChecked("ServiceType"+2, true);
+}
+if(((hexVal[3] != 0) && ((cmpStrTemp & hexVal[3] ) == hexVal[3])) )
+{
+setChecked("ServiceType"+3, true);
+}
+}
+if(((hexVal[4] != 0) && ((cmpStrTemp & hexVal[4] ) == hexVal[4])) )
+{
+setChecked("ServiceType"+4, true);
+}
+}
+function ServiseGet(i)
+{
+var servStr = "";
+var cmpStr = getValue("Servise"+i);
+for(var i=0; i< count; i++)
+{
+if(((hexVal[i] != 0) && ((cmpStr & hexVal[i] ) == hexVal[i])) )
+{
+if ( "" == servStr )
+{
+servStr = hexValStr[i];
+}
+else
+{
+servStr += "," + hexValStr[i];
+}
+}
+}
+return servStr;
+}
+function compareIP(minIP, maxIP)
+{
+var minParts = minIP.split(".");
+var maxParts = maxIP.split(".");
+for( var i = 0; i < 4; i++)
+{
+if( parseInt((minParts[i]),10) != parseInt((maxParts[i]),10) )
+{
+return (parseInt((minParts[i]),10) - parseInt((maxParts[i]),10));
+}
+}
+}
+function back4add()
+{
+var number = getValue("IF_INSTNUM");
+DisableALL();
+getObj("fSubmit").submit();
+}
+function ChangeIPMode()
+{
+var IPMode;
+IPMode = getValue("Frm_SCIPMode");
+if(IPMode == 0)
+{
+setValue("IF_IPMode","IPV4");
+}
+else
+{
+setValue("IF_IPMode","IPV6");
+}
+DisableALL();
+getObj("fSubmit").submit();
+}
+function Check_PrefixValue(frm_id, fnt_id, isNull)
+{
+var msg = "";
+var prefixValue = getValue(frm_id);
+if( 0 == isNull && false == checkNull(getValue(frm_id)) )
+{
+return true;
+}
+if((false == checkIPV6Address(prefixValue)) || ("::" == prefixValue))
+{
+msg = getmsg(200);
+ShowErrorForCom(frm_id, fnt_id, msg);
+return false;
+}
+return true;
+}
+function Check_PrefixLenValue(frm_id, fnt_id, isNull, min, max)
+{
+var msg = "";
+if( 0 == isNull && false == checkNull(getValue(frm_id)) )
+{
+return true;
+}
+var ret = checkIntegerRange(getValue(frm_id), min, max);
+if(-2 == ret)
+{
+msg = getmsg(115);
+ShowErrorForCom(frm_id, fnt_id, msg);
+return false;
+}
+else if(-3 == ret)
+{
+msg = getmsg(116, min, max);
+ShowErrorForCom(frm_id, fnt_id, msg);
+return false;
+}
+else
+{
+}
+return true;
+}
+function Check_Prefix(frm_id, frm_lenid, fnt_id)
+{
+var msg = "";
+if( false == checkNull(getValue(frm_id)) && false != checkNull(getValue(frm_lenid)) )
+{
+msg = getmsg(200);
+ShowErrorForCom(frm_id, fnt_id, msg);
+return false;
+}
+if( false != checkNull(getValue(frm_id)) && false == checkNull(getValue(frm_lenid)) )
+{
+msg = getmsg(200);
+ShowErrorForCom(frm_lenid, fnt_id, msg);
+return false;
+}
+return true;
+}
+function Check_IPV46()
+{
+var msg = "";
+var IPMode = getValue("IF_IPMode");
+if(IPMode == "IPV6")
+{
+ReSetIpRmZero("Frm_SrcIpV6");
+ReSetIpRmZero("Frm_SrcPrefixLen");
+if(Check_PrefixValue("Frm_SrcIpV6", "Fnt_SrcIpV6", 0) != true)
+{
+return false;
+}
+if(Check_PrefixLenValue("Frm_SrcPrefixLen", "Fnt_SrcIpV6", 0, 1, 128) !=true)
+{
+return false;
+}
+if(Check_Prefix("Frm_SrcIpV6", "Frm_SrcPrefixLen", "Fnt_SrcIpV6") != true)
+{
+return false;
+}
+}
+else
+{
+ReSetIpRmZero("Frm_MinSrcIp");
+ReSetIpRmZero("Frm_MaxSrcIp");
+if( false == checkIP("Frm_MinSrcIp", "Fnt_MinSrcIp", 0) )
+{
+return  false;
+}
+if( false == checkIP("Frm_MaxSrcIp", "Fnt_MaxSrcIp", 0) )
+{
+return  false;
+}
+if( getValue("Frm_MinSrcIp") != "" && getValue("Frm_MaxSrcIp") != "")
+{
+if( compareIP(getValue("Frm_MinSrcIp"), getValue("Frm_MaxSrcIp")) > 0)
+{
+msg = getmsg(149);
+ShowErrorForCom("Frm_MinSrcIp", null, msg);
+return false;
+}
+}
+else if( getValue("Frm_MinSrcIp") == "" && getValue("Frm_MaxSrcIp") != "")
+{
+msg = getmsg(157);
+ShowErrorForCom("Frm_MinSrcIp", null, msg);
+return false;
+}
+else if( getValue("Frm_MinSrcIp") != "" && getValue("Frm_MaxSrcIp") == "")
+{
+msg = getmsg(243);
+ShowErrorForCom("Frm_MaxSrcIp", null, msg);
+return false;
+}
+}
+return true;
+}
+</script>

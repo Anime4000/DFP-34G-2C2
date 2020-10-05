@@ -1,0 +1,28 @@
+<%
+var FP_INSTNUM = query_list("OBJ_DSLWANCIP_ID", "IGD");
+var identity   = "";
+var name       = "";
+if(FP_INSTNUM >= 1 && FP_INSTNUM != 888)
+{
+for(var i = 0; i < FP_INSTNUM; i++ )
+{
+identity = query_identity(i);
+name     = query_name(i);
+%>
+<option value="<%=identity;%>" ><%=name;%></option>
+<%
+}
+}
+FP_INSTNUM = query_list("OBJ_DSLWANCPPP_ID", "IGD");
+if(FP_INSTNUM >= 1 && FP_INSTNUM != 888)
+{
+for(var i = 0; i < FP_INSTNUM; i++ )
+{
+identity = query_identity(i);
+name     = query_name(i);
+%>
+<option value="<%=identity;%>" ><%=name;%></option>
+<%
+}
+}
+%>

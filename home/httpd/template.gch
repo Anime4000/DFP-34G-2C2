@@ -1,0 +1,484 @@
+<%
+IMPORT FILE "global.gch";
+IMPORT FILE "auth/api.gch";
+IMPORT FILE "pageinfo_func.gch";
+var sess_id = auth_sessid();
+session_start(sess_id, 0);
+var is_login = 0;
+var is_banned = 0;
+if (auth_check(sess_id) == 0)
+{
+var login_status = auth_get_status("login");
+if (login_status == "logined")
+{
+is_login = 1;
+}
+else if (login_status == "banned")
+{
+auth_logout();
+is_banned = 1;
+}
+}
+if (is_login == 0)
+{
+setenv("request/is_banned", is_banned);
+IMPORT FILE "auth/timeout_ctl.gch";
+return;
+}
+else
+{
+session_start(sess_id, -1);
+}
+auth_env_sync();
+var head      = "<!DOCTYPE html PUBLIC \"-\/\/W3C\/\/DTD XHTML 1.0 Transitional\/\/EN\"";
+var head1     = "\"http:\/\/www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">";
+var head_html = "<html xmlns=\"http:\/\/www.w3.org/1999/xhtml\">";
+=head + head1;
+=head_html;
+%>
+<head>
+<META HTTP-EQUIV="pragma" CONTENT="no-cache">
+<META HTTP-EQUIV="Cache-Control" CONTENT="no-cache, must-revalidate">
+<meta http-equiv="Content-Type" content="text/html; charset=&?LANG;" />
+<title><%=getenv("WEBTitle");%></title>
+<style>
+<%
+IMPORT FILE "&?css2path;";
+IMPORT FILE "&?csslang;";
+%>
+</style>
+<%
+var nextpage = raw_request("nextpage");
+if(nextpage == "" || nextpage IS NULL)
+{
+
+nextpage = "status_dev_info_t.gch";
+
+}
+if ( 0 == check_page_disp(nextpage) )
+{
+is_login = 0;
+}
+else
+{
+session_set("nextpage", nextpage);
+setenv("nextpage", nextpage);
+}
+var selectSupId = query_page_info(nextpage, "supId");
+setenv("selectSupId", selectSupId);
+execTemplateComScript();
+var menu011 = load_string("menu011");
+var menu012 = load_string("menu012");
+%>
+<SCRIPT LANGUAGE="javascript">
+var g_errorInfo = "&?ErrRep;";
+var timeid;
+<%
+IMPORT FILE "js/common.js";
+IMPORT FILE "js/common_check.js";
+IMPORT FILE "js/pro_commom.js";
+IMPORT FILE "js/menu.js";
+IMPORT FILE "js/events.js";
+if(is_login == 0)
+{
+auth_logout();
+%>
+top.location.href = "/";
+<%
+}
+setenv("request/callback", "relogin()");
+IMPORT FILE "auth/timeout_ctl_js.gch";
+%>
+function relogin()
+{
+alert("&?note_003;");
+setValue("logout",1);
+document.flogout.submit();
+}
+<%
+%>
+function onClickLogout()
+{
+setValue("logout",1);
+document.flogout.submit();
+}
+function onClickSetLang()
+{
+var parm="pid=1002?";
+var lang = "<%=getenv("gw_lang");%>";
+if ("English" == lang)
+{
+getObj("_lang").value = "Chinese";
+}
+else if ("Chinese" == lang)
+{
+getObj("_lang").value = "English";
+}
+getObj("action").value = "Change_Lang";
+document.fLangSet.submit();
+}
+top.topFrame.location.reload();
+function setenter(e)
+{
+e = window.event?window.event:e;
+if( e == "[object]")
+{
+if (event.keyCode == 13 && event.srcElement.type == "text")
+{
+event.keyCode = 9;
+}
+}
+}
+</SCRIPT>
+<!--增加iframe使错误提示框不被不被下拉菜单给遮盖-->
+<body id="htmlBody">
+<!-- myLayer 为错误弹出框 -->
+<div id="myLayer" onmousedown="setinner('hidden')">
+<iframe id="myiframe" style="position: absolute; width: 179px; height: 88px; border: 1px none #000000; z-index: -1; filter:alpha(opacity=0); -moz-opacity:0">
+</iframe>
+<div id="layer_err_title">
+<div style="position:relative; left:35px; top:8px;" >
+<font  class="note" id="errnote" >&nbsp;&?ErrRep;</font>
+</div>
+</div>
+<div id="layer_err_content">
+<font id="errmsg" class="notecontent" >&nbsp;</font>
+</div>
+</div>
+<!--help部分开始-->
+<%
+%>
+<div id="alertFram" align="center" style="position:absolute; width:314px; height:height:auto; z-index:999; left: 380px; top: 20%; font-size: 9pt; display:none;">
+<div style='width:220px; position: absolute;' align=left id='dragAble' class='dragAble'>
+<div id='helpTextWrapper' style='position: relative'>
+<iframe id="helpiframe" style="position: absolute; width: 100%; display: block; border: 0px 0px; z-index: -1;"></iframe>
+<div class="round">
+<table style='width:220px;background-color:#fff; border:1px solid #427594;' cellpadding='0' cellspacing='0'>
+<tr align='center'>
+<td style='height:23px;width:90%;background-color:#427594;'>
+<font align='left' color='#FFFFFF'><b>&nbsp;&?menu006;</b></font>
+</td>
+<td onclick='hideHelp();' class="help_close">
+<img src='img/close.gif' border='0'>
+</td>
+</tr>
+<tr>
+<td colspan='2' height='200px' width='220px' valign='top' align='left' class='word-break-all' style='padding:5px 0 0 10px;'>
+<%=load_string(query_page_info(nextpage, "helpTag"));%>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<!--help部分结束-->
+</div>
+<div id="container">
+<div style="width: 100%; height:67px;background: url(<%=getenv("LOGOFILE");%>) no-repeat;" >
+<div class="logo_text">&?CorporationName;</div>
+<div class="type">
+<%if(get_config("useWebModelName")=="Y"){%>
+&?ModelName;
+<%}else{
+=getenv("WEBTitle");
+}%>
+</div>
+</div>
+<div class="divide_line"></div>
+<!--content部分开始-->
+<div class="content" id="content">
+<!--一、二、三级菜单开始-->
+<!--一级菜单-->
+<div class="class1 round" id="class1">
+</div>
+<!--帮助按钮开始-->
+<div class="help">
+<%
+var helpTag = query_page_info(nextpage, "helpTag");
+var helpInfo = load_string(helpTag);
+%>
+<ul>
+
+<table>
+<tr height="43px"><td>
+<input name="help_info" type="button" onclick="onClickSetLang()" class="help_button" id="lang_button" value="<%=menu012;%>"/>
+</tr></td>
+<tr height="43px"><td>
+<input name="help_info" type="button" onclick="showHelp('<%=helpInfo;%>', '&?menu006;')" class="help_button" id="help_button" value="&?menu006;"/>
+</tr></td>
+<tr height="43px"><td>
+<input name="help_info" type="button" onclick="onClickLogout()" class="help_button" id="exit_button" value="<%=menu011;%>"/>
+</tr></td>
+</table>
+</ul>
+</div>
+<!--帮助按钮结束-->
+<div class="main_content text_content">
+<div class="class2 round" id="class2">
+<div class="class2_h2" id="menu0">
+</div>
+</div>
+<div id="div1">
+<%
+if(is_login != 0)
+{
+IMPORT FILE nextpage;
+}
+%>
+<div class="div4"></div>
+</div>
+<!--内容结束-->
+</div>
+<div class="bottom_div round" id="bottom">&nbsp;</div>
+</div>
+<!--content部分结束-->
+<!--bottom部分开始-->
+<div class="copyright">
+<%if(get_config("hideCopyRight")!="Y"){%>&?CopyRight;<%}%>
+</div>
+<!--bottom部分结束-->
+</div>
+<input type="hidden" id="IF_UPLOADING" name="IF_UPLOADING" value="<%=getenv("Uploading");%>">
+<input type="hidden" id="temClickURL" name="temClickURL" value="">
+<form name="flogout" id="flogout" method="post"  onsubmit="return false;" action="/" target="_top">
+<input type="hidden" name="logout" id="logout" value="" >
+</form>
+<form name="fLangSet" id="fLangSet" method="post"  onsubmit="return false;" action="/">
+<input type="hidden" name="_lang" id="_lang" value="">
+<input type="hidden" name="action" id="action" value="">
+</form>
+<script language="javascript">
+<%
+IMPORT FILE "pagefunc_js.gch";
+%>
+text = "<table class='bottom_table' border='0' cellpadding='0' cellspacing='0'>"
++"<tbody><tr>"
++"<td class='bottom_td1'></td>"
++"<td class='bottom_td2'>"
+<%
+var staFlag = query_page_info(nextpage, "staFlag");
+switch(staFlag)
+{
+case 1:
+case 6:
+%>
++"<input name='Submit' type='button'id='Btn_ReFresh' onclick=pageReFresh() class='button' value=' &?btn001; ' />&nbsp;&nbsp;&nbsp;"
+<%
+break;
+case 3:
+%>
++"<input name='Submit' type='button' id='Btn_Add' onclick=pageAdd()  class='button' value=' &?btn002; ' />"
++"<input name='Submit' type='button' id='Btn_Cancel' onclick=pageCancel()  class='button' value=' &?btn004; '>&nbsp;&nbsp;&nbsp;"
++"<input name='Submit' type='button' id='Btn_DoEdit' onclick=pageEdit()  class='button' value=' &?btn003; ' style='display:none'/>"
++"<input name='Submit' type='button' id='Btn_Delete' onclick=pageDel()  class='button' value=' &?btn006; ' style='display:none'/>&nbsp;&nbsp;&nbsp;"
+<%
+break;
+case 2:
+%>
++"<input name='Submit' type='button' id='Btn_Submit' onclick=pageSubmit()  class='button' value=' &?btn005; ' />&nbsp;"
++"<input name='Submit' type='button' id='Btn_Cancel' onclick=pageCancel()  class='button' value=' &?btn004; '>&nbsp;&nbsp;&nbsp;"
+<%
+break;
+case 7:
+%>
++"<input name='Back' type='button' id='Btn_Back' onclick=pageBack()  class='button' value=' &?btn013; ' />&nbsp;"
+<%
+break;
+case 8:
+%>
++"<input name='Submit' type='button' id='Btn_Back'  onclick=pageBack()  class='button' value=' &?btn013; ' style='display:none'/>"
++"<input name='Submit' type='button' id='Btn_Submit' onclick=pageSubmit()  class='button' value=' &?btn005; ' />"
++"<input name='Submit' type='button' id='Btn_Cancel' onclick=pageCancel()  class='button' value=' &?btn004; '>&nbsp;&nbsp;&nbsp;"
+<%
+break;
+default:
+break;
+}
+%>
++"</td></tr></tbody>"
++"</table>";
+getObj("bottom").innerHTML=text;
+<%
+output_menuJSArray();
+%>
+var selectPage  = "<%=nextpage;%>";
+var selectSupId = "<%=selectSupId;%>";
+function TOPmenuUpdate()
+{
+var TOPmenuText = "<ul>";
+for(var supId in meta_menu)
+{
+var styleClass = "";
+if( supId != selectSupId )
+{
+styleClass = "";
+}
+else
+{
+styleClass = "selected";
+}
+var TOPmenuTemp = "<li><a class='" + styleClass
++ "' ><div id='"+ supId
++ "' onclick=\"javascript:openLink('" + meta_menu[supId]['URL'] + "')\">"
++ meta_menu[supId]['langName']
++ "</div></a></li>";
+TOPmenuText += TOPmenuTemp;
+}
+
+
+
+TOPmenuText += "</ul>"
+getObj("class1").innerHTML= TOPmenuText;
+}
+function LEFTmenuUpdate()
+{
+var supId = selectSupId;
+text = "<ul class='class2ul'>";
+for ( var midId in menu_items[supId] )
+{
+var stat = getMidMenuStat(supId, midId);
+if ( stat == "single" )
+{
+if (menu_items[supId][midId]['page'] == selectPage)
+{
+text = text + "<li class='class2li'>"
++ "<span class='text_h2_s'>"
++ menu_items[supId][midId]['langName']
++ "</span>";
+}
+else
+{
+text = text + "<li class='class2li'>"
++ "<a class='h2_link' id='"+ midId
++ "' onclick='javascript:openLink(\""
++ menu_items[supId][midId]['URL'] + "\")'>"
++ menu_items[supId][midId]['langName']
++ "</a>";
+}
+}
+else if ( stat == "closed" )
+{
+text = text + "<li class='class2li'>"
++ "<a class='h2_link' id='"+ midId
++ "' onclick='javascript:openLink(\""
++ menu_items[supId][midId]['URL'] + "\")'>"
++ menu_items[supId][midId]['langName']
++ "</a>";
+}
+else if ( stat == "open" )
+{
+text += "<li class='class2li'>"
++ "<div class='class2textspan'><span class='text_h2_s class2textspan'>"
++ menu_items[supId][midId]['langName']
++ "</span></div>";
+var textc3 = "<ul class='class3ul'>";
+for ( var subId in menu_subitems[supId][midId] )
+{
+if (menu_subitems[supId][midId][subId]['page'] == selectPage)
+{
+textc3 = textc3
++ "<li class='class3li_selected'>"
++ "<div id='"+subId+"'>"
++ menu_subitems[supId][midId][subId]['langName']
++ "</div></li>";
+}
+else
+{
+textc3 = textc3
++ "<li class='class3li'>"
++ "<a class='class3_space'  id='"+subId+"' onclick=\"javascript:openLink('"
++ menu_subitems[supId][midId][subId]['URL'] + "')\"><div class=\"class3lispan\">"
++ menu_subitems[supId][midId][subId]['langName']
++ "</div></a></li>";
+}
+}
+textc3 += "</ul>";
+text += textc3 + "</li>";
+}
+}
+text += "</ul>";
+getObj("menu0").innerHTML=text;
+}
+function menuUpdate()
+{
+TOPmenuUpdate();
+LEFTmenuUpdate();
+}
+function altMenuClass(ele,flag)
+{
+if (flag)
+{
+ele.className += " bghover";
+}
+else
+{
+ele.className = ele.className.replace(/(^|\s)bghover\b/, "");
+}
+}
+function myOnLoad()
+{
+menuDisp();
+addEvent(getObj("htmlBody"), "keydown", setenter);
+addEvent(getObj("htmlBody"), "keyup", setinnerHidden);
+addEvent(getObj("htmlBody"), "mousedown", setinnerHidden);
+fnBreakWordAll({word:15,re:'[\\w]'});
+
+
+framedispalay('myiframe');
+<%
+if(staFlag != 1 && staFlag != 0)
+{
+
+%>
+getObj("myLayer").style.left = "580px";
+getObj("myLayer").style.top  = "59px";
+<%
+if(is_login != 0)
+{
+if (get_config("showerror")=="Y")
+{
+%>
+ShowError();
+<%
+}
+if ("DBSaveTimeout" == getenv("g_systemBusyStatus"))
+{
+unsetenv("g_systemBusyStatus");
+%>
+try
+{
+var clds = parent.document.getElementById("fSubmit").childNodes;
+for (var i=0; i<clds.length; i++)
+{
+var nodeName = clds[i].nodeName;
+if (nodeName.match(/Input/i) != null)
+{
+try
+{
+setValue(clds[i].id, clds[i].value);
+}
+catch(e)
+{
+appendHiddenInput("fSubmit", clds[i].id, clds[i].value);
+}
+}
+}
+}
+catch(e)
+{
+
+}
+<%
+}
+%>
+pageLoad(getURL("<%=nextpage;%>"));
+<%
+}
+}
+%>
+}
+myOnLoad();
+</script>
+</body>
+</html>

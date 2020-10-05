@@ -1,0 +1,61 @@
+<%
+IMPORT FILE "global.gch";
+var redirect_script = getenv("REDIRECT_SCRIPT");
+if (redirect_script IS NOT NULL
+&& redirect_script != "N/A"
+&& redirect_script != ""
+&& redirect_script != "index.gch")
+{
+switch (redirect_script)
+{
+case "start.ghtml":
+IMPORT FILE "frame.gch";
+break;
+case "ajaxQueryDevice.gch":
+case "ajaxQueryWANRate.gch":
+case "ajaxWirelessSpirit.gch":
+case "logged_out.gch":
+case "query_dir.gch":
+case "setlang.gch":
+case "system_busy_t.gch":
+case "template.gch":
+case "templateLight.gch":
+case "top.gch":
+case "wlan_wapiapkey.gch":
+case "manager_dev_query_t.gch":
+case "manager_version_query_t.gch":
+case "manager_remoteugr_query_t.gch":
+case "app_ftp_fresh_t.gch":
+case "Get_WANCStatus.gch":
+case "tr069_business_t.gch":
+case "tr069_registering_t.gch":
+case "ajaxComLogic.gch":
+case "help_content.gch":
+IMPORT FILE redirect_script;
+break;
+default:
+header("HTTP/1.1 404 Not Found");
+var request_uri = getenv("REQUEST_URI");
+%>
+<HTML>
+<HEAD><TITLE>404 Not Found</TITLE></HEAD>
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000" LINK="#2020ff" VLINK="#4040cc">
+<H2>404 Not Found</H2>
+The requested URL '<%=request_uri;%>' was not found on this server.
+<!--
+Padding so that MSIE deigns to show this error instead of its own canned one.
+Padding so that MSIE deigns to show this error instead of its own canned one.
+Padding so that MSIE deigns to show this error instead of its own canned one.
+Padding so that MSIE deigns to show this error instead of its own canned one.
+Padding so that MSIE deigns to show this error instead of its own canned one.
+Padding so that MSIE deigns to show this error instead of its own canned one.
+-->
+<HR>
+<ADDRESS><A HREF="http://www.zte.com.cn">Mini web server 1.0 ZTE corp 2005.</A></ADDRESS>
+</BODY>
+</HTML>
+<%
+break;
+}
+}
+%>

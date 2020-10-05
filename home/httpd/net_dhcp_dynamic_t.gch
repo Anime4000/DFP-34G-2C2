@@ -1,0 +1,82 @@
+<%
+IMPORT FILE "host_second_gch.gch";
+IMPORT FILE "net_dhcp_dynamic_js.gch";
+%>
+<div class="space_0" >
+<div id="t_tip" style="width:450px;text-align:center;">
+<ul>
+<li style="padding-top:8px;text-align:left; margin-left:70px;">
+<span style="width:70px;display:inline-block;margin-left:-70px;text-align:right;">&?cwn2;&nbsp;</span>&?cds001;
+</li>
+</ul>
+</div>
+</div>
+<div id="div4"></div>
+<table id="TestContent"  class="table" width="450px" border="0">
+<tr>
+<td class="td1"><font id="Fnt_BasicIPAddr">&?dhcp_b000;</font></td>
+<td class="td2"><input type="text" class="inputId" name="Frm_BasicIPAddr" id="Frm_BasicIPAddr" /></td>
+</tr>
+<tr>
+<td class="td1"><font id="Fnt_SubnetMask">&?dhcp_b002;</font></td>
+<td class="td2"><input type="text" class="inputId"  id="Frm_SubnetMask" name="Frm_SubnetMask" size="15" /></td>
+</tr>
+<tr >
+<td class="td1">&nbsp;</td>
+<td class="td2">&nbsp;</td>
+</tr>
+<tr>
+<td class="td1">&?dhcp_d001;</td>
+<td class="td2"><input type="checkbox"  id="Frm_ServerEnable" name="Frm_ServerEnable" value="" /></td>
+</tr>
+<tr >
+<td class="td1"><font id="Fnt_MinAddress">&?dhcp_d002;</font></td>
+<td class="td2"><input type="text" class="inputId"  id="Frm_MinAddress" name="Frm_MinAddress" size="15" /></td>
+</tr>
+<tr >
+<td class="td1"><font id="Fnt_MaxAddress">&?dhcp_d003;</font></td>
+<td class="td2"><input type="text" class="inputId"  id="Frm_MaxAddress" name="Frm_MaxAddress" size="15" /></td>
+</tr>
+<tr >
+<td class="td1"><font id="Fnt_DnsServerSource">&?dhcp_d013;</font></td>
+<td class="td2"><input type="checkbox" name="Frm_DnsServerSource" id="Frm_DnsServerSource" onclick="change_DNS()"/></td>
+</tr>
+<tr >
+<td class="td1"><font id="Fnt_DNSServer1">&?wan038;</font></td>
+<td class="td2"><input type="text" class="inputId" name="Frm_DNSServer1" id="Frm_DNSServer1" /></td>
+</tr>
+<tr >
+<td class="td1"><font id="Fnt_DNSServer2">&?wan039;</font></td>
+<td class="td2"><input type="text" class="inputId" name="Frm_DNSServer2" id="Frm_DNSServer2" /></td>
+</tr>
+<tr >
+<td class="td1"><font id="Fnt_DNSServer3">&?wan040;</font></td>
+<td class="td2"><input type="text" class="inputId" name="Frm_DNSServer3" id="Frm_DNSServer3" /></td>
+</tr>
+<tr >
+<td class="td1"><font id="Fnt_IPRouters">&?dhcp_d010;</font></td>
+<td class="td2"><input type="text" class="inputId" name="Frm_IPRouters" id="Frm_IPRouters" /></td>
+</tr>
+<tr >
+<td class="td1"><font id="Fnt_LeaseTime">&?dhcp_d004;</font></td>
+<td class="td2"><input type="text" class="inputId2" id="Frm_LeaseTime" name="Frm_LeaseTime" size="15" />&?wan029;</td>
+</tr>
+<tr >
+<td class="td1">&nbsp;</td>
+<td class="td2">&nbsp;</td>
+</tr>
+</table>
+<table id="TestContent1"  class="item" >
+<tr>
+<td>&?dhcp_d005;</td>
+</tr>
+</table>
+<table id="Dhcp_Table"  class="item" border="0" cellpadding="0" cellspacing="1" bgcolor="#979797" >
+<tr class="h2_s title_1">
+<td>&?dhcp_d006;</td>
+<td>&?wan035;</td>
+<td>&?wan047;</td>
+<td>&?dena002;</td>
+<td>&?dhcp_d014;</td>
+</tr>
+</table>

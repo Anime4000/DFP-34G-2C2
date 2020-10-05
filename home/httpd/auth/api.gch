@@ -1,0 +1,82 @@
+<%
+IMPORT FILE "auth/impl.gch";
+function auth_login(sess_id)
+{
+return auth_login_impl(sess_id);
+}
+function auth_logout()
+{
+return auth_logout_impl();
+}
+function auth_check(sess_id)
+{
+return auth_check_impl(sess_id);
+}
+function auth_chgpwd(sess_id)
+{
+return auth_chgpwd_impl(sess_id);
+}
+function auth_preempt(sess_id)
+{
+return auth_preempt_impl(sess_id);
+}
+function auth_get_status(type)
+{
+return auth_get_status_impl(type);
+}
+function auth_sessid()
+{
+return auth_sessid_impl();
+}
+function auth_router_action()
+{
+return auth_router_action_impl();
+}
+function getIdleSecs()
+{
+var  FP_HANDLE, value, idle;
+FP_HANDLE   = create_paralist();
+get_inst(FP_HANDLE, "OBJ_USERIF_ID", "");
+value       = get_para(FP_HANDLE, "Timeout");
+destroy_paralist(FP_HANDLE);
+idle        = integer(value);
+if (idle IS NULL || idle == 0)
+idle    = 300;
+else
+idle    *= 60;
+return idle;
+}
+function auth_expiretime_renew()
+{
+var sess_id = auth_sessid();
+var timeout = session_get("timeout");
+if ( "N/A" == timeout )
+{
+timeout = getIdleSecs();
+}
+session_start(sess_id, timeout);
+}
+function auth_env_sync()
+{
+if (getenv("login_name") != session_get("login_name"))
+{
+setenv("login_name", session_get("login_name"));
+}
+if (getenv("login_pwd") != session_get("login_pwd"))
+{
+setenv("login_pwd", session_get("login_pwd"));
+}
+if (getenv("Right") != session_get("Right"))
+{
+setenv("Right", session_get("Right"));
+}
+if (getenv("IsLogin") != session_get("IsLogin"))
+{
+setenv("IsLogin", session_get("IsLogin"));
+}
+if (getenv("nextpage") != session_get("nextpage"))
+{
+setenv("nextpage", session_get("nextpage"));
+}
+}
+%>

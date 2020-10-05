@@ -1,0 +1,19 @@
+<%
+IMPORT FILE "common_gch.gch";
+var FP_OBJNAME      = "OBJ_DHCPBIND_ID";
+var FP_MULTIDISPLAY = 1;
+var FP_PARANUM      = 4;
+var PARA[4] =
+{
+"ViewName",
+"HostCfgViewName",
+"IPAddr",
+"MACAddr"
+};
+getPageGCH(FP_OBJNAME, FP_MULTIDISPLAY, PARA, FP_PARANUM);
+var FP_HANDLE    = create_paralist();
+get_inst(FP_HANDLE, "OBJ_DHCPHOST_ID", "");
+var configurable    = get_para(FP_HANDLE,"Configurable");
+destroy_paralist(FP_HANDLE);
+create_hidden_sep("Configurable", configurable);
+%>

@@ -1,0 +1,26 @@
+<%
+IMPORT FILE "common_gch.gch";
+var FP_HANDLE ;
+var FP_ACTION = request("IF_ACTION");
+var flag = request("flag");
+if (FP_ACTION IS NOT NULL )
+{
+if(FP_ACTION == "devrestart")
+{
+FP_HANDLE = create_paralist();
+set_para(FP_HANDLE, "CmdId", "cmd_devrestart");
+dev_action(FP_HANDLE);
+}
+else if(FP_ACTION == "devrestore")
+{
+FP_HANDLE = create_paralist();
+set_para(FP_HANDLE, "CmdId", "cmd_devrestore");
+dev_action(FP_HANDLE);
+}
+}
+create_form_start("fSubmit", "");
+createBasicHidden();
+getDisplayInstError("SUCC");
+create_hidden_sep("flag", flag);
+create_form_end();
+%>

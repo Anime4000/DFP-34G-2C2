@@ -1,0 +1,6 @@
+::shutdown:/sbin/swapoff -a
+::sysinit:/etc/init.d/rcS
+::respawn:/sbin/getty ttyS0 115200
+tty2::askfirst:-/bin/sh
+::ctrlaltdel:/bin/umount -a -r
+

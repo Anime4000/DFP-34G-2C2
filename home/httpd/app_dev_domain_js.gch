@@ -1,0 +1,72 @@
+<script language="javascript">
+var DNS_PARA = new Array(
+"DomainName"
+);
+function getmsg(id)
+{
+var str      = new Array();
+str[0]   = new Array(104, "&?error_104;");
+str[1]   = new Array(118, "&?error_118;");
+str[2]   = new Array(119, "&?error_119;");
+str[3]   = new Array(122, "&?error_122;");
+str[4]   = new Array(102, "&?error_102;");
+str[5]   = new Array(103, "&?error_103;");
+return getMsgFormArray(str, arguments);
+}
+function pageLoad(url)
+{
+getObj("fSubmit").action = url;
+moveErrLayer(580,50);
+var errstr= getValue("IF_ERRORSTR");
+var errpara = getValue("IF_ERRORPARAM");
+OldProcessRet(errstr, errpara);
+pageGetDomain();
+}
+function pageGetDomain()
+{
+jslSetValue("Frm_DomainName", "DomainName");
+}
+function pageSetValue()
+{
+HiddenParaInit(DNS_PARA);
+jslSetValue("DomainName", "Frm_DomainName");
+}
+function pageCheckValue()
+{
+var msg  = "";
+var msg1 = "";
+var msg2 = "";
+var num2 = checkDomainName(getValue("Frm_DomainName"));
+if(-3 == num2)
+{
+msg = getmsg(102,0,64);
+ShowErrorForCom("Frm_DomainName","Fnt_DomainName",msg);
+return false;
+}
+if(false == num2)
+{
+msg = getmsg(104);
+ShowErrorForCom("Frm_DomainName","Fnt_DomainName",msg);
+return false;
+}
+return true;
+}
+function pageSubmit()
+{
+if(pageCheckValue() == true)
+{
+pageSetValue();
+setValue("IF_ACTION", "apply");
+DisableALL();
+getObj("fSubmit").submit();
+}
+else
+{
+}
+}
+function pageCancel()
+{
+DisableALL();
+getObj("fSubmit").submit();
+}
+</script>

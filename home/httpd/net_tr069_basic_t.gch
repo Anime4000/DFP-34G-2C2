@@ -1,0 +1,56 @@
+
+<%
+IMPORT FILE "net_tr069_basic_js.gch";
+IMPORT FILE "manage_server_gch.gch";
+%>
+<table id="TestContent"  class="table" width="450px" border="0">
+<tr id="TR_DefaultWan" style="display:none">
+<td class="td11"><font id="Fnt_DefaultWan">&?comm002;</font></td>
+<td class="td2">
+<select name="Frm_DefaultWan" id="Frm_DefaultWan" size="1" class="list_4">
+<%
+IMPORT FILE "wan_func.gch";
+wanV4QueryByApp("tr069");
+%>
+</select></td>
+</tr>
+<tr>
+<td class="td11"><font id="Fnt_URL">&?trbs001;</font></td>
+<td class="td2"><input name="Frm_URL" id="Frm_URL" type="text" class="inputId6"/></td>
+</tr>
+<tr>
+<td class="td11"><font id="Fnt_UserName">&?wan019;</font></td>
+<td class="td2"><input name="Frm_UserName" id="Frm_UserName" type="text" class="inputId"/></td>
+</tr>
+<tr>
+<td class="td11"><font id="Fnt_UserPassword">&?va02;</font></td>
+<td class="td2"><input name="Frm_UserPassword" id="Frm_UserPassword" type="password" class="inputId" autocomplete="off"/></td>
+</tr>
+<tr height="4" ><td></td><td></td></tr>
+<tr>
+<td class="td11"><font id="Fnt_ConnectionRequestURL">&?trbs004;</font></td>
+<td class="td2"><input name="Frm_ConnectionRequestURL" id="Frm_ConnectionRequestURL" type="text" class="inputId6" disabled="disabled"/></td>
+</tr>
+<tr>
+<td class="td11"><font id="Fnt_ConnectionRequestUsername">&?trbs005;</font></td>
+<td class="td2"><input name="Frm_ConnectionRequestUsername" id="Frm_ConnectionRequestUsername" type="text" class="inputId"/></td>
+</tr>
+<tr>
+<td class="td11"><font id="Fnt_ConnectionRequestPassword">&?trbs006;</font></td>
+<td class="td2"><input type="password" name="Frm_ConnectionRequestPassword"  id="Frm_ConnectionRequestPassword" class="inputId" autocomplete="off"/></td>
+</tr>
+<tr height="4" ><td></td><td></td></tr>
+<tr>
+<td class="td11"><font id="Fnt_PeriodicInformEnable">&?trbs007;</font></td>
+<td class="td2"><input name="Frm_PeriodicInformEnable" onclick="Enable_Reported();" id="Frm_PeriodicInformEnable" type="checkbox" value="false" /></td>
+</tr>
+<tr>
+<td class="td11"><font id="Fnt_PeriodicInformInterval">&?trbs008;</font></td>
+<td class="td2"><input type="text" name="Frm_PeriodicInformInterval" id="Frm_PeriodicInformInterval" class="inputId2" disabled="enabled"/>&?wan029;</td>
+</tr>
+<tr>
+<td class="td11"><font id="Fnt_SupportCertAuth">&?trbs010;</font></td>
+<td class="td2"><input name="Frm_SupportCertAuth" id="Frm_SupportCertAuth" type="checkbox" value="false"/></td>
+</tr>
+</table>
+<div id="div4"></div>

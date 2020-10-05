@@ -1,0 +1,481 @@
+<script language="javascript">
+var MAC_PARA = new Array(
+"Enable",
+"BlackList",
+"Type",
+"Protocol",
+"SrcMacAddr",
+"DstMacAddr"
+);
+var MAC_FILT_PARA = new Array(
+"Type",
+"Protocol",
+"SrcMacAddr",
+"DstMacAddr"
+);
+var URL_BASIC_PARA = new Array(
+"IsWanSrvCntl",
+"IpFilterTarget",
+"UrlFilterTarget",
+"UrlFilterEnable",
+"SrvCntlTarget",
+"DefaultPolicy",
+"MacFilterTarget",
+"MacFilterEnable",
+"MacfilterMode"
+);
+var index ="";
+var protocolTemp = "";
+function getmsg(id)
+{
+
+var str      = new Array();
+str[0]       = new Array(101, "&?error_101;");
+str[1]       = new Array(105, "&?error_105;");
+str[2]       = new Array(118, "&?error_118;");
+str[3]       = new Array(119, "&?error_119;");
+str[4]       = new Array(122, "&?error_122;");
+str[5]       = new Array(127, "&?error_127;");
+str[6]       = new Array(143, "&?error_143;");
+str[7]       = new Array(102, "&?error_102;");
+str[8]       = new Array(103, "&?error_103;");
+str[9]       = new Array(110, "&?error_110;");
+str[10]      = new Array(111, "&?error_9mac0;");
+str[11]      = new Array(112, "&?error_214;");
+
+return getMsgFormArray(str, arguments);
+}
+function addOptionByValueText(id, val, txt)
+{
+
+var f = 0;
+var o = getObj(id);
+for (var i=0; i<o.options.length; i++)
+{
+var v = o.options[i].value;
+if (val == v)
+{
+f = 1;
+break;
+}
+}
+
+if (f == 0)
+{
+var op = document.createElement('option');
+op.text = txt;
+op.value = val;
+try
+{
+o.add(op,null); 
+}
+catch(ex)
+{
+o.add(op); 
+}
+}
+}
+function delOptionByValue(id, val)
+{
+var o = getObj(id);
+for (var i=0; i<o.options.length; i++)
+{
+var v = o.options[i].value;
+if (val == v)
+{
+o.remove(i);
+break;
+}
+}
+}
+function clearSelect(id)
+{
+var o = getObj(id);
+while(o.options.length > 0)
+{
+o.remove(0);
+}
+}
+function ctlDestMacByMode(mode)
+{
+if (mode == "Route")
+{
+setValue("mac7","");
+setValue("mac8","");
+setValue("mac9","");
+setValue("mac10","");
+setValue("mac11","");
+setValue("mac12","");
+getObj("TR_DES_MAC").style.display = "none";
+}
+else
+{
+getObj("TR_DES_MAC").style.display = "";
+}
+}
+function ctlsByMode(mode)
+{
+clearSelect("Frm_Protocol");
+if (mode == "Route")
+{
+addOptionByValueText("Frm_Protocol", "IP", "&?maco012;");
+addOptionByValueText("Frm_Protocol", "ALL", "&?maco016;");
+}
+else
+{
+addOptionByValueText("Frm_Protocol", "IP", "&?maco012;");
+addOptionByValueText("Frm_Protocol", "ARP", "&?maco013;");
+addOptionByValueText("Frm_Protocol", "RARP", "&?maco014;");
+addOptionByValueText("Frm_Protocol", "PPPoE", "&?maco015;");
+addOptionByValueText("Frm_Protocol", "ALL", "&?maco016;");
+}
+setValue("Frm_Protocol", protocolTemp);
+if (getValue("Frm_Protocol") == "")
+{
+setValue("Frm_Protocol", "IP");
+}
+ctlDestMacByMode(mode);
+}
+function pageLoad(url)
+{
+getObj("fSubmit").action = url;
+var errstr= getValue("IF_ERRORSTR");
+var errpara = getValue("IF_ERRORPARAM");
+OldProcessRet(errstr, errpara);
+pagegetvalue();
+moveErrLayer(570,100);
+showTable();
+}
+function pagegetvalue()
+{
+jslPostToViewCheckBox("Frm_Enable","MacFilterEnable");
+jslSetValue("Frm_Mode","MacFilterTarget");
+var macfilterMode = getValue("MacfilterMode");
+if (macfilterMode == "3" || macfilterMode == "5")
+{
+getObj("TR_Type").style.display = "";
+}
+else if (macfilterMode == "2" || macfilterMode == "4")
+{
+setValue("Frm_Type", "Route");
+getObj("TR_Type").style.display = "none";
+}
+else
+{
+setValue("Frm_Type", "Bridge");
+getObj("TR_Type").style.display = "none";
+}
+ctlsByMode(getValue("Frm_Type"));
+}
+function addline(index)
+{
+var newline = getObj("MAC_Table").insertRow(-1);
+newline.setAttribute("class", "white");
+newline.setAttribute("className", "white");
+if(getValue("SrcMacAddr"+index)=="00:00:00:00:00:00")
+{
+setValue("SrcMacAddr"+index, "");
+}
+if(getValue("DstMacAddr"+index)=="00:00:00:00:00:00")
+{
+setValue("DstMacAddr"+index, "");
+}
+for(var i = 0; i < MAC_FILT_PARA.length; i++)
+{
+if ((MAC_FILT_PARA[i] == "DstMacAddr") && (getValue("Type"+index) == "Route"))
+{
+newline.insertCell(-1).innerHTML = getValue("IF_br0MACAddress");
+}
+else
+{
+newline.insertCell(-1).innerHTML = getValue(MAC_FILT_PARA[i]+index);
+}
+}
+newline.insertCell(-1).innerHTML=getImagefrmClass("multiImg_modify", "pageModify("+index+")","Img_Modify"+index);
+newline.insertCell(-1).innerHTML=getImagefrmClass("multiImg_delete", "pageDelete("+index+")","Img_Delete"+index);
+}
+
+function showTable()
+{
+var num = getValue("IF_INSTNUM");
+if(num != 0 )
+{
+for(var i = 0; i < num; i++)
+{
+addline(i);
+}
+}
+else
+{
+var newline = getObj("MAC_Table").insertRow(-1);
+newline.setAttribute("align", "center");
+newline.setAttribute("class", "white");
+newline.setAttribute("className", "white");
+var objcell =  newline.insertCell(-1);
+objcell.colSpan = 6;
+objcell.innerHTML= "&?note_007;"
+}
+}
+function getNameValue(id, size, value)
+{
+return ("<input type=\"text\" class=\"uiNoBorder\" size=\"" + size +"\" value=\""
++ value + "\"  id=\"" + id + "\"  readonly>");
+}
+function pageAdd()
+{
+jslEnDisplay("Btn_Add");
+jslDiDisplay("Btn_Edit");
+if(true == pageCheckValue(-1))
+{
+pageSetValue();
+setValue("IF_ACTION", "new");
+setValue("IF_INDEX", "-1");
+DisableALL();
+getObj("fSubmit").submit();
+}
+else
+{
+}
+}
+function Slect_Enable()
+{
+jslViewToPostCheckBox("MacFilterEnable", "Frm_Enable");
+setValue("IF_ACTION", "basic_apply");
+DisableALL();
+getObj("fSubmit").submit();
+}
+function pageEdit()
+{
+if(true == pageCheckValue(index))
+{
+pageSetValue();
+setValue("IF_ACTION", "apply");
+setValue("IF_INDEX", index);
+DisableALL();
+getObj("fSubmit").submit();
+}
+else
+{
+}
+}
+function pageModify(i)
+{
+jslDiDisplay("Btn_Add");
+jslEnDisplay("Btn_Edit", "back");
+index = i;
+ModifyGetValue(i);
+}
+function ModifyGetValue(i)
+{
+jslSetValue("Frm_Type","Type"+i);
+protocolTemp = getValue("Protocol"+i);
+ctlsByMode(getValue("Frm_Type"));
+jslSetValue("Frm_Protocol","Protocol"+i);
+macmodvalue(i);
+}
+function macmodvalue(i)
+{
+var value_source = getValue("SrcMacAddr"+i);
+var value_des    = getValue("DstMacAddr"+i);
+if((value_source!=":::::")&&(value_source!=""))
+{
+setValue("mac1",value_source.substring(0,2));
+setValue("mac2",value_source.substring(3,5));
+setValue("mac3",value_source.substring(6,8));
+setValue("mac4",value_source.substring(9,11));
+setValue("mac5",value_source.substring(12,14));
+setValue("mac6",value_source.substring(15,17));
+}
+else
+{
+setValue("mac1","");
+setValue("mac2","");
+setValue("mac3","");
+setValue("mac4","");
+setValue("mac5","");
+setValue("mac6","");
+}
+if((value_des!=":::::")&&(value_des!=""))
+{
+setValue("mac7",value_des.substring(0,2));
+setValue("mac8",value_des.substring(3,5));
+setValue("mac9",value_des.substring(6,8));
+setValue("mac10",value_des.substring(9,11));
+setValue("mac11",value_des.substring(12,14));
+setValue("mac12",value_des.substring(15,17));
+}
+else
+{
+setValue("mac7","");
+setValue("mac8","");
+setValue("mac9","");
+setValue("mac10","");
+setValue("mac11","");
+setValue("mac12","");
+}
+}
+function pageDelete(i)
+{
+var number = getValue("IF_INSTNUM");
+setValue("IF_ACTION", "delete");
+setValue("IF_INDEX",i);
+DisableALL();
+getObj("fSubmit").submit();
+}
+function pageSetValue()
+{
+HiddenParaInit(MAC_PARA);
+HiddenParaInit(URL_BASIC_PARA);
+var value = MacSetValue();
+var value_des = MacSetValue_des();
+jslViewToPostCheckBox("Enable", "Frm_Enable");
+jslSetValue("Protocol", "Frm_Protocol");
+jslSetValue("Type", "Frm_Type");
+if(value=="")
+{
+setValue("SrcMacAddr","00:00:00:00:00:00");
+}
+else
+{
+setValue("SrcMacAddr", value);
+}
+if(value_des=="")
+{
+setValue("DstMacAddr","00:00:00:00:00:00");
+}
+else
+{
+setValue("DstMacAddr", value_des);
+}
+}
+function CheckMac(Addr)
+{
+var c = '';
+var i = 0, j = 0;
+var addrParts = Addr.split(':');
+if ( addrParts.length != 6 )
+{
+return false;
+}
+for (i = 0; i < 6; i++)
+{
+if (addrParts[i].length != 2)
+{
+return  false;
+}
+for ( j = 0; j < addrParts[i].length; j++ )
+{
+c = addrParts[i].toLowerCase().charAt(j);
+if ( (c >= '0' && c <= '9') ||(c >= 'a' && c <= 'f') )
+{
+continue;
+}
+else
+{
+return false;
+}
+}
+}
+return true;
+}
+function MacSetValue()
+{
+var value = getValue("mac1");
+value += ":" + getValue("mac2");
+value += ":" + getValue("mac3");
+value += ":" + getValue("mac4");
+value += ":" + getValue("mac5");
+value += ":" + getValue("mac6");
+if( ":::::" == value)
+{
+value = "";
+}
+return value;
+}
+function MacSetValue_des()
+{
+var value_des = getValue("mac7");
+value_des += ":" + getValue("mac8");
+value_des += ":" + getValue("mac9");
+value_des += ":" + getValue("mac10");
+value_des += ":" + getValue("mac11");
+value_des += ":" + getValue("mac12");
+if( ":::::" == value_des)
+{
+value_des = "";
+}
+return value_des;
+}
+function pageCheckValue()
+{
+var msg = "";
+var value = MacSetValue();
+var value_des=MacSetValue_des();
+var mode = getValue("Frm_Type");
+if((CheckMac(value) != true)&&(value !=""))
+{
+msg = getmsg(110);
+ShowErrorForCom("mac1","Frm_MAC",msg);
+return false;
+}
+if ( value.toLowerCase() == "ff:ff:ff:ff:ff:ff" )
+{
+msg = getmsg(110);
+ShowErrorForCom("mac1","Frm_MAC",msg);
+return false;
+}
+if ( value == "00:00:00:00:00:00" )
+{
+msg = getmsg(110);
+ShowErrorForCom("mac1","Frm_MAC",msg);
+return false;
+}
+if((value == "")&& (mode == "Route"))
+{
+msg = getmsg(112);
+ShowErrorForCom("","",msg);
+return false;
+}
+if((CheckMac(value_des) != true)&&(value_des !=""))
+{
+msg = getmsg(110);
+ShowErrorForCom("mac7","Frm_DES_MAC",msg);
+return false;
+}
+if ( value_des.toLowerCase() == "ff:ff:ff:ff:ff:ff" )
+{
+msg = getmsg(110);
+ShowErrorForCom("mac7","Frm_DES_MAC",msg);
+return false;
+}
+if(((value_des == "")&&(value == ""))&& (mode != "Route"))
+{
+msg = getmsg(111);
+ShowErrorForCom("","",msg);
+return false;
+}
+if ( value_des == "00:00:00:00:00:00" )
+{
+msg = getmsg(110);
+ShowErrorForCom("mac7","Frm_DES_MAC",msg);
+return false;
+}
+return true;
+}
+function toNext(obj)
+{
+}
+function Slect_Mode()
+{
+jslSetValue("MacFilterTarget", "Frm_Mode");
+setValue("IF_ACTION", "basic_apply");
+DisableALL();
+getObj("fSubmit").submit();
+}
+function back4add()
+{
+var number = getValue("IF_INSTNUM");
+DisableALL();
+getObj("fSubmit").submit();
+}
+</script>

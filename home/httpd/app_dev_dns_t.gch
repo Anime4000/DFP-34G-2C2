@@ -1,0 +1,24 @@
+<%
+IMPORT FILE "app_dev_dns_js.gch";
+IMPORT FILE "dns_gch.gch";
+%>
+<table id="DevDnsContent" class="table" width="450px" border="0">
+<tr>
+<td class="td1"><font id="Fnt_SerIPAddress1">IPv4 DNS&?ddns002;1</font></td>
+<td class="td2">
+<input id="Frm_SerIPAddress1" name="Frm_SerIPAddress1" type="text" class="inputId8"  value="" size="15" /></td>
+</tr>
+<tr>
+<td class="td1"><font id="Fnt_SerIPAddress2">IPv4 DNS&?ddns002;2</font></td>
+<td class="td2"><input id="Frm_SerIPAddress2" name="Frm_SerIPAddress2" type="text" class="inputId8"  value="" size="15" /></td>
+</tr>
+<tr style="display:<%if( 0==getenv("DevIPv6Effect") ){="none";}else{="";}%>">
+<td class="td1"><font id="Fnt_SerIPv6Address1">IPv6 DNS&?ddns002;1</font></td>
+<td class="td2">
+<input id="Frm_SerIPv6Address1" name="Frm_SerIPv6Address1" type="text" class="inputId8"  value="" size="15" /></td>
+</tr>
+<tr style="display:<%if( 0==getenv("DevIPv6Effect") ){="none";}else{="";}%>">
+<td class="td1"><font id="Fnt_SerIPv6Address2">IPv6 DNS&?ddns002;2</font></td>
+<td class="td2"><input id="Frm_SerIPv6Address2" name="Frm_SerIPv6Address2" type="text" class="inputId8"  value="" size="15" /></td>
+</tr>
+</table>

@@ -1,0 +1,92 @@
+<%
+IMPORT FILE "common_gch.gch";
+var FP_ACTION, FP_IDENTITY, FP_HANDLE, FP_INDEX, FP_OBJNAME, FP_ERRORSTR, FP_INSTNUM, FP_PARANUM, FP_ERRORPARAM;
+var PARA[2] =
+{
+"Sn",
+"Pwd"
+};
+var flag = request("flag");
+FP_OBJNAME = "OBJ_SN_INFO_ID";
+FP_PARANUM = 2;
+FP_IDENTITY = "";
+FP_INSTNUM = 1;
+FP_ERRORSTR = "SUCC";
+
+
+FP_INDEX = request("IF_INDEX");
+if (FP_INDEX IS NULL)
+{
+FP_INDEX = 0;
+}
+FP_ACTION = request("IF_ACTION");
+
+create_form_start("fSubmit", "");
+create_hidden_sep("IF_ERRORSTR", FP_ERRORSTR);
+create_hidden_sep("IF_ERRORPARAM", FP_ERRORPARAM);
+create_hidden_sep("IF_ERRORTYPE", -1);
+FP_INSTNUM = query_list(FP_OBJNAME, "IGD");
+if(FP_INSTNUM != 888 && FP_INDEX >=0)
+{
+FP_IDENTITY = query_identity(FP_INDEX);
+}
+
+if (FP_ACTION == "apply")
+{
+
+if (FP_INDEX >= 0 )
+{
+
+FP_HANDLE = create_paralist();
+for(var i=0; i< FP_PARANUM; i++)
+{
+setpara(FP_HANDLE, PARA[i]);
+}
+FP_IDENTITY = set_inst(FP_HANDLE, FP_OBJNAME, FP_IDENTITY);
+FP_ERRORSTR = getNewInstError(FP_ERRORSTR);
+}
+
+else
+{
+FP_HANDLE = create_paralist();
+for(var i=0; i< FP_PARANUM; i++)
+{
+set_multiinst_para(FP_HANDLE, PARA[i], FP_INDEX);
+}
+FP_IDENTITY = set_inst(FP_HANDLE, FP_OBJNAME, FP_IDENTITY);
+FP_ERRORSTR = getNewInstError(FP_ERRORSTR);
+}
+}
+if(FP_ACTION == "devrestart")
+{
+FP_HANDLE = create_paralist();
+set_para(FP_HANDLE, "CmdId", "cmd_devrestart");
+dev_action(FP_HANDLE);
+}
+
+FP_HANDLE = create_paralist();
+
+if(FP_INDEX >= 0)
+{
+get_inst(FP_HANDLE, FP_OBJNAME, FP_IDENTITY);
+create_hidden_para(FP_HANDLE, PARA, FP_PARANUM);
+}
+
+if(FP_INDEX < 0 )
+{
+for (var i=0; i<FP_INSTNUM; i++)
+{
+FP_IDENTITY = query_identity(i);
+get_inst(FP_HANDLE, FP_OBJNAME, FP_IDENTITY);
+create_hidden_multiinstpara(FP_HANDLE, PARA, i, FP_PARANUM);
+}
+}
+
+destroy_paralist(FP_HANDLE);
+FP_ERRORSTR = getDisplayInstError(FP_ERRORSTR);
+create_hidden_sep("IF_ACTION", "");
+create_hidden_sep("IF_INDEX", FP_INDEX);
+create_hidden_sep("flag", flag);
+
+create_form_end();
+%>

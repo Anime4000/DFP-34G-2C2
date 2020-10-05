@@ -1,0 +1,206 @@
+<%
+IMPORT FILE "common_gch.gch";
+IMPORT FILE "wan_func.gch";
+function MirrorWANQuery()
+{
+var IP_OBJNAME  = "";
+var PPP_OBJNAME = "";
+var BRIDGE_OBJNAME = "";
+var identity = "";
+var name     = "";
+PPP_OBJNAME = "OBJ_DSLWANCPPP_ID";
+IP_OBJNAME  = "OBJ_DSLWANCIP_ID";
+BRIDGE_OBJNAME= "OBJ_DSLWANCBRIDGE_ID";
+if (PPP_OBJNAME!="")
+{
+var FP_PPP_INSTNUM = query_list(PPP_OBJNAME, "IGD");
+if(FP_PPP_INSTNUM >= 1 && FP_PPP_INSTNUM != 888)
+{
+for(var i = 0; i < FP_PPP_INSTNUM; i++ )
+{
+identity = query_identity(i);
+name     = query_name(i);
+var FP_HANDLE = create_paralist();
+get_inst(FP_HANDLE, PPP_OBJNAME, identity);
+var transtype = get_para(FP_HANDLE, "TransType");
+if("PPPoA" == transtype)
+{
+destroy_paralist(FP_HANDLE);
+continue;
+}
+destroy_paralist(FP_HANDLE);
+if ( 0 == getenv("DevIPv6Effect") )
+{
+var IpMode = get_IPMode(identity);
+if (IpMode != "2")
+{
+="<option value='" + identity + "' >" + name + "</option>";
+}
+}
+else
+{
+="<option value='" + identity + "' >" + name + "</option>";
+}
+}
+}
+}
+if(IP_OBJNAME != "")
+{
+var IP_INSTNUM = query_list(IP_OBJNAME, "IGD");
+if(IP_INSTNUM >= 1 && IP_INSTNUM != 888)
+{
+for(var i = 0; i < IP_INSTNUM; i++)
+{
+identity = query_identity(i);
+name     = query_name(i);
+var FP_HANDLE = create_paralist();
+get_inst(FP_HANDLE, IP_OBJNAME, identity);
+var atmlinktype = get_para(FP_HANDLE, "ATMLinkType");
+if("IPoA" == atmlinktype || "CIP" == atmlinktype)
+{
+destroy_paralist(FP_HANDLE);
+continue;
+}
+destroy_paralist(FP_HANDLE);
+if ( 0 == getenv("DevIPv6Effect") )
+{
+var IpMode = get_IPMode(identity);
+if (IpMode != "2")
+{
+="<option value='" + identity + "' >" + name + "</option>";
+}
+}
+else
+{
+="<option value='" + identity + "' >" + name + "</option>";
+}
+}
+}
+}
+if(BRIDGE_OBJNAME != "")
+{
+var BRIDGE_INSTNUM = query_list(BRIDGE_OBJNAME, "IGD");
+if(BRIDGE_INSTNUM >= 1 && BRIDGE_INSTNUM != 888)
+{
+for(var i = 0; i < BRIDGE_INSTNUM; i++)
+{
+identity = query_identity(i);
+name     = query_name(i);
+="<option value='" + identity + "' >" + name + "</option>";
+}
+}
+}
+var FP_INSTNUM = query_list("OBJ_ETHWANC_ID", "IGD");
+for(var i = 0; i < FP_INSTNUM; i++ )
+{
+var identity = query_identity(i);
+var name     = query_name(i);
+if ( 0 == getenv("DevIPv6Effect") )
+{
+var IpMode = get_IPMode(identity);
+if (IpMode != "2")
+{
+="<option value='" + identity + "' >" + name + "</option>";
+}
+}
+else
+{
+="<option value='" + identity + "' >" + name + "</option>";
+}
+}
+}
+var LANPortArray[64] = {""};
+var LANPortNum       = 0;
+function initLANPortAarray()
+{
+var LANName     = "";
+var LANID       = "";
+var FP_HANDLE   = create_paralist();
+LANQueryAsList(FP_HANDLE);
+LANPortNum = query_paracount(FP_HANDLE);
+for (var i=0; i<LANPortNum; i++)
+{
+LANName = query_paraname(FP_HANDLE, i);
+LANID = query_paravalue(FP_HANDLE, i);
+LANPortArray[i] = LANID;
+}
+destroy_paralist(FP_HANDLE);
+}
+function isLANPort(id)
+{
+for (var i=0; i<LANPortNum; i++)
+{
+if ( id == LANPortArray[i] )
+{
+return 1;
+}
+}
+return 0;
+}
+initLANPortAarray();
+var FP_ERRORSTR     = "SUCC";
+var FP_OBJNAME      = "OBJ_MIRROR_ID";
+var FP_PARANUM      = 2;
+var FP_INDEX        = getInstIndex("new");
+var FP_MULTIDISPLAY = 1;
+var FP_HANDLE;
+var PARA[2] =
+{
+"MirrorSrc",
+"MirrorDest"
+};
+var FP_ACTION   = request("IF_ACTION");
+create_form_start("fSubmit", "");
+createSubmitHidden(FP_MULTIDISPLAY, PARA, FP_PARANUM, FP_INDEX);
+var FP_IDENTITY = getInstIdentityByAction(FP_OBJNAME, FP_MULTIDISPLAY, FP_ACTION, FP_INDEX);
+FP_ERRORSTR     = applyOrNewOrDelInst(FP_OBJNAME, FP_ACTION, FP_IDENTITY, PARA, FP_PARANUM, FP_ERRORSTR);
+undoDBSave();
+var LAN_HANDLE,WanName,LanName,Mirror_Src,Mirror_Dest,IpMode;
+var FP_INSTNUM = query_list(FP_OBJNAME, "IGD");
+if (FP_MULTIDISPLAY == 1)
+{
+for (var i=0; i<FP_INSTNUM; i++)
+{
+FP_HANDLE = create_paralist();
+FP_IDENTITY = query_identity(i);
+get_inst(FP_HANDLE, FP_OBJNAME, FP_IDENTITY);
+Mirror_Src =get_para(FP_HANDLE, "MirrorSrc");
+Mirror_Dest=get_para(FP_HANDLE, "MirrorDest");
+if(Mirror_Src == "IGD.WANALL")
+{
+IpMode = "1";
+}
+else if ( 1 == isLANPort(Mirror_Src) )
+{
+IpMode = "0";
+}
+else
+{
+IpMode = get_IPMode(Mirror_Src);
+}
+create_hidden_multiinstpara(FP_HANDLE, PARA, i, FP_PARANUM);
+destroy_paralist(FP_HANDLE);
+create_hidden_sep("IpMode"+i, IpMode);
+if(Mirror_Src == "IGD.WANALL")
+{
+WanName= "WAN_ALL";
+}
+else
+{
+LAN_HANDLE = create_paralist();
+get_inst(LAN_HANDLE, "OBJ_WANLAN_ID", Mirror_Src);
+WanName= get_para(LAN_HANDLE, "Name");
+destroy_paralist(LAN_HANDLE);
+}
+create_hidden_sep("Mirror_Src"+i, WanName);
+LAN_HANDLE = create_paralist();
+get_inst(LAN_HANDLE, "OBJ_WANLAN_ID", Mirror_Dest);
+LanName = get_para(LAN_HANDLE, "Name");
+create_hidden_sep("Mirror_Dest"+i, LanName);
+destroy_paralist(LAN_HANDLE);
+}
+}
+getDisplayInstError(FP_ERRORSTR);
+set_hidden("IF_INSTNUM", FP_INSTNUM);
+create_form_end();
+%>

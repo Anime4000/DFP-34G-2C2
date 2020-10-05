@@ -1,0 +1,23 @@
+<%
+IMPORT FILE "user_info_gch.gch";
+IMPORT FILE "manager_user_conf_js.gch";
+%>
+<table id="TestContent"   class="table" width="450px" border="0">
+<tr>
+<td class="td1"><font id="Fnt_Username">&?wan019;</font></td>
+<td class="td2"><input name="" type="text" class="inputId"  name="Frm_Username" id="Frm_Username" value="" size="15" /></td>
+</tr>
+<tr id="InputPassword" >
+<td class="td1"><font id="Fnt_OldPassword">&?user_m002;</font></td>
+<td class="td2"><input name="" type="password" class="inputId"  name="Frm_OldPassword" id="Frm_OldPassword" value="" size="15" /></td>
+</tr>
+<tr>
+<td class="td1"><font id="Fnt_Password">&?user_m003;</font></td>
+<td class="td2"><input name="" type="password" class="inputId"  name="Frm_Password" id="Frm_Password" value="" size="15" /></td>
+</tr>
+<tr>
+<td class="td1"><font id="Fnt_CfmPassword">&?user_m004;</font></td>
+<td class="td2"><input name="" type="password" class="inputId" name="Frm_CfmPassword" id="Frm_CfmPassword" value="" size="15" /></td>
+</tr>
+</table>
+<div id="div4"></div>

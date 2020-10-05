@@ -1,0 +1,93 @@
+<%
+IMPORT FILE "common_gch.gch";
+function sc(FP_ACTION, FP_INDEX, FP_ERRORSTR)
+{
+var FP_OBJNAME      = "OBJ_FWSC_ID";
+var FP_MULTIDISPLAY = 1;
+var FP_PARANUM      = 12;
+var PARA[12] =
+{
+"ViewName",
+"Enable",
+"INCViewName",
+"INCName",
+"MinSrcIp",
+"MinSrcMask",
+"MaxSrcIp",
+"FilterTarget",
+"Servise",
+"IPMode",
+"Prefix",
+"PrefixLen"
+};
+create_hidden_newpara(PARA, FP_PARANUM);
+var FP_IDENTITY = getInstIdentityByAction(FP_OBJNAME, FP_MULTIDISPLAY, FP_ACTION, FP_INDEX);
+FP_ERRORSTR = applyOrNewOrDelInst(FP_OBJNAME, FP_ACTION, FP_IDENTITY, PARA, FP_PARANUM, FP_ERRORSTR);
+var FP_INSTNUM = query_list(FP_OBJNAME, "IGD");
+if (FP_MULTIDISPLAY == 1)
+{
+for (var i=0; i<FP_INSTNUM; i++)
+{
+var FP_HANDLE = create_paralist();
+FP_IDENTITY = query_identity(i);
+get_inst(FP_HANDLE, FP_OBJNAME, FP_IDENTITY);
+create_hidden_multiinstpara(FP_HANDLE, PARA, i, FP_PARANUM);
+var FP_INCViewName = get_para(FP_HANDLE, "INCViewName");
+destroy_paralist(FP_HANDLE);
+if(FP_INCViewName != "" && FP_INCViewName != "IGD.WANIF")
+{
+var LAN_HANDLE   = create_paralist();
+get_inst(LAN_HANDLE, "OBJ_WANLAN_ID", FP_INCViewName);
+set_hidden("INCName"+i, get_para(LAN_HANDLE, "Name"));
+destroy_paralist(LAN_HANDLE);
+}
+}
+}
+return  getDisplayInstError(FP_ERRORSTR);
+}
+function sc6(FP_ACTION, FP_INDEX, FP_ERRORSTR)
+{
+var FP_OBJNAME      = "OBJ_FWSCv6_ID";
+var FP_MULTIDISPLAY = 1;
+var FP_PARANUM      = 12;
+var PARA[12] =
+{
+"ViewName",
+"Enable",
+"INCViewName",
+"INCName",
+"MinSrcIp",
+"MinSrcMask",
+"MaxSrcIp",
+"FilterTarget",
+"Servise",
+"IPMode",
+"Prefix",
+"PrefixLen"
+};
+create_hidden_newpara(PARA, FP_PARANUM);
+var FP_IDENTITY = getInstIdentityByAction(FP_OBJNAME, FP_MULTIDISPLAY, FP_ACTION, FP_INDEX);
+FP_ERRORSTR = applyOrNewOrDelInst(FP_OBJNAME, FP_ACTION, FP_IDENTITY, PARA, FP_PARANUM, FP_ERRORSTR);
+var FP_INSTNUM = query_list(FP_OBJNAME, "IGD");
+if (FP_MULTIDISPLAY == 1)
+{
+for (var i=0; i<FP_INSTNUM; i++)
+{
+var FP_HANDLE = create_paralist();
+FP_IDENTITY = query_identity(i);
+get_inst(FP_HANDLE, FP_OBJNAME, FP_IDENTITY);
+create_hidden_multiinstpara(FP_HANDLE, PARA, i, FP_PARANUM);
+var FP_INCViewName = get_para(FP_HANDLE, "INCViewName");
+destroy_paralist(FP_HANDLE);
+if(FP_INCViewName != "" && FP_INCViewName != "IGD.WANIF")
+{
+var LAN_HANDLE   = create_paralist();
+get_inst(LAN_HANDLE, "OBJ_WANLAN_ID", FP_INCViewName);
+set_hidden("INCName"+i, get_para(LAN_HANDLE, "Name"));
+destroy_paralist(LAN_HANDLE);
+}
+}
+}
+return  getDisplayInstError(FP_ERRORSTR);
+}
+%>

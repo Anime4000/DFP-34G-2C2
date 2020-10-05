@@ -1,0 +1,160 @@
+<%
+IMPORT FILE "common_gch.gch";
+var FP_ERRORSTR     = "SUCC";
+var FP_RESULT       = 0;
+var FP_OBJNAME      = "OBJ_USERINFO_ID";
+var FP_IDENTITY     = "";
+var FP_INSTNUM      = 1;
+var FP_MULTIDISPLAY = 1;
+var UserType        = "";
+var UserRight       = "";
+var FP_INSTNUM_WEB  = 0;
+var IDENTITY[5]     = {""};
+var FP_HANDLE;
+var CurRight        = getenv("Right");
+var flag            = 0;
+var FP_APPLYFLAG    = 0;
+FP_INSTNUM = query_list(FP_OBJNAME, "IGD");
+for (var i=0; i<FP_INSTNUM; i++)
+{
+FP_HANDLE  = create_paralist();
+FP_IDENTITY = query_identity(i);
+get_inst(FP_HANDLE, FP_OBJNAME, FP_IDENTITY);
+UserType   = get_para(FP_HANDLE, "Type");
+UserRight  = get_para(FP_HANDLE, "Right");
+if (UserType == 1)
+{
+FP_INSTNUM_WEB++;
+IDENTITY[FP_INSTNUM_WEB-1]=FP_IDENTITY;
+}
+destroy_paralist(FP_HANDLE);
+}
+if( CurRight == FP_INSTNUM_WEB )
+{
+FP_MULTIDISPLAY = 0;
+}
+else
+{
+flag++;
+if (flag == 2)
+{
+FP_MULTIDISPLAY = 0;
+}
+else
+{
+FP_MULTIDISPLAY = 1;
+}
+}
+var FP_INDEX = request("IF_INDEX");
+if (FP_INDEX IS NULL)
+{
+if (CurRight <= 1 )
+{
+FP_INDEX = 0;
+}
+else
+{
+FP_INDEX =CurRight-1;
+}
+}
+var FP_ACTION = request("IF_ACTION");
+FP_INDEX=integer(FP_INDEX);
+FP_IDENTITY = IDENTITY[FP_INDEX];
+create_form_start("fSubmit", "");
+createBasicHidden();
+create_hidden_sep("IF_INDEX", FP_INDEX);
+if (FP_ACTION == "apply")
+{
+if ( CurRight == (FP_INDEX+1))
+{
+FP_HANDLE = create_paralist();
+set_para(FP_HANDLE, "Type",        request("Type"));
+set_para(FP_HANDLE, "Enable",      request("Enable"));
+set_para(FP_HANDLE, "Username",    request("Username"));
+set_para(FP_HANDLE, "Password",    request("OldPassword"));
+set_para(FP_HANDLE, "Right",       request("Right"));
+FP_RESULT = login(FP_HANDLE, "OBJ_LOGIN_ID");
+}
+else
+{
+FP_RESULT = 0;
+}
+if(FP_RESULT == 0)
+{
+if ( ((1==FP_INDEX ||2==FP_INDEX) && 2== CurRight) || 1== CurRight )
+{
+FP_HANDLE = create_paralist();
+set_para(FP_HANDLE, "Username",    request("Username"));
+set_para(FP_HANDLE, "Password",    request("Password"));
+FP_IDENTITY = set_inst(FP_HANDLE, FP_OBJNAME, FP_IDENTITY);
+}
+}
+else
+{
+FP_ERRORSTR = getDisplayInstError(FP_ERRORSTR);
+}
+}
+FP_HANDLE = create_paralist();
+if(FP_MULTIDISPLAY == 0  && FP_IDENTITY != "")
+{
+get_inst(FP_HANDLE, FP_OBJNAME, FP_IDENTITY);
+create_hidden_sep("Type", get_para(FP_HANDLE, "Type"));
+create_hidden_sep("Enable", get_para(FP_HANDLE, "Enable"));
+create_hidden_sep("Username", get_para(FP_HANDLE, "Username"));
+create_hidden_sep("OldUsername", get_para(FP_HANDLE, "Username"));
+create_hidden_sep("Password", "******");
+create_hidden_sep("Right", get_para(FP_HANDLE, "Right"));
+var name = get_para(FP_HANDLE, "Username");
+var pwd  = get_para(FP_HANDLE, "Password");
+var right= get_para(FP_HANDLE, "Right");
+if (right == CurRight)
+{
+session_set("login_name", name);
+session_set("login_pwd", pwd);
+setenv("login_name", name);
+setenv("login_pwd", pwd);
+}
+}
+destroy_paralist(FP_HANDLE);
+if(FP_MULTIDISPLAY  == 1)
+{
+create_hidden_sep("Type", "");
+create_hidden_sep("Enable", "");
+create_hidden_sep("Username", "");
+create_hidden_sep("Password", "******");
+create_hidden_sep("Right", "");
+var login_name = getenv("login_name");
+var name, pwd;
+for (var i=0; i<FP_INSTNUM_WEB; i++)
+{
+FP_HANDLE = create_paralist();
+get_inst(FP_HANDLE, FP_OBJNAME, IDENTITY[i]);
+create_hidden_sep("Type"+i, get_para(FP_HANDLE, "Type"));
+create_hidden_sep("Enable"+i, get_para(FP_HANDLE, "Enable"));
+create_hidden_sep("Username"+i, get_para(FP_HANDLE, "Username"));
+create_hidden_sep("Password"+i, "******");
+create_hidden_sep("Right"+i, get_para(FP_HANDLE, "Right"));
+name = get_para(FP_HANDLE, "Username");
+pwd  = get_para(FP_HANDLE, "Password");
+if (login_name == name)
+{
+session_set("login_pwd", pwd);
+setenv("login_pwd", pwd);
+}
+destroy_paralist(FP_HANDLE);
+}
+}
+FP_ERRORSTR = getDisplayInstError(FP_ERRORSTR);
+if (FP_ACTION == "apply" && FP_ERRORSTR == "SUCC")
+{
+FP_APPLYFLAG = 1;
+}
+else
+{
+FP_APPLYFLAG = 0;
+}
+create_hidden_sep("IF_APPLYFLAG", FP_APPLYFLAG);
+create_hidden_sep("IF_MULTIDISPLAY", FP_MULTIDISPLAY);
+create_hidden_sep("flag", flag);
+create_form_end();
+%>

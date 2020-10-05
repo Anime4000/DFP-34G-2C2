@@ -1,0 +1,197 @@
+<script language="javascript">
+var PON_PARA = new Array(
+"Sn",
+"Pwd"
+);
+function getmsg(id)
+{
+var str  = new Array();
+str[0]   = new Array(101, "&?error_101;");
+str[1]   = new Array(102, "&?error_102;");
+str[2]   = new Array(114, "&?error_114;");
+str[3]   = new Array(807, "&?error_807;");
+str[4]   = new Array(808, "&?error_808;");
+str[5]   = new Array(809, "&?error_809;");
+return getMsgFormArray(str, arguments);
+}
+function pageLoad(url)
+{
+getObj("fSubmit").action = url;
+var errstr  = getValue("IF_ERRORSTR");
+var errpara = getValue("IF_ERRORPARAM");
+OldProcessRet(errstr, errpara);
+moveErrLayer(595,93);
+pageGetValue();
+if(errstr == "SUCC")
+{
+if( getValue("flag") == "1" )
+{
+msg = getmsg(808);
+var isOK = window.confirm(msg);
+if(isOK)
+{
+jslDisable("Btn_Submit","Btn_Cancel");
+setValue("IF_ACTION", "devrestart");
+setValue("flag", "2");
+getObj("fSubmit").submit();
+}
+else
+{
+setValue("flag", "0");
+jslEnable("Btn_Submit","Btn_Cancel");
+}
+}
+else if ( getValue("flag") == "2" )
+{
+jslDisable("Btn_Submit","Btn_Cancel");
+msg = getmsg(807);
+ShowNote("&?NotRep;", msg);
+setTimeout("tologinpage()",120000);
+}
+}
+}
+function pageGetValue()
+{
+<%
+var right = getenv("Right");
+%>
+var UserRight = <%=right;%>;
+jslSetValue("Frm_Sn","Sn");
+
+jslSetValue("Frm_Pwd", "Pwd");
+if((UserRight==1)||(UserRight==4))
+{
+jslEnable("Frm_Pwd","Frm_Sn");
+}
+else
+{
+jslDisable("Frm_Pwd","Frm_Sn");
+jslDisable("Btn_Submit","Btn_Cancel");
+}
+}
+function checkStringNotSpace(value)
+{
+var length = value.length;
+for(var j = 0 ;j < length; j++)
+{
+var xx = value.charCodeAt(j);
+if (xx > 0 && xx <= 255 && xx != 32)
+{
+}
+else
+{
+return false;
+}
+}
+return true;
+}
+function HexCheck(Key, LenLimit)
+{
+if (Key.length != LenLimit)
+{
+return false;
+}
+for (var j = 0 ;j < Key.length; j++)
+{
+var ch = Key.charCodeAt(j);
+if (!((ch >= 65 && ch <= 70)||(ch >= 97 && ch <= 102)
+||(ch >= 48 && ch <= 57)))
+{
+return false;
+}
+}
+return true;
+}
+function SnCheck(Key)
+{
+if (Key.length != 12)
+{
+return false;
+}
+for (var j = 0 ;j < 4; j++)
+{
+var ch = Key.charCodeAt(j);
+if (!((ch >= 65 && ch <= 90)||(ch >= 97 && ch <= 122)))
+{
+return false;
+}
+}
+for (var j = 4 ;j < Key.length; j++)
+{
+var ch = Key.charCodeAt(j);
+if (!((ch >= 65 && ch <= 70)||(ch >= 97 && ch <= 102)
+||(ch >= 48 && ch <= 57)))
+{
+return false;
+}
+}
+return true;
+}
+function pageCheckValue()
+{
+var msg = "";
+var checkChar ="";
+var arrayChar = new Array();
+var srvValue = getValue("Frm_Pwd");
+var snValue = getValue("Frm_Sn");
+if((HexCheck(snValue, 16) == false)&&(SnCheck(snValue) == false))
+{
+msg = getmsg(809);
+ShowErrorForCom("Frm_Sn", "Fnt_Sn", msg);
+return false;
+}
+if (checkNull(srvValue) != true)
+{
+msg = getmsg(101);
+ShowErrorForCom("Frm_Pwd", "Fnt_Pwd", msg);
+return false;
+}
+if(checkStrLengthRange(srvValue, 1, 10) != true)
+{
+msg = getmsg(102, 1, 10);
+ShowErrorForCom("Frm_Pwd", "Fnt_Pwd", msg);
+return false;
+}
+arrayChar = srvValue.split(",");
+for(var i =0; i < arrayChar.length; i++)
+{
+if(checkStringNotSpace(arrayChar[i]) != true)
+{
+msg = getmsg(114);
+ShowErrorForCom("Frm_Pwd", "Fnt_Pwd", msg);
+break;
+}
+}
+if(i != arrayChar.length)
+{
+return false;
+}
+return true;
+}
+function pageSetValue()
+{
+HiddenParaInit(PON_PARA);
+jslSetValue("Pwd","Frm_Pwd");
+jslSetValue("Sn","Frm_Sn");
+}
+function pageSubmit()
+{
+if(pageCheckValue() == true)
+{
+DisableALL();
+pageSetValue();
+setValue("flag", "1");
+setValue("IF_ACTION", "apply");
+getObj("fSubmit").submit();
+}
+}
+function pageCancel()
+{
+DisableALL();
+getObj("fSubmit").submit();
+}
+function tologinpage()
+{
+top.location.href = "/";
+}
+</script>

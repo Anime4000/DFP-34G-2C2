@@ -1,0 +1,137 @@
+<script language="javascript">
+var Address_PARA = new Array(
+"MaxNodeNum"
+);
+var Instnum= getValue("FP_INSTNUM_LAN");
+var MaxNodeNum=parseInt(getValue("MaxNodeNum"));
+function getmsg(id)
+{
+var str      = new Array();
+str[0]   = new Array(116, "&?error_116;");
+str[1]   = new Array(117, "&?error_117;");
+str[2]   = new Array(115, "&?error_115;");
+str[3]   = new Array(101, "&?error_101;");
+return getMsgFormArray(str, arguments);
+}
+function IGMPModePageShow()
+{
+var IGMPMode=getValue("IgmpMode");
+if (IGMPMode == "0" || IGMPMode == "2" || IGMPMode == "3")
+{
+DisableALL();
+}
+else
+{
+}
+}
+function pageLoad(url)
+{
+getObj("fSubmit").action = url;
+var errstr= getValue("IF_ERRORSTR");
+var errpara = getValue("IF_ERRORPARAM");
+ProcessRet(errstr, errpara);
+moveErrLayer(590,75);
+getObj("Font_Maxim").innerHTML="&?IGMP_020;"+MaxNodeNum+"&?wmedia009;";
+showTable();
+}
+function getNameValue(size, id)
+{
+return ("<input type=\"text\" size=\"" + size +"\" id=\""+id+"\">");
+}
+function addline(index)
+{
+var newline = getObj("IGMP_Address_Table").insertRow(-1);
+var cellSize = 16;
+newline.setAttribute("class", "white");
+newline.setAttribute("className", "white");
+newline.insertCell(-1).innerHTML = getValue("lanname"+index);
+for(var j = 0; j < Address_PARA.length ; j++)
+{
+newline.insertCell(-1).innerHTML = getNameValue(5,"Frm_"+Address_PARA[j]+index);
+jslSetValue("Frm_"+Address_PARA[j]+index,Address_PARA[j]+index);
+}
+}
+function showTable()
+{
+if(Instnum == 0)
+{
+var newline = getObj("IGMP_Address_Table").insertRow(-1);
+newline.setAttribute("align", "center");
+newline.setAttribute("class", "white");
+newline.setAttribute("className", "white");
+var objcell =  newline.insertCell(-1);
+objcell.colSpan = 2;
+objcell.innerHTML= "&?note_007;";
+DisableALL();
+}
+for(var i = 0; i < Instnum; i++)
+{
+addline(i);
+}
+}
+function pageSetValue()
+{
+if(Instnum > 0)
+{
+for(var index = 0; index < Instnum; index++)
+{
+for(var i = 0; i < Address_PARA.length; i++)
+{
+jslSetValue(Address_PARA[i]+index,"Frm_"+Address_PARA[i]+index);
+}
+}
+}
+}
+function pageCheckValue()
+{
+if(Instnum > 0)
+{
+for(var index = 0; index < Instnum; index++)
+{
+for(var i = 0; i < Address_PARA.length; i++)
+{
+ReSetValueRmZero("Frm_"+Address_PARA[i]+index);
+var tmp=getValue("Frm_"+Address_PARA[i]+index);
+check=checkIntegerRange(tmp,1,MaxNodeNum);
+if (check == -1)
+{
+msg = getmsg(101);
+ShowErrorForCom("Frm_"+Address_PARA[i]+index,"&?IGMP_009;",msg);
+return false;
+}
+if (check == -2)
+{
+msg = getmsg(115);
+ShowErrorForCom("Frm_"+Address_PARA[i]+index,"&?IGMP_009;",msg);
+return false;
+}
+if (check == -3)
+{
+msg = getmsg(116,1,MaxNodeNum);
+ShowErrorForCom("Frm_"+Address_PARA[i]+index,"&?IGMP_009;",msg);
+return false;
+}
+}
+}
+}
+return true;
+}
+function pageSubmit()
+{
+if (pageCheckValue()==true)
+{
+pageSetValue();
+setValue("IF_ACTION","apply");
+DisableALL();
+getObj("fSubmit").submit();
+}
+else
+{
+}
+}
+function pageCancel()
+{
+DisableALL();
+getObj("fSubmit").submit();
+}
+</script>

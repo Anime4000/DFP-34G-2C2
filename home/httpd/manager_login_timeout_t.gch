@@ -1,0 +1,23 @@
+<%
+IMPORT FILE "login_timeout_gch.gch";
+IMPORT FILE "manager_login_timeout_js.gch";
+%>
+<div id="note" class="space_0">
+<table width="450px" border="0" class="table">
+<tr>
+<td valign="top" style="width:30px;"><img src="img/info.gif"></td>
+<td height="18" align="left" style="padding-left:10px;">
+1.&?login008;<br>
+2.&?login014;<br>
+</td>
+</tr>
+</table>
+</div>
+<div id="div4"></div>
+<table id="TestContent"  class="table" width="450px" border="0">
+<tr>
+<td class="td11"><font id="Fnt_Timeout">&?login009;</font></td>
+<td  class="td2"><input name="Frm_Timeout" id="Frm_Timeout" type="text" class="inputId"  value="" size="15" />&?login013;</td>
+</tr>
+<tr>
+</table>

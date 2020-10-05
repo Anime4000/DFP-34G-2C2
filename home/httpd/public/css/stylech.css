@@ -1,0 +1,114 @@
+body {
+    font-family:"宋体", Verdana, Geneva, Arial, Helvetica, sans-serif;
+}
+
+.content {
+font-family:"宋体", Verdana, Geneva, Arial, Helvetica, sans-serif;
+}
+
+.note{
+font-family: "宋体", Verdana, Geneva, Arial, Helvetica, sans-serif;
+}
+
+.notecontent{
+font-family: "宋体", Verdana, Geneva, Arial, Helvetica, sans-serif;
+}
+
+.button {
+font-family: "宋体", Verdana, Geneva, Arial, Helvetica, sans-serif;
+}
+
+.button2,.button3,.button4 {
+    font-family: "宋体", Verdana, Geneva, Arial, Helvetica, sans-serif;
+}
+
+.inputId,.inputId2,.inputId3,.inputId4,.inputId5,.inputId6,.inputId7,.inputId8,.inputId9 {
+font-family: "宋体", Verdana, Geneva, Arial, Helvetica, sans-serif;
+}
+
+.list_3,.list_5,.list_6,.list_7,.list_9, .list_10 .list_11{
+font-family: "宋体", Verdana, Geneva, Arial, Helvetica, sans-serif;
+}
+
+.textarea_1 {
+font-family: "宋体", Verdana, Geneva, Arial, Helvetica, sans-serif;
+}
+
+.uiNoBorder {
+font-family: "宋体", Verdana, Geneva, Arial, Helvetica, sans-serif;
+}
+.login {
+    font-family: "宋体", Verdana, Geneva, Arial, Helvetica, sans-serif;
+}
+.button5,.button7 {
+    height:20px;
+    vertical-align:middle;
+    text-align:center;
+    font-size: 12px;
+    font-family: "宋体", Verdana, Geneva, Arial, Helvetica, sans-serif;
+}
+.button5 {
+    width:61px;
+}
+.button7 {
+    width:80px;
+}
+
+.inputId10 {
+height:17px;
+border:1px solid #7F9DB7;
+font-size: 12px;
+font-family: "宋体", Verdana, Geneva, Arial, Helvetica, sans-serif;
+vertical-align:middle;
+text-align:left;
+}
+.inputId10 {
+    width:85px;
+}
+.list_1,.list_2,.list_4,.list_8, {
+height:19px;
+border:1px solid #7F9DB7;
+font-size: 12px;
+font-family: "宋体", Verdana, Geneva, Arial, Helvetica, sans-serif;
+vertical-align:middle;
+text-align:left;
+}
+.list_1 {
+    width:90px;	
+}
+.list_2 {
+    width:160px;
+}
+.list_4 {
+    width:175px;
+}
+.list_8 {
+    width:85px;	
+}
+
+
+table.infor {
+ width:410px;
+}
+table.infor tr.white_1 {
+    background-color:#FFFFFF;
+}
+table.infor td.tdleft {
+    padding-right:5px;
+    width:45%;
+    height:27px;
+    text-align:right;
+}
+table.table td.td4 {
+    width:25%;
+    height:24px;
+    text-align:right;	
+}
+
+table.table td.td11 {
+    width:40%;
+    height:24px;
+    text-align:right;	
+}
+
+

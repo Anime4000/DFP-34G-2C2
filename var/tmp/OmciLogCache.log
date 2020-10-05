@@ -1,0 +1,72 @@
+====================gpon_omci start======================
+[main]$$$ omci OSSStart error:-1!
+upport !! 
+OA_Sysdrv_GetTcontBufferSize: value(0) is out of range, use def value:256 
+ g_MeCtr_Configure=0x00000000,g_MeCtr_CreateMark1=0x00000000,g_MeCtr_CreateMark2=0x00000000
+[zxic_omci_mng_event_config] Event (0x0500000c) no found! 
+[zxic_omci_mng_event_callback]Call pFucMngExec ucRet=2
+OA_Pondrv_GetTcontMax result:0 tcontmax:15
+OA_Pondrv_GetTcontQueueMax result:0 tcontqueuemax:8
+[GoldenSea]TcontID[1], policy:0, pqinfo:0
+[GoldenSea]TcontID[2], policy:0, pqinfo:0
+[GoldenSea]TcontID[3], policy:0, pqinfo:0
+[GoldenSea]TcontID[4], policy:0, pqinfo:0
+[GoldenSea]TcontID[5], policy:0, pqinfo:0
+[GoldenSea]TcontID[6], policy:0, pqinfo:0
+[GoldenSea]TcontID[7], policy:0, pqinfo:0
+[GoldenSea]TcontID[8], policy:0, pqinfo:0
+[PON] Call CmPonGetTcont error,dwRet=-6,TcontID=9
+[zxic_omci_mng_event_callback]Call pFucMngExec ucRet=1
+[GoldenSea]TcontID[9], policy:0, pqinfo:0
+[PON] Call CmPonGetTcont error,dwRet=-6,TcontID=10
+[zxic_omci_mng_event_callback]Call pFucMngExec ucRet=1
+[GoldenSea]TcontID[10], policy:0, pqinfo:0
+[PON] Call CmPonGetTcont error,dwRet=-6,TcontID=11
+[zxic_omci_mng_event_callback]Call pFucMngExec ucRet=1
+[GoldenSea]TcontID[11], policy:0, pqinfo:0
+[PON] Call CmPonGetTcont error,dwRet=-6,TcontID=12
+[zxic_omci_mng_event_callback]Call pFucMngExec ucRet=1
+[GoldenSea]TcontID[12], policy:0, pqinfo:0
+[PON] Call CmPonGetTcont error,dwRet=-6,TcontID=13
+[zxic_omci_mng_event_callback]Call pFucMngExec ucRet=1
+[GoldenSea]TcontID[13], policy:0, pqinfo:0
+[PON] Call CmPonGetTcont error,dwRet=-6,TcontID=14
+[zxic_omci_mng_event_callback]Call pFucMngExec ucRet=1
+[GoldenSea]TcontID[14], policy:0, pqinfo:0
+[PON] Call CmPonGetTcont error,dwRet=-6,TcontID=15
+[zxic_omci_mng_event_callback]Call pFucMngExec ucRet=1
+[GoldenSea]TcontID[15], policy:0, pqinfo:0
+Call cmGPonGetUPSInfo error, iRet = -257
+[zxic_omci_mng_event_callback]Call pFucMngExec ucRet=255
+[FWPM]pInstList.dwCount = 0 
+[FWIP]pInstList.dwCount = 0 
+Sub_SNOntStaticDB:Don't create meclass:247!
+Sub_SNOntStaticDB:Don't create meclass:350!
+[LHP]Restore loid_authencation state op_result 11 G_ONU_REG_Authenstates 0 
+Call CmGetPrivateProfileInt error,iRet=-14,KeyName=IsOmciUpgrading
+[zxic_omci_mng_event_callback]Call pFucMngExec ucRet=1
+power status is 0x0!!!
+[zxic_omci_mng_event_config] Event (0x0000000a) no found! 
+[zxic_omci_mng_event_config] Event (0x05010028) no found! 
+[zxic_omci_mng_event_callback]Call pFucMngExec ucRet=2
+##Get management vlan about HG failed!##
+[zxic_omci_mng_event_config] Event (0x05010029) no found! 
+[zxic_omci_mng_event_callback]Call pFucMngExec ucRet=2
+[zxic_omci_mng_event_config] Event (0x03000012) no found! 
+[zxic_omci_mng_event_callback]Call pFucMngExec ucRet=2
+
+[alecal]ZXIC----pon link activate success!
+[LHP]Restore loid_authencation state op_result 0 G_ONU_REG_Authenstates 0 
+not support alarm event 0x1103.
+Process_Perf's Event(4355) is not support !! 
+[LHP]Restore loid_authencation state op_result 0 G_ONU_REG_Authenstates 0 
+Set loidregister_authencation state 5 
+DB_RECORD_NOT_EXIST2
+[OA_manage_eth_link_alarm]GetMacBrPortMeIdFromUniMeId failed
+Set snregister_authencation state 1 
+Call cmGPonGetUPSInfo error, iRet = -257
+[zxic_omci_mng_event_callback]Call pFucMngExec ucRet=255
+zxic_omci_db_is_record_exist Can't Find MeClass(287);
+zxic_omci_db_is_record_exist Can't Find MeClass(287);
+zxic_omci_db_is_record_exist Can't Find MeClass(287);
+

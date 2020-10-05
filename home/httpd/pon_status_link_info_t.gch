@@ -1,0 +1,205 @@
+<%
+IMPORT FILE "common_gch.gch";
+create_form_start("fSubmit", "");
+var GPON_HANDLE = create_paralist();
+var GPON_PARA[3] =
+{
+"PonLoid",
+"LoidPasswd",
+"LoidState"
+};
+var GPON_PARANUM = 3;
+get_inst(GPON_HANDLE, "OBJ_PON_LOID_ID", "");
+create_hidden_para(GPON_HANDLE, GPON_PARA, GPON_PARANUM);
+var LoidState         = get_para(GPON_HANDLE,"LoidState");
+destroy_paralist(GPON_HANDLE);
+var OPTICAL_HANDLE = create_paralist();
+get_inst(OPTICAL_HANDLE, "OBJ_PON_OPTICALPARA_ID", "");
+var Volt         = get_para(OPTICAL_HANDLE,"Volt");
+var RxPower      = get_para(OPTICAL_HANDLE,"RxPower");
+var TxPower      = get_para(OPTICAL_HANDLE,"TxPower");
+var Temp         = get_para(OPTICAL_HANDLE,"Temp");
+var Current      = get_para(OPTICAL_HANDLE,"Current");
+destroy_paralist(OPTICAL_HANDLE);
+Volt    = Volt*1000;
+Temp    = Temp/1000;
+var LOSINFO_HANDLE = create_paralist();
+get_inst(LOSINFO_HANDLE, "OBJ_LOS_INFO_ID", "");
+var LosInfo = get_para(LOSINFO_HANDLE, "LosInfo");
+destroy_paralist(LOSINFO_HANDLE);
+create_form_end();
+%>
+<div class="space_0">
+<table  class="infor" id="TABLE_DEV" width="410" border="0" cellpadding="0" cellspacing="1" bgcolor="#979797">
+<tr class="white_1">
+<td class="tdleft">&?poninfo026;</td>
+<td class="tdright"><font id="Fnt_LoidState" name="Fnt_LoidState"> </font></td>
+</tr>
+</table>
+<table class="infor" id="TABLE_DEV_ADVANCE" width="410" border="0" cellpadding="0" cellspacing="1" bgcolor="#979797">
+<tr class="blue_1">
+<td class="tdleft">&?poninfo004;(&?poninfo022;)</td>
+<td id="Frm_RxPower" name="Frm_RxPower" class="tdright">
+<font id="Fnt_RxPower" name="Fnt_RxPower"></font>
+</td>
+</tr>
+<tr class="white_1">
+<td class="tdleft">&?poninfo005;(&?poninfo022;)</td>
+<td id="Frm_TxPower" name="Frm_TxPower" class="tdright">
+<font id="Fnt_TxPower" name="Fnt_TxPower"></font>
+</td>
+</tr>
+<tr class="blue_1">
+<td class="tdleft">&?poninfo003;(&?poninfo024;)</td>
+<td id="Frm_Volt" name="Frm_Volt" class="tdright"><%=Volt;%></td>
+</tr>
+<tr  class="white_1">
+<td class="tdleft">&?poninfo007;(&?poninfo025;)</td>
+<td id="Frm_Current" name="Frm_Current"  class="tdright"><%=Current;%></td>
+</tr>
+<tr class="blue_1">
+<td class="tdleft">&?poninfo006;(&?poninfo023;)</td>
+<td id="Frm_Temp" name="Frm_Temp" class="tdright"><%=Temp;%></td>
+</tr>
+</table>
+</div>
+<div id="div4"></div>
+<form id="fSubmit" method="post" action="">
+</form>
+<SCRIPT>
+function pageLoad(url)
+{
+document.getElementById("fSubmit").action = url;
+pageGetValue();
+
+}
+function pageReFresh()
+{
+document.getElementById("fSubmit").submit();
+}
+function pageGetValue()
+{
+var LoidState = getValue("LoidState");
+doGPONStatusShow(LoidState);
+doRxTxPowerShow();
+}
+function doUserRightShow()
+{
+<%
+if( getenv("Right") == 1)
+{
+%>
+jslEnDisplay("TABLE_DEV_ADVANCE");
+<%
+}
+else
+{
+%>
+jslDiDisplay("TABLE_DEV_ADVANCE");
+<%
+}
+%>
+}
+function setFont(id,text)
+{
+document.getElementById(id).innerHTML = text;
+}
+function doGPONStatusShow(value)
+{
+<%
+if(getenv("RegisterPageLangType") == "GD")
+{
+%>
+switch (value)
+{
+case "0":
+{
+setFont("Fnt_LoidState", "&?ponloid_failed;-&?ponloid008;");
+break;
+}
+case "1":
+{
+setFont("Fnt_LoidState", "&?ponloid_success;-&?ponloid010;");
+break;
+}
+case "2":
+case "3":
+case "4":
+case "5":
+{
+setFont("Fnt_LoidState", "&?ponloid_failed;-&?ponloid009;");
+break;
+}
+default:
+{
+setFont("Fnt_LoidState", "");
+break;
+}
+}
+<%
+}
+else
+{
+%>
+switch (value)
+{
+case "0":
+{
+setFont("Fnt_LoidState", "&?ponloid003;");
+break;
+}
+case "1":
+{
+setFont("Fnt_LoidState", "&?ponloid004;");
+break;
+}
+case "2":
+{
+setFont("Fnt_LoidState", "&?ponloid005;");
+break;
+}
+case "3":
+{
+setFont("Fnt_LoidState", "&?ponloid006;");
+break;
+}
+case "4":
+{
+setFont("Fnt_LoidState", "&?ponloid007;");
+break;
+}
+case "5":
+{
+setFont("Fnt_LoidState", "&?ponloid012;");
+break;
+}
+default:
+{
+setFont("Fnt_LoidState", "");
+break;
+}
+}
+<%
+}
+%>
+}
+function doRxTxPowerShow()
+{
+var LosInfo = "<%=LosInfo;%>";
+var RxPower = "<%=RxPower;%>";
+var TxPower = "<%=TxPower;%>";
+
+RxPower = parseFloat(RxPower/10000).toFixed(1);
+TxPower = parseFloat(TxPower/10000).toFixed(1);
+if(LosInfo == "1")
+{
+setFont("Fnt_RxPower", "--");
+setFont("Fnt_TxPower", "--");
+}
+else
+{
+setFont("Fnt_RxPower", RxPower);
+setFont("Fnt_TxPower", TxPower);
+}
+}
+</SCRIPT>

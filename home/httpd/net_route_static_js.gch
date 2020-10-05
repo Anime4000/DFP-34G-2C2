@@ -1,0 +1,298 @@
+<script language="javascript">
+var STATIC_RT_PARA = new Array(
+"Enable",
+"Status",
+"StaticRoute",
+"Type",
+"DestIP",
+"DestIPMask",
+"SrcIP",
+"SrcIPMask",
+"ForwardingPolicy",
+"GWIP",
+"Interface",
+"ForwardingMetric",
+"MTU"
+);
+var STATIC_PARA = new Array(
+"DestIP",
+"DestIPMask",
+"GWIP",
+"Interfacename",
+"Status"
+);
+var index ="";
+var IPv6Ctr = "<%=getenv("DevIPv6Effect");%>";
+function pageLoad(url)
+{
+getObj("fSubmit").action = url;
+var errstr= getValue("IF_ERRORSTR");
+var errpara = getValue("IF_ERRORPARAM");
+OldProcessRet(errstr, errpara);
+moveErrLayer(580,75);
+showTable();
+}
+function getInput(value,len)
+{
+return ("<input class=\"uiNoBorder\"  type=\"text\" size=\""
++len
++"\" value=\""
++value
++"\" readonly>");
+}
+function addline(index)
+{
+var newline = getObj("Static_rt_Table").insertRow(-1);
+newline.setAttribute("class", "white");
+newline.setAttribute("className", "white");
+for(var i = 0; i < STATIC_PARA.length ; i++)
+{
+if("Interfacename" == STATIC_PARA[i])
+{
+newline.insertCell(-1).innerHTML =
+getInput(getValue(STATIC_PARA[i]+index),6);
+}
+else if("GWIP" == STATIC_PARA[i])
+{
+newline.insertCell(-1).innerHTML =
+getIPToNULL(getValue(STATIC_PARA[i]+index));
+}
+else if("Status" == STATIC_PARA[i])
+{
+if (getValue(STATIC_PARA[i]+index)=="Enabled")
+{
+newline.insertCell(-1).innerHTML = showIsEnableImage("1", "");
+}
+else
+{
+newline.insertCell(-1).innerHTML = showIsEnableImage("0", "");
+}
+}
+else
+{
+newline.insertCell(-1).innerHTML = getValue(STATIC_PARA[i]+index);
+}
+}
+newline.insertCell(-1).innerHTML=getImagefrmClass("multiImg_modify",
+"Modify("+index+")","Btn_Modify"+index);
+newline.insertCell(-1).innerHTML=getImagefrmClass("multiImg_delete",
+"Delete("+index+")","Btn_Delete"+index);
+}
+function showTable()
+{
+var num = getValue("IF_INSTNUM");
+if(num == 0)
+{
+var newline = getObj("Static_rt_Table").insertRow(-1);
+newline.setAttribute("align", "center");
+newline.setAttribute("class", "white");
+newline.setAttribute("className", "white");
+var objcell =  newline.insertCell(-1);
+objcell.colSpan = 7;
+objcell.innerHTML= "&?note_007;";
+}
+for(var i = 0; i < num; i++)
+{
+if(getValue("tunneltype"+i)!=""&& IPv6Ctr==0)
+continue;
+addline(i);
+}
+if(num >0)
+{
+var flag = 0;
+if(IPv6Ctr==0)
+{
+for(var i = 0; i < num; i++)
+{
+if(getValue("tunneltype"+i)!="")
+{
+flag ++;
+}
+}
+if(flag == num)
+{
+var newline = getObj("Static_rt_Table").insertRow(-1);
+newline.setAttribute("align", "center");
+newline.setAttribute("class", "white");
+newline.setAttribute("className", "white");
+var objcell =  newline.insertCell(-1);
+objcell.colSpan = 7;
+objcell.innerHTML= "&?note_007;";
+}
+}
+}
+}
+function pageSetValue()
+{
+HiddenParaInit(STATIC_RT_PARA);
+if(getValue("Frm_DestIPMask") == "255.255.255.255")
+{
+setValue("Type","Host");
+}
+else if(getValue("Frm_DestIPMask") == "0.0.0.0")
+{
+setValue("Type","Default");
+}
+else
+{
+setValue("Type","Network");
+}
+setValue("Enable","1");
+jslSetValue("Interface", "Frm_Interface");
+jslSetValue("DestIP", "Frm_DestIP");
+jslSetValue("DestIPMask", "Frm_DestIPMask");
+setValue("GWIP", setNULLToIP(getValue("Frm_GWIP")));
+}
+function pageCheckValue()
+{
+var msg = "";
+if(checkNull(getValue("Frm_DestIP")) == false)
+{
+msg = getmsg(101);
+ShowErrorForCom("Frm_DestIP","Fnt_DestIP",msg);
+return false;
+}
+if(checkIpAddress(getValue("Frm_DestIP")) == false)
+{
+msg = getmsg(108);
+ShowErrorForCom("Frm_DestIP","Fnt_DestIP",msg);
+return false;
+}
+if(checkNull(getValue("Frm_DestIPMask")) == false)
+{
+msg = getmsg(101);
+ShowErrorForCom("Frm_DestIPMask","Fnt_DestIPMask",msg);
+return false;
+}
+if(checkMaskAddress(getValue("Frm_DestIPMask")) == false)
+{
+msg = getmsg(109);
+ShowErrorForCom("Frm_DestIPMask","Fnt_DestIPMask",msg);
+return false;
+}
+var wannameobj = getObj("Frm_Interface");
+var wan_namenum = wannameobj.length;
+var wanvalue = getValue("Frm_Interface");
+var wantype = "";
+if(wantype == "dslite" && getValue("Frm_GWIP")!="" )
+{
+msg = getmsg(209);
+ShowErrorForCom("Frm_GWIP","Fnt_GWIP",msg);
+return false;
+}
+if(getValue("Frm_GWIP") == "0.0.0.0")
+{
+msg = getmsg(130);
+ShowErrorForCom("Frm_GWIP","Fnt_GWIP",msg);
+return false;
+}
+var gwip = setNULLToIP(getValue("Frm_GWIP"));
+if(checkGateway(gwip) == false)
+{
+msg = getmsg(130);
+ShowErrorForCom("Frm_GWIP","Fnt_GWIP",msg);
+return false;
+}
+return true;
+}
+function getmsg(id)
+{
+var str  = new Array();
+str[0]   = new Array(101, "&?error_101;");
+str[1]   = new Array(108, "&?error_108;");
+str[2]   = new Array(109, "&?error_109;");
+str[3]   = new Array(118, "&?error_118;");
+str[4]   = new Array(119, "&?error_119;");
+str[5]   = new Array(122, "&?error_122;");
+str[6]   = new Array(130, "&?error_130;");
+str[7]   = new Array(127, "&?error_127;");
+str[7]   = new Array(209, "&?error_209;");
+return getMsgFormArray(str, arguments);
+}
+function pageReFresh()
+{
+DisableALL();
+getObj("fSubmit").submit();
+}
+function Add()
+{
+var num = getValue("IF_INSTNUM");
+document.getElementById("Btn_Add").style.display="";
+document.getElementById("Btn_Modify").style.display="none";
+ReSetIpRmZero("Frm_DestIP","Frm_DestIPMask","Frm_GWIP");
+if(pageCheckValue() == true )
+{
+for(var i = 0; i < num; i++)
+{
+if(getValue("tunneltype"+i)!=""&& IPv6Ctr==0)
+{
+continue;
+}
+else
+{
+jslDisable("Btn_Delete" + i,"Btn_Modify" + i);
+}
+}
+jslDisable("Btn_Add","Btn_Modify");
+pageSetValue();
+setValue("IF_ACTION", "new");
+setValue("IF_INDEX", "-1");
+DisableALL();
+getObj("fSubmit").submit();
+}
+else
+{
+}
+}
+function ModifyGetValue(i)
+{
+jslSetValue("Frm_Interface", "Interface"+i);
+jslSetValue("Frm_DestIP", "DestIP"+i);
+jslSetValue("Frm_DestIPMask", "DestIPMask"+i);
+setValue("Frm_GWIP", getIPToNULL(getValue("GWIP"+i)));
+}
+function Modify(i)
+{
+document.getElementById("Btn_Add").style.display="none";
+document.getElementById("Btn_Modify").style.display="";
+document.getElementById("back").style.display="";
+ModifyGetValue(i);
+index=i;
+}
+function Delete(i)
+{
+var num = getValue("IF_INSTNUM");
+setValue("IF_ACTION", "delete");
+setValue("IF_INDEX",i);
+DisableALL();
+getObj("fSubmit").submit();
+}
+function ModifySubmit()
+{
+var num = getValue("IF_INSTNUM");
+for(i = 0; i < num; i++)
+{
+if(getValue("tunneltype"+i)!=""&& IPv6Ctr==0)
+continue;
+jslDisable("Btn_Delete" + i,"Btn_Modify" + i);
+}
+ReSetIpRmZero("Frm_DestIP","Frm_DestIPMask","Frm_GWIP");
+if(pageCheckValue() == true)
+{
+pageSetValue();
+setValue("IF_ACTION", "apply");
+setValue("IF_INDEX",index);
+DisableALL();
+getObj("fSubmit").submit();
+}
+else
+{
+}
+}
+function back4add()
+{
+var number = getValue("IF_INSTNUM");
+DisableALL();
+getObj("fSubmit").submit();
+}
+</script>

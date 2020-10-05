@@ -1,0 +1,10 @@
+<%
+var wanbutton=getenv("wanbutton");
+var wanidentity=getenv("wanidentity");
+var wanobj = getenv("wanobj");
+var HANDLE = create_paralist();
+get_inst(HANDLE, wanobj, wanidentity);
+var ConnStatus   = get_para(HANDLE, "ConnStatus");
+=ConnStatus;
+destroy_paralist(HANDLE);
+%>

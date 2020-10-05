@@ -1,0 +1,2865 @@
+<script language="javascript">
+var PPP_PARA = new Array(
+"Enable",
+"WANCName",
+"ConnType",
+"LANDViewName",
+"StrServList",
+"ServList",
+"IsNAT",
+"IsDefGW",
+"IsForward",
+"VLANID",
+"Priority",
+"WBDMode",
+"IPAddress",
+"SubnetMask",
+"GateWay",
+"DNS1",
+"DNS2",
+"DNS3",
+"WorkIFMac",
+"UpTime",
+"ConnStatus",
+"UserName",
+"Password",
+"MRU",
+"MTU",
+"ConnTrigger",
+"TransType",
+"AuthType",
+"IdleTime",
+"ConnError",
+"DestAddress",
+"ATMLinkType",
+"ATMEncapsulation",
+"ATMQoS",
+"ATMPeakCellRate",
+"ATMMaxBurstSize",
+"ATMMinCellRate",
+"ATMSCR",
+"ATMCDV",
+"RxPackets",
+"TxPackets",
+"RxBytes",
+"TxBytes",
+"EnableProxy",
+"MaxUser",
+"EnablePassThrough",
+"ValidWANRx",
+"ValidLANTx",
+"HostTrigger",
+"IsAuto",
+"GuaSrc",
+"GuaNum",
+"Gua1",
+"Gua1PrefixLen",
+"Gua2",
+"Gua2PrefixLen",
+"Gua3",
+"Gua3PrefixLen",
+"DnsSrc",
+"Dns1v6",
+"Dns2v6",
+"Dns3v6",
+"Gateway6Src",
+"Gateway6",
+"IsPd",
+"PdNum",
+"IpMode",
+"IsPdAddr",
+"PTMLinkType",
+"IPv6CPExt",
+"PrefixSrc",
+"Prefix1",
+"Prefix1Len"
+);
+var IP_PARA = new Array(
+"Enable",
+"WANCName",
+"ConnType",
+"LANDViewName",
+"StrServList",
+"ServList",
+"IsNAT",
+"IsDefGW",
+"IsForward",
+"VLANID",
+"Priority",
+"WBDMode",
+"IPAddress",
+"SubnetMask",
+"GateWay",
+"DNS1",
+"DNS2",
+"DNS3",
+"WorkIFMac",
+"UpTime",
+"RemainLeaseTime",
+"ConnStatus",
+"Addressingtype",
+"DestAddress",
+"ATMLinkType",
+"ATMEncapsulation",
+"ATMQoS",
+"ATMPeakCellRate",
+"ATMMaxBurstSize",
+"ATMMinCellRate",
+"ATMSCR",
+"ATMCDV",
+"RxPackets",
+"TxPackets",
+"RxBytes",
+"TxBytes",
+"MTU",
+"IsAuto",
+"GuaSrc",
+"GuaNum",
+"Gua1",
+"Gua1PrefixLen",
+"Gua2",
+"Gua2PrefixLen",
+"Gua3",
+"Gua3PrefixLen",
+"DnsSrc",
+"Dns1v6",
+"Dns2v6",
+"Dns3v6",
+"Gateway6Src",
+"Gateway6",
+"IsPd",
+"PdNum",
+"IpMode",
+"IsPdAddr",
+"PTMLinkType",
+"PrefixSrc",
+"Prefix1",
+"Prefix1Len"
+);
+var BRIDGE_PARA = new Array(
+"Enable",
+"WANCName",
+"StrServList",
+"ServList",
+"VLANID",
+"Priority",
+"WBDMode",
+"LANDViewName",
+"DestAddress",
+"ATMLinkType",
+"ATMEncapsulation",
+"ATMQoS",
+"ATMPeakCellRate",
+"ATMMaxBurstSize",
+"ATMMinCellRate",
+"ATMSCR",
+"ATMCDV",
+"RxPackets",
+"TxPackets",
+"RxBytes",
+"TxBytes",
+"PTMLinkType"
+);
+function pageLoad(url)
+{
+getObj("fSubmit").action = url;
+var errstr= getValue("IF_ERRORSTR");
+var errpara = getValue("IF_ERRORPARAM");
+OldProcessRet(errstr, errpara);
+moveErrLayer(590,110);
+PageGetValue();
+}
+function Change_xDslType()
+{
+var linkmode = getValue("Frm_linkMode");
+var xdsl = getValue("Frm_DslMethod");
+if ( "PPP" == linkmode )
+{
+PageGetPPPMode();
+}
+else if("IP" == linkmode)
+{
+PageGetIPMode();
+Change_WANCType();
+}
+else
+{
+}
+Change_IpMode();
+getObj("Frm_PPP").src="img/up.gif";
+jslEnDisplay("TR_UserName","TR_Password","TR_AuthType","TR_ConnTrigger");
+Change_Dialup();
+if(xdsl == "1")
+{
+jslEnDisplay("TABLE_ATM");
+getObj("Frm_ATM").src="img/up.gif";
+Change_PVC();
+jslEnDisplay("TR_DestAddress0","TR_ATMEncapsulation","TR_ATMQoS");
+Change_type();
+}
+else if(xdsl == "2")
+{
+jslDiDisplay("TABLE_ATM");
+}
+else
+{
+}
+Change_mode();
+}
+function getBrowser()
+{
+var oType = "";
+if(navigator.userAgent.indexOf("MSIE")!=-1)
+{
+oType="IE";
+}
+else if(navigator.userAgent.indexOf("Firefox")!=-1)
+{
+oType="FIREFOX";
+}
+else
+{
+}
+return oType;
+}
+function disableIPv6Ctrls()
+{
+var key = getValue("IF_IDENTITY");
+if (key == "")
+{
+key = -1;
+}
+jslDisable("Frm_IpMode", "Frm_onlyIpv4");
+if ( -1 != key )
+{
+jslDisable("Frm_IsAuto", "Frm_GuaSrc", "Frm_Gua1",
+"Frm_Gua1PrefixLen", "Frm_Gateway6Src", "Frm_Gateway6",
+"Frm_DnsSrc", "Frm_Dns1v6", "Frm_Dns2v6", "Frm_Dns3v6",
+"Frm_IsPdAddr","Frm_Prefix","Frm_PrefixGua1",
+"Frm_PrefixGua1PrefixLen");
+}
+}
+function PageGetValue()
+{
+var key = getValue("IF_IDENTITY");
+if (key == "")
+{
+key = -1;
+}
+var wannameobj = getObj("Frm_WANCName0");
+var wan_namenum = getValue("IF_INSTNUM");
+wannameobj.options[0] = new Option("&?wan002;","-1");
+var j = 0;
+for(var i=0; i< wan_namenum; i++)
+{
+var identity = getValue("IF_WANIDENTITY"+i);
+var WANNAME = getValue("IF_WANNAME"+i);
+<%
+if ( 0 == getenv("DevIPv6Effect") )
+{
+%>
+if ( 2 == getValue("IF_WANCIPMODE"+i) )
+{
+continue;
+}
+<%
+}
+%>
+wannameobj.options[j+1] = new Option(WANNAME,identity);
+j++;
+}
+if ("1" == getValue("IF_Uplink") && (getValue("xDSLType") =="1" || key == "-1"))
+{
+var pvcobj = getObj("Frm_DestAddress0");
+var pvcnum = getValue("IF_PVCNUM");
+var j=0;
+for(var i=0; i< pvcnum; i++)
+{
+var pvc = getValue("IF_PVC"+i);
+var type = getValue("IF_TYPE"+i);
+if(""==pvc || "NULL"==pvc)
+{
+continue;
+}
+if(type!="PPPoA" && type!="CIP" && type!="IPoA")
+{
+pvcobj.options[j+1] = new Option(pvc, pvc);
+j++;
+}
+}
+jslDiDisplay("TABLE_ATM");
+}
+var wanservlistobj = getObj("Frm_ServList");
+wanservlistobj.options[0] = new Option("INTERNET", 1);
+wanservlistobj.options[1] = new Option("TR069", 2);
+wanservlistobj.options[2] = new Option("INTERNET_TR069", 3);
+
+if (-1 == key)
+{
+jslEnDisplay("Btn_Add","Btn_Cancel");
+jslDiDisplay("Btn_DoEdit","Btn_Delete");
+setValue("Frm_WANCName0","-1");
+jslEnDisplay("TR_WANCName1");
+if ("1" == getValue("IF_Uplink"))
+{
+jslEnDisplay("TR_DslMethod");
+jslDiDisplay("TABLE_ATM");
+setValue("Frm_DestAddress0","new");
+Change_PVC();
+}
+setValue("Frm_IdleTime","1200");
+setValue("Frm_mode","Route");
+Change_mode();
+Change_servList();
+setValue("Frm_ConnTrigger","AlwaysOn");
+PageGetDialup("IPv4");
+Change_Dialup();
+PageGetPPPMode();
+if("PPPoE"==getValue("Frm_PPPWANCType"))
+{
+setValue("Frm_MTU","1492");
+}
+else
+{
+setValue("Frm_MTU","1500");
+}
+}
+else
+{
+jslDiDisplay("Btn_Add","Btn_Cancel");
+jslEnDisplay("Btn_DoEdit","Btn_Delete");
+jslDisable("Frm_mode","Frm_linkMode");
+jslSetValue("Frm_WANCName0","IF_IDENTITY");
+if ( "" != getValue("Frm_WANCName0") && "-1" != getValue("Frm_WANCName0"))
+{
+var obj=getObj("Frm_WANCName0");
+var name=obj.options[obj.selectedIndex].text;
+setValue("Frm_WANCName1",name);
+}
+jslSetValue("Frm_ServList" , "ServList");
+jslDisable("Frm_ServList");
+if ("1" == getValue("IF_Uplink"))
+{
+jslEnDisplay("TR_DslMethod");
+jslDisable("Frm_DslMethod");
+jslSetValue("Frm_DslMethod","xDslMode");
+if(getValue("Frm_DslMethod") =="1")
+{
+jslEnDisplay("TABLE_ATM");
+var wan_type = getValue("ATMLinkType");
+if(wan_type=="PPPoA"||wan_type=="IPoA"||wan_type=="CIP")
+{
+jslSetValue("Frm_DestAddress1","DestAddress");
+jslDisable("Frm_DestAddress0");
+}
+else
+{
+jslSetValue("Frm_DestAddress0","DestAddress");
+jslSetValue("Frm_DestAddress1","DestAddress");
+}
+Change_PVC();
+jslSetValue("Frm_ATMEncapsulation","ATMEncapsulation");
+jslSetValue("Frm_ATMQoS","ATMQoS");
+var atm=getValue("Frm_ATMQoS");
+if(atm=="CBR")
+{
+jslSetValue("Frm_ATMPeakCellRate","ATMPeakCellRate");
+}
+else if(atm=="VBR-rt"||atm=="VBR-nrt")
+{
+jslSetValue("Frm_ATMPeakCellRate","ATMPeakCellRate");
+jslSetValue("Frm_ATMSCR","ATMSCR");
+jslSetValue("Frm_ATMMaxBurstSize","ATMMaxBurstSize");
+setValue("ATMMinCellRate","0");
+}
+else
+{
+}
+Change_type();
+}
+else if(getValue("xDslMode") =="2")
+{
+jslDiDisplay("TABLE_ATM");
+}
+else
+{
+}
+}
+if ("Tag_Drop" == getValue("WBDMode"))
+{
+setChecked("Frm_WBDMode",true);
+}
+else
+{
+setChecked("Frm_WBDMode",false);
+}
+jslSetValue("Frm_VLANID","VLANID");
+jslSetValue("Frm_Priority","Priority");
+Change_WBDMode();
+var mode = getValue("IF_WANCTYPE");
+if ( "bridge" == mode )
+{
+setValue("Frm_mode","BRIDGE");
+jslDiDisplay("TR_MTU","TR_linkMode","TABLE_PPP","TestContent",
+"TR_PPPWANCType");
+}
+else
+{
+var IpMode = getValue("IpMode");
+setValue("Frm_IpMode",IpMode);
+setValue("Frm_mode","Route");
+PageGetDialup(IpMode);
+PageGetPPPMode();
+if ( "pppoe" == mode )
+{
+jslDiDisplay("TR_WANCType");
+setValue("Frm_linkMode","PPP");
+jslSetValue("Frm_UserName","UserName");
+jslSetValue("Frm_Password","Password","GET");
+jslSetValue("Frm_AuthType","AuthType");
+if(getValue("IsNAT")==1)
+{
+setChecked("Frm_IsNAT",true);
+}
+else
+{
+setChecked("Frm_IsNAT",false);
+}
+if ( "Manual" == getValue("ConnTrigger"))
+{
+jslEnDisplay("ppp_note","TABLE_PPPBtn");
+var status = getValue("IF_STATUS");
+if (status == "1")
+{
+var tem=getValue("IF_ACTION");
+if(tem=="PPPDISCONNECT"||
+tem=="PPPCONNECT"||tem=="edit"||tem=="new")
+{
+DisableALL();
+setTimeout("refresh()", 6000);
+}
+else
+{
+if(getValue("ConnStatus") == "Disconnected")
+{
+jslEnable("Btn_Connect");
+jslDisable("Btn_Disconnect");
+}
+else if(getValue("ConnStatus") == "Disconnecting" ||
+getValue("ConnStatus") == "Unconfigured")
+{
+jslDisable("Btn_Connect","Btn_Disconnect");
+}
+else
+{
+jslDisable("Btn_Connect");
+jslEnable("Btn_Disconnect");
+}
+}
+}
+else
+{
+jslDisable("Btn_Connect");
+jslDisable("Btn_Disconnect");
+}
+}
+jslDisable("Frm_PPPWANCType");
+}
+else if ( "dhcp/static" == mode )
+{
+PageGetIPMode();
+jslDiDisplay("TABLE_PPP","TR_PPPWANCType");
+setValue("Frm_linkMode","IP");
+if ("IPv6"!=IpMode)
+{
+if(getValue("IsNAT")==1)
+{
+setChecked("Frm_IsNAT",true);
+}
+else
+{
+setChecked("Frm_IsNAT",false);
+}
+}
+var WANCType = getValue("Addressingtype");
+if ( "Static" == WANCType )
+{
+setValue("Frm_WANCType",WANCType);
+if("1" == getValue("IF_Uplink"))
+{
+if ("IPoA"==getValue("ATMLinkType")||
+"CIP"==getValue("ATMLinkType"))
+{
+WANCType = getValue("ATMLinkType");
+}
+}
+jslEnDisplay("TABLE_static");
+jslSetValue("Frm_IPAddress","IPAddress");
+jslSetValue("Frm_SubnetMask","SubnetMask");
+jslSetValue("Frm_GateWay","GateWay");
+if(getValue("DNS1")!="0.0.0.0")
+{
+jslSetValue("Frm_DNS1","DNS1");
+}
+else
+{
+setValue("Frm_DNS1","");
+}
+if(getValue("DNS2")!="0.0.0.0")
+{
+jslSetValue("Frm_DNS2","DNS2");
+}
+else
+{
+setValue("Frm_DNS2","");
+}
+if(getValue("DNS3")!="0.0.0.0")
+{
+jslSetValue("Frm_DNS3","DNS3");
+}
+else
+{
+setValue("Frm_DNS3","");
+}
+}
+else if ( "DHCP" == WANCType )
+{
+WANCType = "DHCP";
+jslDiDisplay("TABLE_static");
+if ("IPv4"==getValue("Frm_IpMode"))
+{
+jslEnDisplay("note","TABLE_dhcp");
+var status = getValue("IF_STATUS");
+if (status == "1" )
+{
+var tem=getValue("IF_ACTION");
+if(tem=="DHCPRENEW"||tem=="DHCPRELEASE"||
+tem=="edit"||tem=="new")
+{
+DisableALL();
+setTimeout("refresh()", 6000);
+}
+else
+{
+if(getValue("ConnStatus") == "Disconnected" )
+{
+jslEnable("Btn_Renew");
+jslDisable("Btn_Release");
+}
+else if(getValue("ConnStatus") == "Connecting")
+{
+jslDisable("Btn_Renew");
+jslEnable("Btn_Release");
+}
+else if(getValue("ConnStatus")=="Unconfigured")
+{
+jslDisable("Btn_Renew","Btn_Release");
+}
+else
+{
+jslEnable("Btn_Renew","Btn_Release");
+}
+}
+}
+else
+{
+jslDisable("Btn_Renew","Btn_Release");
+}
+}
+}
+else
+{
+}
+}
+else
+{
+}
+setValue("Frm_WANCType",WANCType);
+Change_IpMode();
+jslSetValue("Frm_MTU","MTU");
+if ("IPoA" == WANCType || "CIP" == WANCType)
+{
+jslDiDisplay("TR_WBDMode","TR_VLANID","TR_PRO");
+jslDisable("Frm_WANCType");
+setValue("Frm_WANCType",WANCType);
+}
+if ( "pppoe" == mode )
+{
+if ("1" == getValue("IF_Uplink"))
+{
+jslSetValue("Frm_PPPWANCType","TransType");
+}
+else
+{
+setValue("Frm_PPPWANCType","PPPoE");
+}
+jslSetValue("Frm_ConnTrigger","ConnTrigger");
+jslSetValue("Frm_IdleTime","IdleTime");
+Change_Dialup();
+}
+if ("IPv6" == IpMode || "Both" == IpMode)
+{
+AutoValueChange();
+Change_IsAuto();
+IPv6InfoShow();
+}
+}
+var wanctype = getValue("Frm_WANCType");
+var ppoatype = getValue("Frm_PPPWANCType");
+if ("IPoA" == wanctype || "CIP" == wanctype || "PPPoA" == ppoatype)
+{
+jslDiDisplay("TR_WBDMode","TR_VLANID","TR_PRO");
+}
+if ( "IPoA" == wanctype || "CIP" == wanctype )
+{
+jslDisable("Frm_IpMode");
+}
+}
+<%
+if ( 0 == getenv("DevIPv6Effect") )
+{
+%>
+disableIPv6Ctrls();
+<%
+}
+%>
+}
+function AutoValueChange()
+{
+var autoValue = getValue("IsAuto");
+var GuaSrcValue = getValue("GuaSrc");
+if("0" == autoValue && "PPPIPv6CP" == GuaSrcValue)
+{
+setValue("Frm_IsAuto","2");
+}
+else
+{
+setValue("Frm_IsAuto",autoValue);
+}
+}
+function IPv6InfoShow()
+{
+if ("0" == getValue("Frm_IsAuto"))
+{
+jslSetValue("Frm_GuaSrc","GuaSrc");
+if ("::" != getValue("Gua1"))
+{
+jslSetValue("Frm_Gua1","Gua1");
+}
+else
+{
+setValue("Frm_Gua1","");
+}
+if ("0" == getValue("Gua1PrefixLen"))
+{
+setValue("Frm_Gua1PrefixLen","");
+}
+else
+{
+jslSetValue("Frm_Gua1PrefixLen","Gua1PrefixLen");
+}
+Change_GuaSrc();
+jslSetValue("Frm_Gateway6Src","Gateway6Src");
+if ("::" != getValue("Gateway6"))
+{
+jslSetValue("Frm_Gateway6","Gateway6");
+}
+else
+{
+setValue("Frm_Gateway6","");
+}
+Change_Gateway6Src();
+jslSetValue("Frm_DnsSrc","DnsSrc");
+if ("::" != getValue("Dns1v6"))
+{
+jslSetValue("Frm_Dns1v6","Dns1v6");
+}
+else
+{
+setValue("Frm_Dns1v6","");
+}
+if ("::"!=getValue("Dns2v6"))
+{
+jslSetValue("Frm_Dns2v6","Dns2v6");
+}
+else
+{
+setValue("Frm_Dns2v6","");
+}
+if ("::"!=getValue("Dns3v6"))
+{
+jslSetValue("Frm_Dns3v6","Dns3v6");
+}
+else
+{
+setValue("Frm_Dns3v6","");
+}
+Change_DnsSrc();
+}
+if ("0" == getValue("Frm_IsAuto") || "1" == getValue("Frm_IsAuto"))
+{
+jslSetValue("Frm_Prefix","PrefixSrc");
+if ("::" != getValue("Prefix1"))
+{
+jslSetValue("Frm_PrefixGua1","Prefix1");
+}
+else
+{
+setValue("Frm_PrefixGua1","");
+}
+if ("0" == getValue("Prefix1Len"))
+{
+setValue("Frm_PrefixGua1PrefixLen","");
+}
+else
+{
+jslSetValue("Frm_PrefixGua1PrefixLen","Prefix1Len");
+}
+Change_Prefix();
+if (getValue("IsPdAddr") == "1")
+{
+setChecked("Frm_IsPdAddr",true);
+}
+else
+{
+setChecked("Frm_IsPdAddr",false);
+}
+}
+else
+{
+jslDiDisplay("TR_IsPdAddr", "TR_Prefix", "TR_PrefixGua1");
+}
+}
+function refresh()
+{
+var URL = "";
+if (window.XMLHttpRequest)
+{
+xmlhttp=new XMLHttpRequest();
+}
+else if (window.ActiveXObject)
+{
+xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+}
+else
+{
+}
+if (xmlhttp!=null)
+{
+xmlhttp.onreadystatechange=state_Change;
+xmlhttp.open("GET","Get_WANCStatus",true);
+xmlhttp.send(null);
+}
+else
+{
+alert("Your browser does not support XMLHTTP.");
+}
+}
+var g_open   = 0;
+function state_Change()
+{
+if (xmlhttp.readyState==4)
+{
+if (xmlhttp.status==200)
+{
+if(g_open == "0")
+{
+ButtonChange();
+}
+}
+else
+{
+alert("Problem retrieving data:" + xmlhttp.statusText);
+}
+}
+}
+function ButtonChange()
+{
+var wanctype = getValue("IF_WANCTYPE");
+EnableALL();
+jslDisable("Frm_ServList");
+if ("pppoe" == wanctype)
+{
+if(xmlhttp.responseText == "Disconnected")
+{
+jslDisable("Btn_Disconnect","Frm_mode","Frm_linkMode");
+}
+else if(xmlhttp.responseText == "Unconfigured" ||
+xmlhttp.responseText == "Disconnecting")
+{
+jslDisable("Btn_Disconnect","Btn_Connect","Frm_mode","Frm_linkMode");
+}
+else
+{
+jslDisable("Btn_Connect","Frm_mode","Frm_linkMode");
+}
+jslDisable("Frm_PPPWANCType","Frm_DslMethod");
+}
+else if("dhcp/static" == wanctype)
+{
+if(xmlhttp.responseText == "Disconnected" )
+{
+jslDisable("Btn_Release","Frm_mode","Frm_linkMode");
+}
+else if( xmlhttp.responseText == "Connecting" )
+{
+jslDisable("Btn_Renew","Frm_mode","Frm_linkMode");
+}
+else if (xmlhttp.responseText == "Unconfigured")
+{
+jslDisable("Btn_Release","Btn_Renew","Frm_mode","Frm_linkMode");
+}
+else
+{
+jslDisable("Frm_mode","Frm_linkMode");
+}
+jslDisable("Frm_DslMethod");
+}
+else
+{
+}
+}
+function CleanFrm(id)
+{
+var i;
+var num=arguments.length;
+if(num==0)
+{
+return;
+}
+for(i=0;i < num; i++)
+{
+setValue(arguments[i],"");
+}
+}
+function Change_Link()
+{
+var link=getValue("Frm_WANCName0");
+if(link=="-1")
+{
+setValue("IF_IDENTITY", "-1");
+setValue("IF_ACTION","NULL");
+setValue("IF_TYPE","PPPoE");
+DisableALL();
+setValue("xDslMode","NULL");
+getObj("fSubmit").submit();
+}
+else
+{
+setValue("IF_ACTION","Reposition");
+setValue("IF_IDENTITY", link);
+DisableALL();
+if("1" == getValue("IF_Uplink"))
+{
+var wan_namenum = getValue("IF_INSTNUM");
+var localname = getValue("Frm_WANCName0");
+for(var i=0; i< wan_namenum; i++)
+{
+var WANNAME = getValue("IF_WANIDENTITY"+i);
+var xdslmode = getValue("IF_xdslMode"+i);
+if(localname==WANNAME)
+{
+setValue("xDslMode",xdslmode);
+}
+}
+}
+else
+{
+setValue("xDslMode","NULL");
+}
+getObj("fSubmit").submit();
+}
+}
+function Change_mode()
+{
+var mode = getValue("Frm_mode");
+if ("Route" == mode)
+{
+jslEnDisplay("TR_linkMode","TR_IpMode","TR_WANCType","TABLE_static",
+"TR_MTU","TABLE_PPP","TR_PPPWANCType");
+jslEnDisplay("TABLE_nat", "TABLE_static");
+jslDiDisplay("TABLE_static2","TR_WANCType");
+Change_IpMode();
+jslEnDisplay("TR_WBDMode");
+var wanservlistobj = getObj("Frm_ServList");
+if (wanservlistobj.options.length == 1)
+{
+wanservlistobj.options.length = 1;
+wanservlistobj.options[1] = new Option("TR069", 2);
+wanservlistobj.options[2] = new Option("INTERNET_TR069", 3);
+
+}
+}
+else
+{
+jslDiDisplay("TR_linkMode","TR_IpMode","TABLE_PPP","TR_MTU",
+"TR_PPPWANCType","TABLE_static");
+setValue("Frm_linkMode","PPP");
+Change_servList();
+setValue("Frm_AuthType","PAP,CHAP,MS-CHAP");
+jslDiDisplay("TR_WANCType","TABLE_ipv6","TR_onlyIpv4");
+jslEnDisplay("TR_WBDMode");
+var wanservlistobj = getObj("Frm_ServList");
+if (wanservlistobj.options.length == 8)
+{
+wanservlistobj.options.length = 1;
+}
+}
+}
+function Change_linkMode()
+{
+var linkmode = getValue("Frm_linkMode");
+if ( "PPP" == linkmode)
+{
+jslEnDisplay("TABLE_PPP","TABLE_static","TR_PPPWANCType");
+jslEnDisplay("TABLE_nat", "TR_nat", "TABLE_static");
+jslDiDisplay("TR_WANCType","TABLE_static2");
+getObj("Frm_IPv4Static").src="img/up.gif";
+Change_PPPWANCType();
+PageGetPPPMode();
+}
+else
+{
+jslEnDisplay("TR_WANCType","TABLE_static");
+jslDiDisplay("TABLE_PPP","TR_PPPWANCType");
+PageGetIPMode();
+Change_WANCType();
+}
+setValue("Frm_IpMode","IPv4");
+if("PPP" == linkmode)
+{
+PageGetPPPMode();
+PageGetDialup("IPv4");
+Change_PPPWANCType();
+}
+else
+{
+PageGetIPMode();
+setValue("Frm_MTU", "1500");
+}
+getObj("Frm_ATM").src="img/up.gif";
+Change_PVC();
+jslEnDisplay("TR_DestAddress0","TR_ATMEncapsulation","TR_ATMQoS");
+Change_type();
+jslDiDisplay("TABLE_ipv6");
+}
+function Change_WANCType()
+{
+var WANCType = getValue("Frm_WANCType");
+if ("Static" == WANCType)
+{
+getObj("Frm_IPv4Static").src="img/up.gif";
+jslEnDisplay("TABLE_static", "TABLE_static2");
+jslEnDisplay("TR_WBDMode","TR_IpMode","TR_IPAddress",
+"TR_SubnetMask","TR_GateWay","TR_DNS1","TR_DNS2","TR_DNS3");
+jslEnDisplay("TABLE_nat", "TR_nat");
+jslDiDisplay("TR_onlyIpv4","TABLE_dhcp");
+Change_WBDMode();
+}
+else if("DHCP" == WANCType)
+{
+getObj("Frm_IPv4Static").src="img/up.gif";
+jslEnDisplay("TABLE_static");
+jslEnDisplay("TR_WBDMode","TR_IpMode");
+jslEnDisplay("TABLE_nat", "TR_nat", "TABLE_static");
+jslDiDisplay("TABLE_static2");
+jslDiDisplay("TR_IPAddress","TR_SubnetMask","TR_GateWay","TR_DNS1",
+"TR_DNS2","TR_DNS3","TR_onlyIpv4");
+Change_DHCP();
+Change_WBDMode();
+}
+else if("IPoA" == WANCType || "CIP" == WANCType)
+{
+getObj("Frm_IPv4Static").src="img/up.gif";
+jslEnDisplay("TABLE_static", "TABLE_static2");
+jslDiDisplay("TR_WBDMode","TR_VLANID","TR_PRO",
+"TR_IpMode","TABLE_dhcp");
+jslEnDisplay("TR_onlyIpv4","TR_IPAddress","TR_SubnetMask",
+"TR_GateWay","TR_DNS1","TR_DNS2","TR_DNS3");
+jslEnDisplay("TABLE_nat", "TR_nat");
+}
+else
+{
+}
+jslDiDisplay("TABLE_PPP","TR_PPPWANCType");
+getObj("Frm_ATM").src="img/up.gif";
+Change_PVC();
+jslEnDisplay("TR_DestAddress0","TR_ATMEncapsulation","TR_ATMQoS");
+Change_type();
+}
+function Change_DHCP()
+{
+var IpMode = getValue("IpMode");
+var LocalIpMode = getValue("Frm_IpMode");
+if(IpMode == "IPv6" || IpMode == "Both")
+{
+jslDiDisplay("TABLE_dhcp");
+}
+else if(IpMode == "IPv4")
+{
+if(LocalIpMode =="IPv6" ||LocalIpMode =="Both")
+{
+jslDiDisplay("TABLE_dhcp");
+}
+else if(LocalIpMode =="IPv4")
+{
+var IPWANCType = getValue("Addressingtype");
+if(IPWANCType == "DHCP")
+{
+jslEnDisplay("TABLE_dhcp");
+}
+else
+{
+jslDiDisplay("TABLE_dhcp");
+}
+}
+}
+else
+{
+}
+}
+function Change_PPPWANCType()
+{
+var key = getValue("IF_IDENTITY");
+var PPPWACType = getValue("Frm_PPPWANCType");
+if ("PPPoE" == PPPWACType)
+{
+jslEnDisplay("TR_WBDMode","TR_IpMode");
+jslDiDisplay("TR_onlyIpv4");
+Change_WBDMode();
+if("-1"==key)
+{
+setValue("Frm_MTU", "1492");
+}
+}
+else if ("PPPoA" == PPPWACType)
+{
+jslDiDisplay("TR_WBDMode","TR_VLANID","TR_PRO","TR_onlyIpv4");
+jslEnDisplay("TR_IpMode");
+if("-1"==key)
+{
+setValue("Frm_MTU", "1500");
+}
+}
+else
+{
+}
+}
+function Change_IpMode()
+{
+var IpMode = getValue("Frm_IpMode");
+var key = getValue("IF_IDENTITY");
+var PPPWACType = getValue("Frm_PPPWANCType");
+if ("IPv4" == IpMode)
+{
+check_nat();
+if ("PPP" == getValue("Frm_linkMode"))
+{
+PageGetPPPMode();
+Change_PPPWANCType();
+jslEnDisplay("TABLE_PPP","TABLE_static","TR_PPPWANCType");
+jslEnDisplay("TABLE_nat", "TR_nat");
+getObj("Frm_IPv4Static").src="img/up.gif";
+jslDiDisplay("TABLE_static2");
+getObj("Frm_PPP").src="img/up.gif";
+jslEnDisplay("TR_UserName","TR_Password","TR_AuthType",
+"TR_ConnTrigger");
+PageGetDialup(IpMode);
+if(key == "-1" || key == "")
+{
+}
+else
+{
+setValue("Frm_PPPWANCType", PPPWACType);
+Change_PPPWANCType();
+jslSetValue("Frm_ConnTrigger","ConnTrigger");
+}
+Change_Dialup();
+}
+else
+{
+Change_WANCType();
+PageGetIPMode();
+jslDiDisplay("TABLE_PPP","TR_PPPWANCType");
+jslEnDisplay("TR_WANCType","TABLE_static");
+jslEnDisplay("TABLE_nat", "TR_nat");
+getObj("Frm_IPv4Static").src="img/up.gif";
+var WANCType = getValue("Addressingtype");
+if("DHCP" == WANCType || "NULL" == WANCType || "" == WANCType)
+{
+jslEnDisplay("TABLE_static","TABLE_static2");
+jslEnDisplay("TABLE_nat", "TR_nat");
+jslDiDisplay("TABLE_static2");
+jslDiDisplay("TR_IPAddress","TR_SubnetMask","TR_GateWay",
+"TR_DNS1","TR_DNS2","TR_DNS3");
+setValue("Frm_WANCType","DHCP");
+}
+else
+{
+jslEnDisplay("TABLE_static","TABLE_static2");
+jslEnDisplay("TR_IPAddress","TR_SubnetMask",
+"TR_GateWay","TR_DNS1","TR_DNS2","TR_DNS3");
+jslEnDisplay("TABLE_nat", "TR_nat");
+setValue("Frm_WANCType", WANCType);
+}
+}
+jslDiDisplay("TABLE_ipv6");
+}
+else if ("IPv6" == IpMode)
+{
+if ("PPP" == getValue("Frm_linkMode"))
+{
+jslEnDisplay("TABLE_PPP");
+PageGetPPPMode();
+Change_PPPWANCType();
+getObj("Frm_PPP").src="img/up.gif";
+jslEnDisplay("TR_UserName","TR_Password","TR_AuthType","TR_ConnTrigger");
+PageGetDialup(IpMode);
+Change_Dialup();
+if(key == "-1" || key == "")
+{
+}
+else
+{
+setValue("Frm_PPPWANCType", PPPWACType);
+Change_PPPWANCType();
+}
+}
+else
+{
+jslDiDisplay("TABLE_PPP","TABLE_dhcp");
+Change_WANCType();
+PageGetIPMode();
+}
+jslDiDisplay("TR_WANCType","TABLE_static");
+jslEnDisplay("TABLE_ipv6");
+IPv6GetMode();
+if(key == "-1" || key == "")
+{
+}
+else
+{
+var SourceIpMode = getValue("IpMode");
+if("Both" == SourceIpMode)
+{
+setValue("Frm_IsAuto","0");
+}
+else
+{
+AutoValueChange();
+if ("0" == getValue("Frm_IsAuto") || "1" == getValue("Frm_IsAuto"))
+{
+if(getValue("IsPdAddr") == "1")
+{
+setChecked("Frm_IsPdAddr",true);
+}
+else
+{
+setChecked("Frm_IsPdAddr",false);
+}
+}
+}
+}
+getObj("Frm_IPv6").src="img/up.gif";
+Change_IsAuto();
+}
+else if ("Both" == IpMode)
+{
+check_nat();
+if ("PPP" == getValue("Frm_linkMode"))
+{
+PageGetPPPMode();
+Change_PPPWANCType();
+jslEnDisplay("TABLE_PPP","TABLE_static","TR_PPPWANCType");
+jslEnDisplay("TABLE_nat", "TR_nat");
+jslDiDisplay("TABLE_static2","TR_WANCType");
+getObj("Frm_IPv4Static").src="img/up.gif";
+getObj("Frm_PPP").src="img/up.gif";
+jslEnDisplay("TR_UserName","TR_Password","TR_AuthType","TR_ConnTrigger");
+PageGetDialup(IpMode);
+Change_Dialup();
+if(key == "-1" || key == "")
+{
+}
+else
+{
+setValue("Frm_PPPWANCType", PPPWACType);
+Change_PPPWANCType();
+}
+}
+else
+{
+Change_WANCType();
+PageGetIPMode();
+jslEnDisplay("TR_WANCType","TABLE_static");
+var WANCType = getValue("Addressingtype");
+if("DHCP" == WANCType || "NULL" == WANCType || "" == WANCType)
+{
+jslEnDisplay("TABLE_nat", "TABLE_static");
+jslDiDisplay("TABLE_static2");
+setValue("Frm_WANCType","DHCP");
+}
+else
+{
+jslEnDisplay("TABLE_nat");
+jslEnDisplay("TABLE_static2");
+jslEnDisplay("TR_IPAddress","TR_SubnetMask","TR_GateWay",
+"TR_DNS1","TR_DNS2","TR_DNS3");
+setValue("Frm_WANCType",WANCType);
+}
+}
+jslEnDisplay("TABLE_ipv6");
+IPv6GetMode();
+if(key == "-1" || key == "")
+{
+}
+else
+{
+var SourceIpMode = getValue("IpMode");
+if("IPv6" == SourceIpMode)
+{
+setValue("Frm_IsAuto","0");
+}
+else
+{
+AutoValueChange();
+if ("0" == getValue("Frm_IsAuto") || "1" == getValue("Frm_IsAuto"))
+{
+if(getValue("IsPdAddr") == "1")
+{
+setChecked("Frm_IsPdAddr",true);
+}
+else
+{
+setChecked("Frm_IsPdAddr",false);
+}
+}
+}
+}
+getObj("Frm_IPv6").src="img/up.gif";
+Change_IsAuto();
+}
+else
+{
+}
+getObj("Frm_ATM").src="img/up.gif";
+Change_PVC();
+jslEnDisplay("TR_DestAddress0","TR_ATMEncapsulation","TR_ATMQoS");
+Change_type();
+}
+function Change_PVC()
+{
+var pvc = getValue("Frm_DestAddress0");
+if ("new" == pvc)
+{
+jslEnDisplay("TR_DestAddress1");
+}
+else
+{
+jslDiDisplay("TR_DestAddress1");
+jslSetValue("Frm_DestAddress1","Frm_DestAddress0");
+}
+}
+function Change_servList()
+{
+var servlistObj = getObj("Frm_ServList");
+var servlist = servlistObj.options[servlistObj.selectedIndex].text;
+if((servlist.indexOf("INTERNET") != -1) || (servlist.indexOf("OTHER") != -1))
+{
+jslEnable("Frm_IsNAT");
+setChecked("Frm_IsNAT",true);
+}
+else
+{
+setChecked("Frm_IsNAT",false);
+jslDisable("Frm_IsNAT");
+}
+}
+function Change_WBDMode()
+{
+var vlan = getChecked("Frm_WBDMode");
+if ("1"==vlan)
+jslEnDisplay("TR_VLANID","TR_PRO");
+else
+{
+jslDiDisplay("TR_VLANID","TR_PRO");
+setValue("Frm_Priority","0");
+}
+}
+function Change_type()
+{
+var type=getValue("Frm_ATMQoS");
+switch(type)
+{
+case "UBR":
+{
+jslDiDisplay("TR_pcr","TR_scr","TR_mbs");
+break;
+}
+case "CBR":
+{
+jslDiDisplay("TR_scr","TR_mbs");
+jslEnDisplay("TR_pcr");
+break;
+}
+case "VBR-nrt":
+{
+jslEnDisplay("TR_pcr","TR_scr","TR_mbs");
+break;
+}
+case "VBR-rt":
+{
+jslEnDisplay("TR_pcr","TR_scr","TR_mbs");
+break;
+}
+default:
+break;
+}
+return;
+}
+function Change_Dialup()
+{
+var ConnTriggerTemp = getValue("Frm_ConnTrigger");
+var key = getValue("IF_IDENTITY");
+if ("OnDemand" == ConnTriggerTemp)
+{
+jslEnDisplay("TR_IdleTime");
+jslDiDisplay("TABLE_PPPBtn");
+}
+else
+{
+jslDiDisplay("TR_IdleTime");
+if(key == "-1" || key == "")
+{
+jslDiDisplay("TABLE_PPPBtn");
+}
+else
+{
+if("Manual" == ConnTriggerTemp)
+{
+var ConnTrigger = getValue("ConnTrigger");
+jslEnDisplay("TABLE_PPPBtn");
+if(ConnTrigger != "Manual")
+{
+jslDiDisplay("TABLE_PPPBtn");
+}
+}
+else
+{
+jslDiDisplay("TABLE_PPPBtn");
+}
+}
+}
+}
+function IPv6GetMode()
+{
+var obj      = getObj("Frm_IsAuto");
+var linkMode = getValue("Frm_linkMode");
+if("PPP" == linkMode)
+{
+obj.length = 2;
+obj.options[0] = new Option("&?ipv6_wan016;", "0");
+obj.options[1] = new Option("&?ipv6_wan017;", "1");
+}
+else
+{
+obj.length = 2;
+obj.options[0] = new Option("&?ipv6_wan016;", "0");
+obj.options[1] = new Option("&?ipv6_wan017;", "1");
+}
+}
+function PageGetDialup(IPMode)
+{
+var obj = getObj("Frm_ConnTrigger");
+if ("IPv4" === IPMode)
+{
+obj.length = 3;
+obj.options[0] = new Option("&?wan026;", "AlwaysOn");
+obj.options[1] = new Option("&?wan027;", "OnDemand");
+obj.options[2] = new Option("&?wan030;", "Manual");
+}
+else
+{
+obj.length = 1;
+obj.options[0] = new Option("&?wan026;", "AlwaysOn");
+}
+}
+function PageGetPPPMode()
+{
+var obj = getObj("Frm_PPPWANCType");
+var xDslType = getValue("Frm_DslMethod");
+var upLink = getValue("IF_Uplink");
+if ( "1"==upLink && xDslType == "1" )
+{
+obj.length = 2;
+obj.options[0] = new Option("PPPoE", "PPPoE");
+obj.options[1] = new Option("PPPoA", "PPPoA");
+}
+else
+{
+obj.length = 1;
+obj.options[0] = new Option("PPPoE", "PPPoE");
+}
+}
+function PageGetIPMode()
+{
+var IPMode = getValue("Frm_IpMode");
+var obj = getObj("Frm_WANCType");
+var xDslType = getValue("Frm_DslMethod");
+var ATMlinkType= getValue("ATMLinkType");
+if ("1" == getValue("IF_Uplink") && "IPv4"== IPMode && xDslType=="1")
+{
+if(ATMlinkType =="EoA")
+{
+obj.length = 2;
+obj.options[0] = new Option("DHCP",   "DHCP");
+obj.options[1] = new Option("Static", "Static");
+}
+else
+{
+obj.length = 4;
+obj.options[0] = new Option("DHCP",   "DHCP");
+obj.options[1] = new Option("Static", "Static");
+obj.options[2] = new Option("IPoA",   "IPoA");
+obj.options[3] = new Option("CLIP",    "CIP");
+}
+}
+else
+{
+obj.length = 2;
+obj.options[0] = new Option("DHCP",   "DHCP");
+obj.options[1] = new Option("Static", "Static");
+}
+}
+function Change_IsAuto()
+{
+if ( "0" == getValue("Frm_IsAuto"))
+{
+jslEnDisplay("TR_IsAuto","TR_GuaSrc","TR_Gua1","TR_DNSv6","TR_Dns1v6",
+"TR_Dns2v6", "TR_Dns3v6","TR_IsPdAddr", "TR_Prefix");
+if ("IP" == getValue("Frm_linkMode"))
+{
+jslEnDisplay("TR_Gateway6Src");
+Change_Gateway6Src();
+}
+else
+{
+jslDiDisplay("TR_Gateway6Src", "TR_Gateway6");
+}
+Change_GuaSrc();
+Change_DnsSrc();
+Change_Prefix();
+}
+else if("1" == getValue("Frm_IsAuto"))
+{
+jslEnDisplay("TR_IsAuto","TR_Prefix","TR_PrefixGua1","TR_IsPdAddr");
+jslDiDisplay("TR_GuaSrc", "TR_Gua1", "TR_Gateway6Src","TR_Gateway6",
+"TR_DNSv6", "TR_Dns1v6", "TR_Dns2v6", "TR_Dns3v6");
+Change_Prefix();
+}
+else
+{
+jslEnDisplay("TR_IsAuto");
+jslDiDisplay("TR_GuaSrc", "TR_Gua1", "TR_Gateway6Src","TR_Gateway6",
+"TR_DNSv6", "TR_Dns1v6", "TR_Dns2v6", "TR_Dns3v6",
+"TR_Prefix","TR_IsPdAddr", "TR_PrefixGua1");
+}
+}
+function Change_GuaSrc()
+{
+if( "Static" == getValue("Frm_GuaSrc"))
+{
+jslEnDisplay("TR_Gua1");
+}
+else
+{
+jslDiDisplay("TR_Gua1");
+}
+}
+function Change_Gateway6Src()
+{
+if( "Static" == getValue("Frm_Gateway6Src"))
+{
+jslEnDisplay("TR_Gateway6");
+}
+else
+{
+jslDiDisplay("TR_Gateway6");
+}
+}
+function Change_DnsSrc()
+{
+if( "Static" == getValue("Frm_DnsSrc"))
+{
+jslEnDisplay("TR_Dns1v6","TR_Dns2v6","TR_Dns3v6");
+}
+else
+{
+jslDiDisplay("TR_Dns1v6", "TR_Dns2v6","TR_Dns3v6");
+}
+}
+function getmsg(id)
+{
+var str      = new Array();
+str[0]   = new Array(128, "&?error_128;");
+str[1]   = new Array(114, "&?error_114;");
+str[2]   = new Array(102, "&?error_102;");
+str[3]   = new Array(103, "&?error_103;");
+str[4]   = new Array(129, "&?error_129;");
+str[5]   = new Array(115, "&?error_115;");
+str[6]   = new Array(116, "&?error_116;");
+str[7]   = new Array(117, "&?error_117;");
+str[8]   = new Array(101, "&?error_101;");
+str[9]   = new Array(200, "&?error_200;");
+str[10]  = new Array(109, "&?error_109;");
+str[11]  = new Array(108, "&?error_108;");
+str[12]  = new Array(130, "&?error_130;");
+str[13]  = new Array(206, "&?error_206;");
+str[14]  = new Array(215, "&?error_215;");
+return getMsgFormArray(str, arguments);
+}
+function Check_StrLengthRange(value,min,max,Frm,Fnt)
+{
+if (value.length < min || value.length > max)
+{
+msg =  getmsg(102,min,max);
+ShowErrorForCom(Frm,Fnt,msg);
+return false;
+}
+return true;
+}
+function Check_IntegerRange(value,min,max,Frm,Fnt)
+{
+var tem = checkIntegerRange(value,min,max);
+if(tem==-1)
+{
+msg = getmsg(101);
+ShowErrorForCom(Frm,Fnt,msg);
+return false;
+}
+else if(tem==-2)
+{
+msg = getmsg(115);
+ShowErrorForCom(Frm,Fnt,msg);
+return false;
+}
+else if(tem==-3)
+{
+msg = getmsg(116,min,max);
+ShowErrorForCom(Frm,Fnt,msg);
+return false;
+}
+else
+{
+}
+return true;
+}
+function Check_MBS(value, scrValue, pcrValue, Frm,Fnt)
+{
+var tmpDeno = pcrValue - scrValue;
+var tmpMole = pcrValue * scrValue;
+var tmpMax = Math.floor(tmpMole/tmpDeno) + 1;
+if(scrValue >= pcrValue)
+{
+msg = getmsg(147);
+ShowErrorForCom(null,null,msg);
+return false;
+}
+var tem = checkIntegerRange(value,1,tmpMax);
+if(tem==-1)
+{
+msg = getmsg(101);
+ShowErrorForCom(Frm,Fnt,msg);
+return false;
+}
+else if(tem==-2)
+{
+msg = getmsg(115);
+ShowErrorForCom(Frm,Fnt,msg);
+return false;
+}
+else if(tem==-3)
+{
+msg = getmsg(116, 1, tmpMax);
+ShowErrorForCom(Frm,Fnt,msg);
+return false;
+}
+else
+{
+}
+return true;
+}
+function Check_DNS(value,Frm,Fnt)
+{
+if(checkIpAddress(value,"")!=true)
+{
+msg =  getmsg(108);
+ShowErrorForCom(Frm,Fnt,msg);
+return false;
+}
+if(value=="0.0.0.0")
+{
+msg =  getmsg(108);
+ShowErrorForCom(Frm,Fnt,msg);
+return false;
+}
+return true;
+}
+function CheckIPv6(value,Frm, Fnt)
+{
+if (""==value)
+{
+msg = getmsg(101);
+ShowErrorForCom(Frm,Fnt,msg);
+return false;
+}
+if ("::"==value||false==checkIPV6Address(value))
+{
+msg = getmsg(200);
+ShowErrorForCom(Frm,Fnt,msg);
+return false;
+}
+return true;
+}
+function CheckVlanID()
+{
+if (getChecked("Frm_WBDMode")==true)
+{
+var vlan=getValue("Frm_VLANID");
+if(Check_IntegerRange(vlan,0,4094,"Frm_VLANID","Fnt_VLANID")!=true)
+{
+return false;
+}
+}
+}
+function PageCheckValue()
+{
+var msg="";
+var wancname = getValue("Frm_WANCName0");
+var newname = getValue("Frm_WANCName1");
+var obj=getObj("Frm_WANCName0");
+var name0=obj.options[obj.selectedIndex].text;
+var wan_namenum = getValue("IF_INSTNUM");
+for(var i=0; i< wan_namenum; i++)
+{
+var WANNAME = getValue("IF_WANNAME"+i);
+var WANCIPMODE = getValue("IF_WANCIPMODE"+i);
+var ipv6switch = "<%=getenv("DevIPv6Effect");%>";
+if(newname==WANNAME&&newname!=name0)
+{
+if(WANCIPMODE == "2" && ipv6switch == "0")
+{
+msg = getmsg(215);
+}
+else
+{
+msg = getmsg(128);
+}
+ShowErrorForCom("Frm_WANCName1","Fnt_WANCName1",msg);
+return false;
+}
+}
+if(Check_StrLengthRange(newname,1,256,"Frm_WANCName1","Fnt_WANCName1")!=true)
+{
+return false;
+}
+if(checkGenString(newname)!=true)
+{
+msg = getmsg(114);
+ShowErrorForCom("Frm_WANCName1","Fnt_WANCName1",msg);
+return false;
+}
+if ("1" == getValue("IF_Uplink") &&  getValue("Frm_DslMethod") == "1")
+{
+var pvc = getValue("Frm_DestAddress1");
+if (pvc=="")
+{
+msg =  getmsg(101);
+ShowErrorForCom("Frm_DestAddress1","Fnt_DestAddress1",msg);
+return false;
+}
+else if (pvc=="0/0")
+{
+msg =  getmsg(129);
+ShowErrorForCom("Frm_DestAddress1","Fnt_DestAddress1",msg);
+return false;
+}
+else
+{
+}
+var parts = pvc.split("/");
+if (parts.length!=2)
+{
+msg =  getmsg(129);
+ShowErrorForCom("Frm_DestAddress1","Fnt_DestAddress1",msg);
+return false;
+}
+else
+{
+if (Check_IntegerRange(parts[0],0,255,"Frm_DestAddress1","VPI")!=true)
+{
+return false;
+}
+if (Check_IntegerRange(parts[1],0,65535,"Frm_DestAddress1","VCI")!=true)
+{
+return false;
+}
+}
+var ppptype = getValue("Frm_PPPWANCType");
+var iptype  = getValue("Frm_WANCType");
+var pvcnum = getValue("IF_PVCNUM");
+var wan_linkmode = getValue("Frm_linkMode");
+if((ppptype=="PPPoA" && wan_linkmode == "PPP")
+||((iptype=="IPoA"||iptype=="CIP")&& wan_linkmode == "IP"))
+{
+for(var i=0; i< pvcnum; i++)
+{
+var pvc = getValue("IF_PVC"+i);
+var pvcTemp = getValue("Frm_DestAddress0");
+if(wancname=="-1")
+{
+if(getValue("Frm_DestAddress0")==pvc)
+{
+msg = getmsg(128);
+ShowErrorForCom("Frm_DestAddress0","Fnt_DestAddress0",msg);
+return false;
+}
+if(pvcTemp == "new")
+{
+if(getValue("Frm_DestAddress1")==pvc)
+{
+msg = getmsg(128);
+ShowErrorForCom("Frm_DestAddress1","Fnt_DestAddress1",msg);
+return false;
+}
+}
+}
+else
+{
+var config_pvc = getValue("DestAddress");
+if(getValue("Frm_DestAddress1")==pvc &&
+getValue("Frm_DestAddress1") != config_pvc)
+{
+msg = getmsg(128);
+ShowErrorForCom("Frm_DestAddress1","Fnt_DestAddress1",msg);
+return false;
+}
+}
+}
+}
+else
+{
+for(var i=0; i< pvcnum; i++)
+{
+var pvc = "";
+var type = getValue("IF_TYPE"+i);
+if(type=="PPPoA" || type=="CIP" || type=="IPoA")
+{
+pvc = getValue("IF_PVC"+i);
+}
+if(getValue("Frm_DestAddress0")==pvc)
+{
+msg = getmsg(128);
+ShowErrorForCom("Frm_DestAddress0","Fnt_DestAddress0",msg);
+return false;
+}
+else if(getValue("Frm_DestAddress1")==pvc)
+{
+msg = getmsg(128);
+ShowErrorForCom("Frm_DestAddress1","Fnt_DestAddress1",msg);
+return false;
+}
+else
+{
+}
+}
+}
+var atm=getValue("Frm_ATMQoS");
+if (atm=="CBR")
+{
+if (Check_IntegerRange(getValue("Frm_ATMPeakCellRate"),1,20000,
+"Frm_ATMPeakCellRate","Fnt_ATMPeakCellRate")!=true)
+{
+return false;
+}
+}
+else if (atm=="VBR-nrt"||atm=="VBR-rt")
+{
+if(Check_IntegerRange(getValue("Frm_ATMPeakCellRate"),2,20000,
+"Frm_ATMPeakCellRate","Fnt_ATMPeakCellRate")!=true)
+{
+return false;
+}
+var temp = getValue("Frm_ATMPeakCellRate");
+if (Check_IntegerRange(getValue("Frm_ATMSCR"), 1, temp-1,
+"Frm_ATMSCR","Fnt_ATMSCR")!=true)
+{
+return false;
+}
+if (Check_MBS(getValue("Frm_ATMMaxBurstSize"),
+Number(getValue("Frm_ATMSCR")),
+Number(getValue("Frm_ATMPeakCellRate")),
+"Frm_ATMMaxBurstSize","Fnt_ATMMaxBurstSize")!=true)
+{
+return false;
+}
+}
+else
+{
+}
+}
+var mode = getValue("Frm_mode");
+if(mode != "BRIDGE")
+{
+var linkmode = getValue("Frm_linkMode");
+if ("PPP" == linkmode)
+{
+var pppwancType = getValue("Frm_PPPWANCType");
+if(pppwancType == "PPPoE")
+{
+if(CheckVlanID() == false)
+{
+return false;
+}
+}
+}
+else if("IP" == linkmode)
+{
+var WANCType = getValue("Frm_WANCType");
+if ("Static" == WANCType || "DHCP" == WANCType)
+{
+if(CheckVlanID() == false)
+return false;
+}
+}
+else
+{
+}
+}
+else if(mode == "BRIDGE")
+{
+if(CheckVlanID() == false)
+return false;
+}
+else
+{
+}
+var IpMode = getValue("Frm_IpMode");
+var mode = getValue("Frm_mode");
+if(mode != "BRIDGE")
+{
+var MTU = getValue("Frm_MTU");
+var linkmode = getValue("Frm_linkMode");
+if("PPP" == linkmode)
+{
+if("IPv4" == IpMode)
+{
+var MaxMTU;
+if(pppwancType == "PPPoE")
+{
+MaxMTU = 1492;
+}
+else if(pppwancType == "PPPoA")
+{
+MaxMTU = 1540;
+}
+else
+{
+}
+var bCheckPass = Check_IntegerRange(MTU, 128, MaxMTU,
+"Frm_MTU","Fnt_MTU");
+if( bCheckPass != true )
+{
+return false;
+}
+}
+else if("Both" == IpMode ||"IPv6" == IpMode)
+{
+var MaxMTU = 1492;
+var bCheckPass = Check_IntegerRange(MTU, 1280, MaxMTU,
+"Frm_MTU","Fnt_MTU");
+if( bCheckPass != true )
+{
+return false;
+}
+}
+else
+{
+}
+}
+else if("IP" == linkmode)
+{
+if("IPv4" == IpMode)
+{
+var WANCType = getValue("Frm_WANCType");
+if ("Static" == WANCType)
+{
+if(Check_IntegerRange(MTU,128,1500,"Frm_MTU","Fnt_MTU")!=true)
+{
+return false;
+}
+}
+else if ("CIP" == WANCType)
+{
+if(Check_IntegerRange(MTU,128,9180,"Frm_MTU","Fnt_MTU")!=true)
+{
+return false;
+}
+}
+else if ("IPoA" == WANCType)
+{
+if(Check_IntegerRange(MTU,128,1500,"Frm_MTU","Fnt_MTU")!=true)
+{
+return false;
+}
+}
+else if ("DHCP" == WANCType)
+{
+if(Check_IntegerRange(MTU,576,1500,"Frm_MTU","Fnt_MTU")!=true)
+{
+return false;
+}
+}
+else
+{
+}
+}
+else if("Both" == IpMode ||"IPv6" == IpMode)
+{
+if(Check_IntegerRange(MTU,1280,1500,"Frm_MTU","Fnt_MTU")!=true)
+{
+return false;
+}
+}
+else
+{
+}
+}
+else
+{
+}
+if ("PPP" == linkmode)
+{
+var username = getValue("Frm_UserName");
+if(checkGenStringForASC(username)!=true)
+{
+msg = getmsg(114);
+ShowErrorForCom("Frm_UserName","Fnt_UserName",msg);
+return false;
+}
+if(Check_StrLengthRange(username,1,64,
+"Frm_UserName","Fnt_UserName")!=true)
+{
+return false;
+}
+var pass = getValue("Frm_Password");
+if(checkGenStringForASC(pass)!=true)
+{
+msg = getmsg(114);
+ShowErrorForCom("Frm_Password","Fnt_Password",msg);
+return false;
+}
+var pass_range=checkStrLengthRange(pass,0,64);
+if(pass_range==-3)
+{
+msg =  getmsg(102,0,64);
+ShowErrorForCom("Frm_Password","Fnt_Password",msg);
+return false;
+}
+var idletime = getValue("Frm_IdleTime");
+if(getValue("Frm_ConnTrigger")=="OnDemand")
+{
+if(Check_IntegerRange(idletime,0,4294967295,
+"Frm_IdleTime","Fnt_IdleTime")!=true)
+{
+return false;
+}
+}
+}
+if ( "IPv4" == IpMode || "Both" == IpMode )
+{
+if ("IP" == linkmode)
+{
+var WANCType = getValue("Frm_WANCType");
+if ("Static" == WANCType || "CIP" == WANCType ||
+"IPoA" == WANCType )
+{
+var ip = getValue("Frm_IPAddress");
+if ("" == ip)
+{
+msg =  getmsg(101);
+ShowErrorForCom("Frm_IPAddress","Fnt_IPAddress",msg);
+return false;
+}
+else if (checkIpAddress(ip,"")!=true)
+{
+msg =  getmsg(108);
+ShowErrorForCom("Frm_IPAddress","Fnt_IPAddress",msg);
+return false;
+}
+else if (ip=="0.0.0.0")
+{
+msg =  getmsg(108);
+ShowErrorForCom("Frm_IPAddress","Fnt_IPAddress",msg);
+return false;
+}
+else
+{
+}
+var mask = getValue("Frm_SubnetMask");
+if ("" == mask)
+{
+msg =  getmsg(101);
+ShowErrorForCom("Frm_SubnetMask","Fnt_SubnetMask",msg);
+return false;
+}
+else if (checkMaskAddress(mask)!=true)
+{
+msg =  getmsg(109);
+ShowErrorForCom("Frm_SubnetMask","Fnt_SubnetMask",msg);
+return false;
+}
+else if (mask=="0.0.0.0")
+{
+msg =  getmsg(109);
+ShowErrorForCom("Frm_SubnetMask","Fnt_SubnetMask",msg);
+return false;
+}
+else
+{
+}
+if (checkIPNet(ip,mask)!=true)
+{
+msg = getmsg(126);
+ShowErrorForCom("Frm_SubnetMask","Fnt_SubnetMask",msg);
+return false;
+}
+var gateway = getValue("Frm_GateWay");
+if ("" == gateway)
+{
+msg =  getmsg(101);
+ShowErrorForCom("Frm_GateWay","Fnt_GateWay",msg);
+return false;
+}
+else if (checkGateway(gateway)== false)
+{
+msg =  getmsg(130);
+ShowErrorForCom("Frm_GateWay","Fnt_GateWay",msg);
+return false;
+}
+else if (gateway=="0.0.0.0")
+{
+msg =  getmsg(130);
+ShowErrorForCom("Frm_GateWay","Fnt_GateWay",msg);
+return false;
+}
+else
+{
+}
+var DNS1=getValue("Frm_DNS1");
+if(DNS1!="")
+{
+if(Check_DNS(DNS1,"Frm_DNS1","Fnt_DNS1")!=true)
+{
+return false;
+}
+}
+var DNS2=getValue("Frm_DNS2");
+if(DNS2!="")
+{
+if(Check_DNS(DNS2,"Frm_DNS2","Fnt_DNS2")!=true)
+{
+return false;
+}
+}
+var DNS3=getValue("Frm_DNS3");
+if(DNS3!="")
+{
+if(Check_DNS(DNS3,"Frm_DNS3","Fnt_DNS3")!=true)
+{
+return false;
+}
+}
+}
+}
+}
+if ( "IPv6" == IpMode || "Both" == IpMode )
+{
+if (0==getValue("Frm_IsAuto"))
+{
+if ( "Static" == getValue("Frm_GuaSrc"))
+{
+if (CheckIPv6(getValue("Frm_Gua1"),"Frm_Gua1",
+"Fnt_Gua1")!=true)
+{
+return false;
+}
+if (Check_IntegerRange(getValue("Frm_Gua1PrefixLen"),1,128,
+"Frm_Gua1PrefixLen","&?ipv6_wan012;")!=true)
+{
+return false;
+}
+}
+if ( "Static" == getValue("Frm_Gateway6Src")
+&& "IP" == getValue("Frm_linkMode") )
+{
+if (CheckIPv6(getValue("Frm_Gateway6"),"Frm_Gateway6",
+"Fnt_Gateway6")!=true)
+{
+return false;
+}
+}
+if ( "Static" == getValue("Frm_DnsSrc"))
+{
+if ("" != getValue("Frm_Dns1v6"))
+{
+if (CheckIPv6(getValue("Frm_Dns1v6"),"Frm_Dns1v6",
+"Fnt_Dns1v6")!=true)
+{
+return false;
+}
+}
+if ("" != getValue("Frm_Dns2v6"))
+{
+if(CheckIPv6(getValue("Frm_Dns2v6"),"Frm_Dns2v6",
+"Fnt_Dns2v6")!=true)
+{
+return false;
+}
+}
+if ("" != getValue("Frm_Dns3v6"))
+{
+if(CheckIPv6(getValue("Frm_Dns3v6"),"Frm_Dns3v6",
+"Fnt_Dns3v6")!=true)
+{
+return false;
+}
+}
+}
+if ("Static" == getValue("Frm_Prefix"))
+{
+if (CheckIPv6(getValue("Frm_PrefixGua1"),"Frm_PrefixGua1",
+"Fnt_PrefixGua1")!=true)
+{
+return false;
+}
+if (Check_IntegerRange(getValue("Frm_PrefixGua1PrefixLen"),
+1,64,"Frm_PrefixGua1PrefixLen","&?ipv6_wan012;")!=true)
+{
+return false;
+}
+}
+}
+}
+}
+return true;
+}
+function pvcCheckValue()
+{
+if ("1" == getValue("IF_Uplink") && getValue("Frm_DslMethod") == "1")
+{
+var oldpvc = getValue("DestAddress");
+var pvc0 = getValue("Frm_DestAddress0");
+var pvc1 = getValue("Frm_DestAddress1");
+if ("new" == pvc0)
+{
+var msg = "";
+var pvcnum = getValue("IF_PVCNUM");
+for(var i=0; i< pvcnum; i++)
+{
+var pvc = getValue("IF_PVC"+i);
+if(pvc1==pvc && pvc1!=oldpvc)
+{
+msg = getmsg(128);
+ShowErrorForCom("Frm_DestAddress1","Fnt_DestAddress1",msg);
+return false;
+}
+}
+}
+else
+{
+if(oldpvc != pvc0)
+{
+msg = getmsg(128);
+ShowErrorForCom("Frm_DestAddress0","Fnt_DestAddress0",msg);
+return false;
+}
+}
+}
+return true;
+}
+function PageSetValue()
+{
+setValue("Enable", "1");
+var WANCType = getValue("Frm_WANCType");
+var pppWancType = getValue("Frm_PPPWANCType");
+var wanc_value=getValue("Frm_WANCName0");
+if (wanc_value==-1)
+{
+setValue("IF_IDENTITY","-1");
+}
+else
+{
+jslSetValue("IF_IDENTITY","Frm_WANCName0");
+}
+jslSetValue("WANCName","Frm_WANCName1");
+jslSetValue("xDslMode","Frm_DslMethod");
+var obj = getObj("Frm_ServList");
+var slname = obj.options[obj.selectedIndex].text;
+setValue("StrServList" , slname);
+setValue("ServList", obj.value);
+if ("1" == getValue("IF_Uplink") && getValue("Frm_DslMethod") == "1")
+{
+if ("new" == getValue("Frm_DestAddress0"))
+{
+jslSetValue("DestAddress","Frm_DestAddress1");
+}
+else
+{
+jslSetValue("DestAddress","Frm_DestAddress0");
+}
+jslSetValue("ATMEncapsulation","Frm_ATMEncapsulation");
+jslSetValue("ATMQoS","Frm_ATMQoS");
+var atm=getValue("Frm_ATMQoS");
+if(atm=="UBR")
+{
+}
+else if(atm=="CBR")
+{
+jslSetValue("ATMPeakCellRate","Frm_ATMPeakCellRate");
+}
+else if(atm=="VBR-rt"||atm=="VBR-nrt")
+{
+jslSetValue("ATMPeakCellRate","Frm_ATMPeakCellRate");
+jslSetValue("ATMSCR","Frm_ATMSCR");
+jslSetValue("ATMMaxBurstSize","Frm_ATMMaxBurstSize");
+setValue("ATMMinCellRate","0");
+}
+else
+{
+}
+}
+if ("BRIDGE"!==getValue("Frm_mode"))
+{
+jslSetValue("MTU","Frm_MTU");
+var linkMode = getValue("Frm_linkMode");
+jslSetValue("IpMode","Frm_IpMode");
+var IPProtol = getValue("Frm_IpMode");
+if ( "PPP" == linkMode)
+{
+jslSetValue("UserName","Frm_UserName");
+jslSetValue("Password","Frm_Password","SET");
+jslSetValue("AuthType","Frm_AuthType");
+jslSetValue("ConnTrigger","Frm_ConnTrigger");
+if ( "OnDemand" == getValue("Frm_ConnTrigger"))
+{
+jslSetValue("IdleTime","Frm_IdleTime");
+}
+if("IPv4" == IPProtol || "Both" == IPProtol)
+{
+if(getChecked("Frm_IsNAT")==true)
+{
+setValue("IsNAT", "1");
+}
+else
+{
+setValue("IsNAT", "0");
+}
+}
+if ("PPPoE" == pppWancType)
+{
+setValue("TransType","PPPoE");
+}
+else if ("PPPoA" == pppWancType)
+{
+setValue("TransType","PPPoA");
+}
+else
+{
+}
+}
+else if ( "IP" == linkMode)
+{
+if("IPv4" == IPProtol || "Both" == IPProtol)
+{
+if(getChecked("Frm_IsNAT")==true)
+{
+setValue("IsNAT", "1");
+}
+else
+{
+setValue("IsNAT", "0");
+}
+if ( "Static" == WANCType || "IPoA" == WANCType ||
+"CIP" == WANCType)
+{
+setValue("Addressingtype","Static");
+jslSetValue("IPAddress","Frm_IPAddress");
+jslSetValue("SubnetMask","Frm_SubnetMask");
+jslSetValue("GateWay","Frm_GateWay");
+if( "" == getValue("Frm_DNS1"))
+{
+setValue("DNS1","0.0.0.0");
+}
+else
+{
+jslSetValue("DNS1","Frm_DNS1");
+}
+if( "" == getValue("Frm_DNS2"))
+{
+setValue("DNS2","0.0.0.0");
+}
+else
+{
+jslSetValue("DNS2","Frm_DNS2");
+}
+if( "" == getValue("Frm_DNS3"))
+{
+setValue("DNS3","0.0.0.0");
+}
+else
+{
+jslSetValue("DNS3","Frm_DNS3");
+}
+}
+else if ("DHCP" == WANCType)
+{
+setValue("Addressingtype","DHCP");
+}
+else
+{
+}
+}
+}
+else
+{
+}
+if ("IPv6" == IPProtol || "Both" == IPProtol)
+{
+var IsAutoValue = getValue("Frm_IsAuto");
+if("2" == IsAutoValue)
+{
+IsAutoValue = 0;
+}
+setValue("IsAuto",IsAutoValue);
+var  IsAuto = getValue("Frm_IsAuto");
+if ( "0" == IsAuto)
+{
+jslSetValue("GuaSrc","Frm_GuaSrc");
+if( "Static"  == getValue("Frm_GuaSrc"))
+{
+if("" == getValue("Frm_Gua1"))
+{
+setValue("Gua1","::");
+setValue("Gua1PrefixLen","0");
+}
+else
+{
+jslSetValue("Gua1","Frm_Gua1");
+jslSetValue("Gua1PrefixLen","Frm_Gua1PrefixLen");
+}
+}
+if ( "IP" == getValue("Frm_linkMode") )
+{
+jslSetValue("Gateway6Src","Frm_Gateway6Src");
+if( "Static" == getValue("Frm_Gateway6Src"))
+{
+if(""==getValue("Frm_Gateway6"))
+{
+setValue("Gateway6","::");
+}
+else
+{
+jslSetValue("Gateway6","Frm_Gateway6");
+}
+}
+}
+jslSetValue("DnsSrc","Frm_DnsSrc");
+if( "Static" == getValue("Frm_DnsSrc"))
+{
+if(""== getValue("Frm_Dns1v6"))
+{
+setValue("Dns1v6","::");
+}
+else
+{
+jslSetValue("Dns1v6","Frm_Dns1v6");
+}
+if(""== getValue("Frm_Dns2v6"))
+{
+setValue("Dns2v6","::");
+}
+else
+{
+jslSetValue("Dns2v6","Frm_Dns2v6");
+}
+if(""==getValue("Frm_Dns3v6"))
+{
+setValue("Dns3v6","::");
+}
+else
+{
+jslSetValue("Dns3v6","Frm_Dns3v6");
+}
+}
+}
+else if("2" == IsAuto)
+{
+setValue("GuaSrc","PPPIPv6CP");
+setValue("DnsSrc","PPPIPv6CP");
+setValue("Gateway6Src","PPPIPv6CP");
+}
+else
+{
+}
+if ( "0" == IsAuto || "1" == IsAuto)
+{
+jslSetValue("PrefixSrc","Frm_Prefix");
+if( "Static"  == getValue("Frm_Prefix"))
+{
+if("" == getValue("Frm_PrefixGua1"))
+{
+setValue("Prefix1","::");
+setValue("Prefix1Len","0");
+}
+else
+{
+jslSetValue("Prefix1","Frm_PrefixGua1");
+jslSetValue("Prefix1Len","Frm_PrefixGua1PrefixLen");
+}
+}
+else if ( "None"  == getValue("Frm_Prefix"))
+{
+setValue("Prefix1","NULL");
+setValue("Prefix1Len","NULL");
+}
+else
+{
+}
+if(getChecked("Frm_IsPdAddr") == true)
+{
+setValue("IsPdAddr","1");
+}
+else
+{
+setValue("IsPdAddr", "0");
+}
+}
+else
+{
+setValue("IsPdAddr", "0");
+}
+setValue("GuaNum", "1");
+setValue("PdNum",  "1");
+}
+setIPv6CP(linkMode,IPProtol);
+}
+if ("IPoA" != WANCType && "CIP" != WANCType && "PPPoA" != pppWancType)
+{
+if(getChecked("Frm_WBDMode")==true)
+{
+setValue("WBDMode", "Tag_Drop");
+jslSetValue("VLANID","Frm_VLANID");
+jslSetValue("Priority","Frm_Priority");
+}
+else
+{
+setValue("WBDMode", "Transparent");
+setValue("VLANID","0");
+setValue("Priority","0");
+}
+}
+if ("1" == getValue("IF_Uplink"))
+{
+if(linkMode == "PPP")
+{
+if ("PPPoE" == pppWancType)
+{
+if("1" == getValue("Frm_DslMethod"))
+{
+setValue("ATMLinkType","EoA");
+}
+else if("2" == getValue("Frm_DslMethod"))
+{
+setValue("PTMLinkType","OE");
+}
+else
+{
+}
+}
+else if ("PPPoA" == pppWancType)
+{
+setValue("ATMLinkType","PPPoA");
+}
+else
+{
+}
+}
+else if(linkMode == "IP")
+{
+if ("Static" == WANCType || "DHCP" == WANCType)
+{
+if("1" == getValue("Frm_DslMethod"))
+{
+setValue("ATMLinkType","EoA");
+}
+else if("2" == getValue("Frm_DslMethod"))
+{
+setValue("PTMLinkType","OE");
+}
+else
+{
+}
+}
+else if ("IPoA" == WANCType)
+{
+setValue("ATMLinkType","IPoA");
+}
+else if ("CIP" == WANCType)
+{
+setValue("ATMLinkType","CIP");
+}
+else
+{
+}
+}
+else
+{
+}
+}
+}
+function setIPv6CP(Linkmode,IPProtol)
+{
+if("PPP" == Linkmode)
+{
+if("IPv6" == IPProtol || "Both" == IPProtol)
+{
+var autoValue = getValue("Frm_IsAuto");
+if("2" == autoValue)
+{
+setValue("IPv6CPExt","1");
+}
+else
+{
+setValue("IPv6CPExt","0");
+}
+}
+else
+{
+setValue("IPv6CPExt","0");
+}
+}
+}
+function PagesetType()
+{
+var type = getValue("Frm_mode");
+if ( "BRIDGE" == type )
+{
+HiddenParaInit(BRIDGE_PARA);
+setValue("IF_WANCTYPE","bridge");
+if("1" == getValue("IF_Uplink") && "2" == getValue("Frm_DslMethod"))
+{
+setValue("PTMLinkType","OE");
+}
+else
+{
+setValue("ATMLinkType","EoA");
+}
+}
+else if ( "Route" == type )
+{
+var linkmode = getValue("Frm_linkMode");
+if ( "PPP" == linkmode)
+{
+HiddenParaInit(PPP_PARA);
+setValue("IF_WANCTYPE","pppoe");
+}
+else if ( "IP" == linkmode)
+{
+HiddenParaInit(IP_PARA);
+setValue("IF_WANCTYPE","dhcp/static");
+}
+else
+{
+}
+}
+else
+{
+}
+}
+function  ReSetPVCRmZero(ID)
+{
+var pvc = getValue(ID);
+var parts = pvc.split("/");
+var msg;
+var obj;
+if(parts.length!=2)
+{
+return false;
+}
+for(i = 0;i < parts.length; i++)
+{
+obj = parts[i];
+if(obj != null &&  obj != "")
+{
+while(obj.indexOf("0") == 0 && obj.length > 1)
+{
+obj = obj.substr(1);
+}
+parts[i]=obj;
+}
+if(i==0)
+{
+msg = parts[i];
+}
+else
+{
+var msg = parts[i-1]+"/"+parts[i];
+}
+}
+setValue(ID,msg);
+}
+function pageAdd()
+{
+ReSetIpRmZero("Frm_IPAddress","Frm_SubnetMask","Frm_GateWay",
+"Frm_DNS1","Frm_DNS2","Frm_DNS3");
+ReSetValueRmZero("Frm_ATMPeakCellRate","Frm_ATMSCR","Frm_ATMMaxBurstSize",
+"Frm_IdleTime","Frm_MaxUser","Frm_VLANID","Frm_MTU",
+"Frm_Gua1PrefixLen");
+ReSetPVCRmZero("Frm_DestAddress1");
+if (true == PageCheckValue())
+{
+setValue("IF_ACTION","new");
+PagesetType();
+PageSetValue();
+DisableALL();
+getObj("fSubmit").submit();
+}
+}
+function pageCancel()
+{
+DisableALL();
+setValue("IF_ACTION","");
+document.getElementById("fSubmit").submit();
+}
+function pageEdit()
+{
+ReSetIpRmZero("Frm_IPAddress","Frm_SubnetMask","Frm_GateWay","Frm_DNS1",
+"Frm_DNS2","Frm_DNS3");
+ReSetValueRmZero("Frm_ATMPeakCellRate","Frm_ATMSCR","Frm_ATMMaxBurstSize",
+"Frm_IdleTime","Frm_MaxUser","Frm_VLANID","Frm_MTU",
+"Frm_Gua1PrefixLen");
+ReSetPVCRmZero("Frm_DestAddress1");
+if (true == PageCheckValue() && true == pvcCheckValue())
+{
+setValue("IF_ACTION","edit");
+jslSetValue("IF_IDENTITY","Frm_WANCName0");
+PagesetType();
+PageSetValue();
+DisableALL();
+getObj("fSubmit").submit();
+}
+}
+function pageDel()
+{
+jslSetValue("IF_IDENTITY","Frm_WANCName0");
+setValue("IF_ACTION","delete");
+DisableALL();
+if ("1" == getValue("IF_Uplink"))
+{
+if(getValue("Frm_DslMethod") == "1")
+{
+setValue("xDslMode","1");
+}
+else if(getValue("Frm_DslMethod") == "2")
+{
+setValue("xDslMode","2");
+}
+else
+{
+}
+}
+getObj("fSubmit").submit();
+}
+function DisPlayATM()
+{
+var img=getObj("Frm_ATM").src;
+var tmp = img.substring(img.length-6,img.length);
+if ("up.gif" == tmp)
+{
+getObj("Frm_ATM").src="img/down.gif";
+jslDiDisplay("TR_DestAddress0","TR_DestAddress1","TR_ATMEncapsulation",
+"TR_ATMQoS","TR_pcr","TR_scr","TR_mbs");
+}
+else
+{
+getObj("Frm_ATM").src="img/up.gif";
+Change_PVC();
+jslEnDisplay("TR_DestAddress0","TR_ATMEncapsulation","TR_ATMQoS");
+Change_type();
+}
+}
+function DisPlayPPP()
+{
+var img=getObj("Frm_PPP").src;
+var tmp = img.substring(img.length-6,img.length);
+var LinkMode = getValue("Frm_linkMode");
+var PPPWANCType = getValue("Frm_PPPWANCType");
+if ("up.gif" == tmp)
+{
+getObj("Frm_PPP").src="img/down.gif";
+jslDiDisplay("TR_UserName","TR_Password","TR_AuthType",
+"TR_ConnTrigger","TR_IdleTime");
+}
+else
+{
+getObj("Frm_PPP").src="img/up.gif";
+jslEnDisplay("TR_UserName","TR_Password","TR_AuthType","TR_ConnTrigger");
+Change_Dialup();
+}
+}
+function DisPlayIPv4()
+{
+var img=getObj("Frm_IPv4").src;
+var tmp = img.substring(img.length-6,img.length);
+if ("up.gif" == tmp)
+{
+getObj("Frm_IPv4").src="img/down.gif";
+jslDiDisplay("TR_nat");
+}
+else
+{
+getObj("Frm_IPv4").src="img/up.gif";
+jslEnDisplay("TR_nat");
+}
+}
+function DisPlayIPv4Static()
+{
+var img=getObj("Frm_IPv4Static").src;
+var tmp = img.substring(img.length-6,img.length);
+if ("up.gif" == tmp)
+{
+getObj("Frm_IPv4Static").src="img/down.gif";
+jslDiDisplay("TR_IPAddress","TR_SubnetMask",
+"TR_GateWay","TR_DNS1","TR_DNS2","TR_DNS3");
+jslDiDisplay("TR_nat");
+}
+else
+{
+getObj("Frm_IPv4Static").src="img/up.gif";
+var linkmode = getValue("Frm_linkMode");
+if(linkmode == "PPP")
+{
+jslEnDisplay("TR_nat", "TABLE_static");
+jslDiDisplay("TR_IPAddress","TR_SubnetMask","TR_GateWay",
+"TR_DNS1","TR_DNS2","TR_DNS3");
+}
+else if(linkmode == "IP")
+{
+var WANCType = getValue("Frm_WANCType");
+if(WANCType == "DHCP")
+{
+jslEnDisplay("TR_nat", "TABLE_static");
+jslDiDisplay("TR_IPAddress","TR_SubnetMask","TR_GateWay",
+"TR_DNS1","TR_DNS2","TR_DNS3");
+}
+else
+{
+jslEnDisplay("TR_IPAddress","TR_SubnetMask",
+"TR_GateWay","TR_DNS1","TR_DNS2","TR_DNS3");
+jslEnDisplay("TR_nat");
+}
+}
+else
+{
+}
+}
+}
+function DisPlayIPv6()
+{
+var img=getObj("Frm_IPv6").src;
+var tmp = img.substring(img.length-6,img.length);
+if ("up.gif" == tmp)
+{
+getObj("Frm_IPv6").src="img/down.gif";
+jslDiDisplay("TR_IsAuto","TR_GuaSrc","TR_Gua1","TR_Gateway6Src",
+"TR_Gateway6","TR_DNSv6","TR_Dns1v6",
+"TR_Dns2v6","TR_Dns3v6","TR_Prefix","TR_IsPdAddr",
+"TR_PrefixGua1");
+}
+else
+{
+getObj("Frm_IPv6").src="img/up.gif";
+jslEnDisplay("TR_IsAuto");
+Change_IsAuto();
+}
+}
+function PPP_connect()
+{
+setValue("IF_IDENTITY",getValue("Frm_WANCName0"));
+setValue("IF_ACTION", "PPPCONNECT");
+DisableALL();
+getObj("fSubmit").submit();
+}
+function PPP_disconnect()
+{
+setValue("IF_IDENTITY",getValue("Frm_WANCName0"));
+setValue("IF_ACTION", "PPPDISCONNECT");
+DisableALL();
+getObj("fSubmit").submit();
+}
+function dhcp_release()
+{
+setValue("IF_IDENTITY",getValue("Frm_WANCName0"));
+setValue("IF_ACTION", "DHCPRELEASE");
+DisableALL();
+getObj("fSubmit").submit();
+}
+function dhcp_renew()
+{
+setValue("IF_IDENTITY",getValue("Frm_WANCName0"));
+setValue("IF_ACTION", "DHCPRENEW");
+DisableALL();
+getObj("fSubmit").submit();
+}
+function check_nat()
+{
+if(getValue("IsNAT")=="1")
+{
+setChecked("Frm_IsNAT",true);
+}
+else if(getValue("IsNAT")=="0")
+{
+setChecked("Frm_IsNAT",false);
+}
+else
+{
+setChecked("Frm_IsNAT",true);
+}
+}
+function showbylegend(imgid, tr_id)
+{
+var img=getObj(imgid).src;
+var tmp = img.substring(img.length-6,img.length);
+if ("up.gif" == tmp)
+{
+jslEnDisplay(tr_id);
+}
+}
+function Change_Prefix()
+{
+if("None" == getValue("Frm_Prefix"))
+{
+jslDiDisplay("TR_PrefixGua1","TR_IsPdAddr");
+}
+else if( "Static" == getValue("Frm_Prefix"))
+{
+jslEnDisplay("TR_PrefixGua1","TR_IsPdAddr");
+}
+else
+{
+jslDiDisplay("TR_PrefixGua1");
+jslEnDisplay("TR_IsPdAddr");
+}
+}
+</script>

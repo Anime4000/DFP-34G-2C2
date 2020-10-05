@@ -1,0 +1,397 @@
+<%
+IMPORT FILE "IPv46_wanctype_gch.gch";
+IMPORT FILE "IPv46_net_wan_conf_js.gch";
+%>
+<div id="note" class="space_0" style="display:none">
+<table width="450px" border="0" class="table">
+<tbody>
+<tr>
+<td style="width:30px;"><img src="img/info.gif"></td>
+<td height="18" align="left" style="padding-left:10px;">&?wan096;</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="ppp_note" class="space_0" style="display:none">
+<table width="450px" border="0" class="table">
+<tbody>
+<tr>
+<td style="width:30px;"><img src="img/info.gif"></td>
+<td height="18" align="left" style="padding-left:10px;">&?wan100;</td>
+</tr>
+</tbody>
+</table>
+</div>
+<table id="TABLE_WANCNAME" class="table" width="450px" border="0">
+<tr>
+<td class="td1">&?wan001;</td>
+<td class="td2" >
+<select size="1" class="list_10" id="Frm_WANCName0" onchange="Change_Link()">
+</select>
+</td>
+</tr>
+<tr id="TR_WANCName1">
+<td class="td1"><font id="Fnt_WANCName1">&?wan003;</font></td>
+<td class="td2"><input type="text" id="Frm_WANCName1" value="" class="inputId"/ ></td>
+</tr>
+<!--xDSL 传输模式-->
+<tr id="TR_DslMethod" style="display:none">
+<td class="td1"><font id="Fnt_DslMethod">&?wan097;</font></td>
+<td class="td2">
+<select size="1" class="list_10" id="Frm_DslMethod" onchange="Change_xDslType()">
+</select>
+</td>
+</tr>
+</table>
+<table id="TABLE_ATM" class="table" width="450px" border="0"  style="display:none">
+<tr><td><fieldset>
+<legend style="color:#000000"><img src="img/up.gif" id="Frm_ATM" onclick="DisPlayATM()"></legend>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+<td height="5">&nbsp;</td>
+</tr>
+<!--PVC-->
+<tr id="TR_DestAddress0">
+<td class="td1"><font id="Fnt_DestAddress0">&?wan008;</font></td>
+<td class="td2">
+<select size="1" class="list_10" id="Frm_DestAddress0" onchange="Change_PVC()">
+<option value="new">&?wan007;</option>
+</select>
+</td>
+</tr>
+<tr id="TR_DestAddress1">
+<td class="td1"><font id="Fnt_DestAddress1">&?wan009;</font></td>
+<td class="td2"><input name="Frm_DestAddress1" type="text" id="Frm_DestAddress1" value="" class="inputId" /></td>
+</tr>
+<!--封装类型-->
+<tr id="TR_ATMEncapsulation">
+<td class="td1">&?wan067;</td>
+<td class="td2">
+<select size="1" class="list_10" id="Frm_ATMEncapsulation">
+<option value="LLC">LLC</option>
+<option value="VCMUX">VCMUX</option>
+</select>
+</td>
+</tr>
+<!--服务类别-->
+<tr id="TR_ATMQoS">
+<td class="td1">&?wan010;</td>
+<td class="td2">
+<select size="1" class="list_10" id="Frm_ATMQoS" onchange="Change_type()">
+<option value="UBR" selected="selected">&?wan011;</option>
+<option value="CBR">&?wan012;</option>
+<option value="VBR-nrt">&?wan013;</option>
+<option value="VBR-rt">&?wan014;</option>
+</select>
+</td>
+</tr>
+<tr id="TR_pcr" style="display:none">
+<td class="td1"><font id="Fnt_ATMPeakCellRate">&?wan015;</font></td>
+<td class="td2"><input type="text" id="Frm_ATMPeakCellRate" value="" class="inputId"/ >cps</td>
+</tr>
+<tr id="TR_scr" style="display:none">
+<td class="td1"><font id="Fnt_ATMSCR">&?wan016;</font></td>
+<td class="td2"><input type="text" id="Frm_ATMSCR" value="" class="inputId" />cps</td>
+</tr>
+<tr id="TR_mbs" style="display:none">
+<td class="td1"><font id="Fnt_ATMMaxBurstSize">&?wan017;</font></td>
+<td class="td2"><input type="text" id="Frm_ATMMaxBurstSize" value="" class="inputId" />cells</td>
+</tr>
+<tr>
+<td height="5">&nbsp;</td>
+</tr>
+</table>
+</fieldset></td></tr>
+</table>
+<table id="TABLE_Public" class="table" width="450px" border="0">
+<!--启用VLAN-->
+<tr id="TR_WBDMode">
+<td class="td1">&?wan066;</td>
+<td class="td2"><input  name="Frm_WBDMode" type="checkbox" value="" id="Frm_WBDMode"  onclick="Change_WBDMode()"/></td>
+</tr>
+<tr id="TR_VLANID"  style="display:none">
+<td class="td1"><font id="Fnt_VLANID">&?wan065;</font></td>
+<td class="td2"><input type="text" name="Frm_VLANID" id="Frm_VLANID" class="inputId"/></td>
+</tr>
+<tr id="TR_PRO"  style="display:none">
+<td class="td1">&?wan057;</td>
+<td class="td2">
+<select size="1" class="list_10" id="Frm_Priority">
+<option value="0">0</option>
+<option value="1">1</option>
+<option value="2">2</option>
+<option value="3">3</option>
+<option value="4">4</option>
+<option value="5">5</option>
+<option value="6">6</option>
+<option value="7">7</option>
+</select>
+</td>
+</tr>
+<tr id="TR_mode">
+<td class="td1">&?wan004;</td>
+<td class="td2">
+<select size="1" class="list_10" id="Frm_mode" onchange="Change_mode()">
+<option value="Route" select>Route</option>
+</select>
+</td>
+</tr>
+<!--servlist-->
+<tr>
+<td class="td1">&?wan101;</td>
+<td class="td2">
+<select size="1" class="list_11" id="Frm_ServList" onclick="Change_servList()">
+</select>
+</td>
+</tr>
+<!--MTU-->
+<tr id="TR_MTU">
+<td class="td1"><font id="Fnt_MTU">MTU</font></td>
+<td class="td2"><input type="text" id="Frm_MTU" value="" class="inputId" /></td>
+</tr>
+<tr id="TR_linkMode">
+<td class="td1">&?ipv6_wan013;</td>
+<td class="td2">
+<select size="1" class="list_10" id="Frm_linkMode" onchange="Change_linkMode()">
+<option value="PPP">PPP</option>
+<option value="IP">IP</option>
+</select>
+</td>
+</tr>
+</table>
+<table class="table" width="450px" border="0" id="TABLE_PPP">
+<tr><td><fieldset><legend style="color:#000000">PPP&nbsp;&nbsp;<img src="img/up.gif" id="Frm_PPP" onclick="DisPlayPPP()"></legend>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<!--用户名和密码 -->
+<tr id="TR_UserName">
+<td class="td1"><font id="Fnt_UserName">&?wan019;</font></td>
+<td class="td2"><input type="text" id="Frm_UserName" value="" class="inputId"/></td>
+</tr>
+<tr id="TR_Password">
+<td class="td1"><font id="Fnt_Password">&?va02;</font></td>
+<td class="td2"><input type="password" id="Frm_Password" value="" class="inputId"/></td>
+</tr>
+<!--认证类型 -->
+<tr id="TR_AuthType">
+<td class="td1">&?wan021;</td>
+<td class="td2">
+<select size="1" class="list_10" id="Frm_AuthType">
+<option value="PAP,CHAP,MS-CHAP">&?wan022;</option>
+<option value="PAP">&?wan023;</option>
+<option value="CHAP">&?wan024;</option>
+</select>
+</td>
+</tr>
+<tr id="TR_ConnTrigger">
+<td class="td1">&?wan025;</td>
+<td class="td2" >
+<select size="1" class="list_10" id="Frm_ConnTrigger" onchange="Change_Dialup()">
+</select>
+</td>
+</tr>
+<tr id="TR_IdleTime">
+<td class="td1"><font id="Fnt_IdleTime">&?wan028;</font></td>
+<td class="td2"><input size="1" class="inputId" id="Frm_IdleTime" value="">&?wan029;</td>
+</tr>
+<tr>
+<td height="5">&nbsp;</td>
+</tr>
+</table>
+</fieldset></td></tr>
+</table>
+<table  id="TestContent" class="table" width="450px" border="0">
+<tr id="TR_IpMode">
+<td class="td1">&?ipv6_wan014;</td>
+<td class="td2">
+<select size="1" class="list_10" id="Frm_IpMode" onchange="Change_IpMode()">
+<option value="IPv4">IPv4</option>
+<%
+if ( 0 != getenv("DevIPv6Effect") )
+{
+%>
+<option value="IPv6">IPv6</option>
+<%
+}
+%>
+<option value="Both">IPv4/v6</option>
+</select>
+</td>
+</tr>
+<tr id="TR_onlyIpv4"  style="display:none">
+<td class="td1">&?ipv6_wan014;</td>
+<td class="td2">
+<select size="1" class="list_10" id="Frm_onlyIpv4">
+<option value="IPv4">IPv4</option>
+</select>
+</td>
+</tr>
+<tr id="TR_PPPWANCType">
+<td class="td1">&?ipv6_wan025;</td>
+<td class="td2">
+<select size="1" class="list_10" id="Frm_PPPWANCType" onchange="Change_PPPWANCType()"></select>
+</td>
+</tr>
+<tr id="TR_WANCType">
+<td class="td1">&?ipv6_wan026;</td>
+<td class="td2">
+<select size="1" class="list_10" id="Frm_WANCType" onchange="Change_WANCType()"></select>
+</td>
+</tr>
+</table>
+<!--ipv4的参数设置-->
+<table class="table" width="450px" border="0" id="TABLE_static" style="display:none">
+<tr><td><fieldset><legend style="color:#000000">IPv4&nbsp;&nbsp;<img src="img/up.gif" id="Frm_IPv4Static" onclick="DisPlayIPv4Static()"></legend>
+<table width="100%" border="0" cellspacing="0" cellpadding="0" id="TABLE_nat">
+<!--NAT-->
+<tr id="TR_nat">
+<td class="td1">&?wan006;</td>
+<td class="td2"><input name="Frm_IsNAT" type="checkbox" value="" id="Frm_IsNAT"/></td>
+</tr>
+<tr>
+<td height="5">&nbsp;</td>
+</tr>
+</table>
+<table width="100%" border="0" cellspacing="0" cellpadding="0" align="center" id="TABLE_static2">
+<tr id="TR_IPAddress">
+<td class="td1"><font id="Fnt_IPAddress">&?wan035;</font></td>
+<td class="td2"><input type="text" id="Frm_IPAddress" value="" class="inputId"/></td>
+</tr>
+<tr id="TR_SubnetMask">
+<td class="td1"><font id="Fnt_SubnetMask">&?wan036;</font></td>
+<td class="td2"><input type="text" id="Frm_SubnetMask" value="" class="inputId"/></td>
+</tr>
+<tr id="TR_GateWay">
+<td class="td1"><font id="Fnt_GateWay">&?wan037;</font></td>
+<td class="td2"><input type="text" id="Frm_GateWay" value="" class="inputId"/></td>
+</tr>
+<tr id="TR_DNS1">
+<td class="td1"><font id="Fnt_DNS1">&?wan038;</font></td>
+<td class="td2"><input type="text" id="Frm_DNS1" value="" class="inputId"/></td>
+</tr>
+<tr id="TR_DNS2">
+<td class="td1"><font id="Fnt_DNS2">&?wan039;</font></td>
+<td class="td2"><input type="text" id="Frm_DNS2" value="" class="inputId"/></td>
+</tr>
+<tr  id="TR_DNS3">
+<td class="td1"><font id="Fnt_DNS3">&?wan040;</font></td>
+<td class="td2"><input type="text" id="Frm_DNS3" value="" class="inputId"/></td>
+</tr>
+<tr>
+<td height="5">&nbsp;</td>
+</tr>
+</table>
+</fieldset></td></tr>
+</table>
+<!--IPv6的参数设置-->
+<table class="table" width="450px" border="0" id="TABLE_ipv6" style="display:none">
+<tr><td><fieldset><legend style="color:#000000">IPv6&nbsp;&nbsp;<img src="img/up.gif" id="Frm_IPv6" onclick="DisPlayIPv6()"></legend>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr id="TR_IsAuto">
+<td class="td1"><font id="Fnt_IPv6Addr">&?ipv6_wan015;</font></td>
+<td class="td2">
+<select size="1" class="list_10" id="Frm_IsAuto" onchange="Change_IsAuto()">
+</select>
+</td>
+</tr>
+<tr id="TR_GuaSrc" style="display:none">
+<td class="td1"><font id="Fnt_GuaSrc">&?ipv6_wan002;</font></td>
+<td class="td2">
+<select size="1" class="list_10" id="Frm_GuaSrc" onchange="Change_GuaSrc()">
+<option value="None"></option>
+<option value="SLAAC">&?ipv6_wan004;</option>
+<option value="Static">&?ipv6_wan003;</option>
+<option value="DHCP">&?ipv6_wan005;</option>
+</select>
+</td>
+</tr>
+<tr id="TR_Gua1" style="display:none">
+<td class="td1"><font id="Fnt_Gua1">&?ipv6_wan006;</font></td>
+<td class="td2"><input type="text" id="Frm_Gua1" value="" class="inputId"/>
+/<input type="text" id="Frm_Gua1PrefixLen" value="" class="inputId7"/>
+</td>
+</tr>
+<tr id="TR_Gateway6Src" style="display:none">
+<td class="td1"><font id="Fnt_Gateway6Src">&?ipv6_wan007;</font></td>
+<td class="td2">
+<select size="1" class="list_10" id="Frm_Gateway6Src" onchange="Change_Gateway6Src()">
+<option value="None"></option>
+<option value="SLAAC">&?ipv6_wan004;</option>
+<option value="Static">&?ipv6_wan003;</option>
+</select>
+</td>
+</tr>
+<tr id="TR_Gateway6" style="display:none">
+<td class="td1"><font id="Fnt_Gateway6">&?ipv6_wan006;</font></td>
+<td class="td2"><input type="text" id="Frm_Gateway6" value="" class="inputId"/></td>
+</tr>
+<tr id="TR_DNSv6" style="display:none">
+<td class="td1"><font id="Fnt_DnsSrc">&?ipv6_wan008;</font></td>
+<td class="td2">
+<select size="1" class="list_10" id="Frm_DnsSrc" onchange="Change_DnsSrc()">
+<option value="None"></option>
+<option value="SLAAC">&?ipv6_wan004;</option>
+<option value="Static">&?ipv6_wan003;</option>
+<option value="DHCP">&?ipv6_wan005;</option>
+</select>
+</td>
+</tr>
+<tr id="TR_Dns1v6" style="display:none">
+<td class="td1"><font id="Fnt_Dns1v6">&?wan038;</font></td>
+<td class="td2"><input type="text" id="Frm_Dns1v6" value="" class="inputId"/></td>
+</tr>
+<tr id="TR_Dns2v6" style="display:none">
+<td class="td1"><font id="Fnt_Dns2v6">&?wan039;</font></td>
+<td class="td2"><input type="text" id="Frm_Dns2v6" value="" class="inputId"/></td>
+</tr>
+<tr id="TR_Dns3v6" style="display:none">
+<td class="td1"><font id="Fnt_Dns3v6">&?wan040;</font></td>
+<td class="td2"><input type="text" id="Frm_Dns3v6" value="" class="inputId"/></td>
+</tr>
+<tr id="TR_Prefix" style="display:none">
+<td class="td1"><font id="Fnt_Prefix">&?ipv4v6_wan001;</font></td>
+<td class="td2">
+<select size="1" class="list_10" id="Frm_Prefix" onchange="Change_Prefix()">
+<option value="None"></option>
+<option value="Static">&?ipv6_wan003;</option>
+<option value="DHCP" selected>&?ipv6_wan005;</option>
+</select>
+</td>
+</tr>
+<tr id="TR_PrefixGua1" style="display:none">
+<td class="td1"><font id="Fnt_PrefixGua1">&?ipv6_wan006;</font></td>
+<td class="td2"><input type="text" id="Frm_PrefixGua1" value="" class="inputId"/>
+/ <input type="text" id="Frm_PrefixGua1PrefixLen" value="" class="inputId7"/>
+</td>
+</tr>
+<tr id="TR_IsPdAddr">
+<td class="td1">&?ipv4v6_wan002;</td>
+<td class="td2"><input  name="Frm_IsPdAddr" type="checkbox" value="" id="Frm_IsPdAddr" /></td>
+</tr>
+<tr>
+<td height="5">&nbsp;</td>
+</tr>
+</table>
+</fieldset></td></tr>
+</table>
+<!--ppp的按钮设置-->
+<table class="table" width="450px" border="0" id="TABLE_PPPBtn"  style="display:none">
+<tr id="TR_connect">
+<td class="td7" colspan="2">
+<input name="Btn_Connect" id="Btn_Connect" type="button" class="button2" value="&?btn008;" onclick="PPP_connect()" />
+<input name="Btn_Disconnect" id="Btn_Disconnect" type="button"  class="button5" value="&?btn009;" onclick="PPP_disconnect()" />
+</td>
+</tr>
+</table>
+<!--dhcp的参数设置-->
+<table class="table" width="450px" border="0" id="TABLE_dhcp" style="display:none">
+<tr>
+<td height="5">&nbsp;</td>
+</tr>
+<tr>
+<td class="td7" colspan="2">
+<input name="Btn_Release" id="Btn_Release" type="button" class="button2" value="&?btn010;" onclick="dhcp_release()" />
+<input name="Btn_Renew" id="Btn_Renew" type="button"  class="button2" value="&?btn011;" onclick="dhcp_renew()" />
+</td>
+</tr>
+</table>
+<div id="div4"></div>

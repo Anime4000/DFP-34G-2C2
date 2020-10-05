@@ -1,0 +1,307 @@
+<%
+var login_err_msg       = getenv("request/login_err_msg");
+var is_login_blocked    = getenv("request/is_login_blocked");
+var login_monotonic_id  = getenv("request/login_monotonic_id");
+var language            = getenv("request/language");
+var langclass           = getenv("request/langclass");
+var styleback           = getenv("request/styleback");
+var head      = "<!DOCTYPE html PUBLIC \"-\/\/W3C\/\/DTD XHTML 1.0 Transitional\/\/EN\"";
+var head1     = "\"http:\/\/www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">";
+var head_html = "<html xmlns=\"http:\/\/www.w3.org/1999/xhtml\">";
+=head + head1;
+=head_html;
+var upload_login_flag = getenv("UPLOAD_LOGIN");
+unsetenv("UPLOAD_LOGIN");
+%>
+<head>
+<META HTTP-EQUIV="pragma" CONTENT="no-cache">
+<META HTTP-EQUIV="Cache-Control" CONTENT="no-cache, must-revalidate">
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta http-equiv="Content-Type" content="text/html; charset=&?LANG;" />
+<title><%=getenv("WEBTitle");%></title>
+<LINK REL="stylesheet" HREF='<%=getenv("css_path_login");%>' TYPE="text/css" />
+<LINK REL="stylesheet" HREF="&?csslang;" TYPE="text/css" />
+<script>
+<%
+if (upload_login_flag == "1") {
+%>
+top.location.href = "/";
+<%
+}
+%>
+function getObj(id)
+{
+return(document.getElementById(id));
+}
+var SetTFlag = 0;
+var maxtime;
+var interval;
+function setTime()
+{
+if(window.name>=60 || window.name<0 || window.name=="")
+{
+maxtime = Math.min(60, <%=getenv("errLoginTime");%> + 60 - <%=timestamp();%>);
+}
+else
+{
+maxtime = window.name;
+}
+if(maxtime>=0)
+{
+seconds = maxtime;
+getObj("time").innerHTML=seconds+"&?login005;";
+if (maxtime == 0)
+{
+setDisable();
+SetTFlag =0;
+window.name="";
+if(interval)
+{
+clearInterval(interval);
+interval = 0;
+}
+}
+else
+{
+--maxtime;
+SetTFlag = 1;
+window.name = maxtime;
+}
+}
+}
+function setinner(type)
+{
+if (SetTFlag ==0)
+{
+getObj("myLayer").style.visibility = type ;
+}
+}
+function Transfer_meaning(id,value)
+{
+getObj(id).value=value;
+}
+function ChangeLang()
+{
+var lang = "<%=language;%>";
+getObj("_lang").disabled = false;
+getObj("Frm_Username").disabled = true;
+getObj("Frm_Password").disabled = true;
+if(true != getObj("TestLang01").disabled)
+{
+if ("English" == lang)
+{
+getObj("_lang").value = "Chinese";
+}
+else if ("Chinese" == lang)
+{
+getObj("_lang").value = "English";
+}
+getObj("action").value = "setlang";
+getObj("Frm_Username").disabled = true;
+getObj("Frm_Password").disabled = true;
+getObj("LoginId").disabled = true;
+document.fLogin.submit();
+}
+}
+function focusUsername()
+{
+if (getObj("Frm_Username").disabled == false)
+{
+getObj("Frm_Username").focus();
+}
+}
+</script>
+</head>
+<%
+%>
+<body onload = "focusUsername();">
+<div id="container">
+<div id="myLayer" onmousedown="setinner('hidden')">
+<table  bgcolor="#FFFFFF"><tr><td>
+<iframe id="myiframe" style="position: absolute; width: 179px; height: 88px; border: 1px none #000000; z-index: -1; filter:alpha(opacity=0); -moz-opacity:0">
+</iframe>
+<div id="layer_login_title">
+<div style="position:relative; left:35px; top:8px;" >
+<font  class="note" id="errnote">&nbsp;&?ErrRep;</font>
+</div>
+</div>
+<div id="layer_login_content">
+<span>
+&nbsp;&nbsp;<font id="errmsg" class="notecontent" ></font><span id="time" style="color:red;display:none;"></span>
+</span>
+</div>
+</table></tr></td>
+</div>
+<!--head部分开始-->
+<div id="head" style="display:none;">
+<div class="type"><font id=""><%=getenv("WEBTitle");%></font></div>
+<div id="banner"></div>
+</div>
+<!--head部分结束-->
+<!--content部分开始-->
+<div id="loginArea">
+<form name="fLogin" id="fLogin" method="post"  onsubmit="return false;" action="">
+<input type="hidden" name="_lang" id="_lang" value="" disabled>
+<input type="hidden" name="frashnum" id="frashnum" value="">
+<input type="hidden" name="action" id="action" value="login">
+<input type="hidden" name="Frm_Logintoken" id="Frm_Logintoken" value="">
+<!--内容开始-->
+<div class="login_frame">
+<div class="logintitle">
+<table width="100%" height="100%"><tr>
+<td width="75%">&?login001;</td>
+<td>
+<%
+
+
+if (get_config("lang") == "Y")
+{
+%>
+<a id="TestLang" style="cursor:pointer" href="#" >
+<span id="TestLang01" style="<%=styleback;%>" onclick="ChangeLang();">
+<%
+if ("English" == language)
+{
+= "中文";
+}
+else
+{
+= "English";
+}
+%>
+</span>
+</a>
+<%}%>
+</td>
+</tr></table>
+</div>
+<div class="content login_content">
+<ul class="login_ul_1">
+<li class="login_li_2">
+<table width="100%"><tr>
+<td width="35%">
+<span>&?login002;</span>
+</td>
+<td>
+<input type="text" class="logininput" name="Username" id="Frm_Username">
+</td>
+</tr></table>
+</li>
+</ul>
+<ul class="login_ul_1">
+<li class="login_li_2">
+<table width="100%"><tr>
+<td width="35%">
+<span>&?login003;</span>
+</td>
+<td>
+<input type="password" class="loginpassword" name="Password"  id="Frm_Password">
+</td>
+</tr></table>
+</li>
+<li class="login_li_3">
+<table width="100%"><tr>
+<td width="55%">
+<input class="loginbtn" type="submit"  id="LoginId"  value="&?login004;"  onclick="dosubmit()">
+</td>
+<td>
+<input class="loginbtn" type="reset"  id="LoginReset"  value="&?login015;" >
+</td>
+</tr></table>
+</li>
+</ul>
+</div>
+</div>
+<!--内容结束-->
+</form>
+</div>
+<!--bottom部分开始-->
+<%
+if(get_config("hideCopyRight")!="Y")
+{
+%>
+<div style="font-family: Arial;font-size: 12px;text-align:center;width:100%;position:absolute;top:385px;"> &?CopyRight; </div>
+<%
+}
+%>
+<div class="bottom_line" style="display:none;"></div>
+<div id="bottomx" style="display:none;"></div>
+<!--bottom部分结束-->
+</div>
+</body>
+</html>
+<script>
+<%
+if (login_err_msg != "")
+{
+%>
+getObj("errmsg").innerHTML = "<%=login_err_msg;%>";
+getObj("myLayer").style.visibility = "visible" ;
+<%
+}
+if(is_login_blocked == 1)
+{
+%>
+SetDisabled();
+<%
+}
+else
+{
+%>
+window.name="";
+<%
+}
+%>
+function SetDisabled()
+{
+getObj("errmsg").innerHTML = "&?1003;";
+getObj("Frm_Username").disabled = true;
+getObj("Frm_Password").disabled = true;
+getObj("LoginId").disabled = true;
+<%
+if (get_config("lang") == "Y")
+{
+%>
+getObj("TestLang01").disabled = true;
+<%
+}
+%>
+getObj("myLayer").style.visibility = "visible" ;
+getObj("time").style.display = "" ;
+interval = setInterval("setTime()",1000);
+}
+function setDisable()
+{
+if (SetTFlag == 1)
+{
+getObj("Frm_Username").disabled = false;
+getObj("Frm_Password").disabled = false;
+getObj("LoginId").disabled = false;
+<%
+if (get_config("lang") == "Y")
+{
+%>
+getObj("TestLang01").disabled = false;
+<%
+}
+%>
+getObj("time").style.display = "none";
+getObj("myLayer").style.visibility = "hidden";
+}
+}
+function dosubmit()
+{
+if (getObj("Frm_Username").value == "")
+{
+getObj("errmsg").innerHTML = "&?1001;";
+getObj("myLayer").style.visibility = "visible" ;
+return;
+}
+else
+{
+getObj("LoginId").disabled = true;
+getObj("Frm_Logintoken").value = "<%=login_monotonic_id;%>";
+document.fLogin.submit();
+}
+}
+</script>

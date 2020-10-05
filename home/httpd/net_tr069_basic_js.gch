@@ -1,0 +1,360 @@
+<script language="javascript">
+var TR069_PARA = new Array(
+"URL",
+"UserName",
+"UserPassword",
+"PeriodicInformEnable",
+"PeriodicInformInterval",
+"ParameterKey",
+"ConnectionRequestURL",
+"ConnectionRequestUsername",
+"ConnectionRequestPassword",
+"UpgradesManaged",
+"DefaultWan",
+"SupportCertAuth"
+);
+var webEnable = "<%=getenv("Tr069WebConfigEnable");%>";
+function pageLoad(url)
+{
+getObj("fSubmit").action = url;
+var errstr= getValue("IF_ERRORSTR");
+if("009" == errstr)
+{
+errstr = "SUCC";
+}
+var errpara = getValue("IF_ERRORPARAM");
+OldProcessRet(errstr, errpara);
+moveErrLayer(580,120);
+pageGetValue();
+}
+
+
+function getmsg(id)
+{
+
+var str      = new Array();
+str[0]   = new Array(101, "&?error_101;");
+str[1]   = new Array(102, "&?error_102;");
+str[2]   = new Array(103, "&?error_103;");
+str[3]   = new Array(105, "&?error_105;");
+str[4]   = new Array(115, "&?error_115;");
+str[5]   = new Array(116, "&?error_116;");
+str[6]   = new Array(117, "&?error_117;");
+str[7]   = new Array(118, "&?error_118;");
+str[8]   = new Array(119, "&?error_119;");
+str[9]   = new Array(122, "&?error_122;");
+str[10]  = new Array(143, "&?error_143;");
+str[11]  = new Array(144, "&?error_144;");
+str[12]  = new Array(114, "&?error_114;");
+return getMsgFormArray(str, arguments);
+}
+function setSelOtherValue(obj, value, id)
+{
+var flag = 0;
+var mm = "";
+if(id == null)
+{
+mm = "";
+}
+else
+{
+mm = getValue(id);
+}
+if (("" == mm) || ("N/A" == mm) || (null == mm))
+{
+var num = obj.length;
+for (var i = num ;i > 0 ;i-- )
+{
+var name = obj.options[i-1].value;
+var text = obj.options[i-1].text;
+obj.options[i] = new Option(text, text);
+obj.options[i].value = name;
+}
+obj.options[0] = new Option(value,value);
+obj.options[0].value = value;
+obj.options[0].text = value;
+flag = 1;
+}
+return flag;
+}
+function pageGetValue()
+{
+var obj = getObj("Frm_DefaultWan");
+var pwdStr = "";
+jslDoShowComboBox("Frm_DefaultWan", "DefaultWan");
+if(-1 == obj.selectedIndex)
+{
+setSelOtherValue(obj, "", null);
+obj.selectedIndex = 0;
+}
+jslSetValue("Frm_URL", "URL");
+jslSetValue("Frm_UserName", "UserName");
+jslSetValue("Frm_UserPassword", "UserPassword","GET");
+jslSetValue("Frm_ConnectionRequestURL", "ConnectionRequestURL");
+jslSetValue("Frm_ConnectionRequestUsername", "ConnectionRequestUsername");
+jslSetValue("Frm_ConnectionRequestPassword", "ConnectionRequestPassword","GET");
+jslPostToViewCheckBox("Frm_PeriodicInformEnable", "PeriodicInformEnable");
+jslPostToViewCheckBox("Frm_SupportCertAuth", "SupportCertAuth");
+
+if(true == getChecked("Frm_PeriodicInformEnable"))
+{
+jslEnable("Frm_PeriodicInformInterval");
+}
+else
+{
+jslDisable("Frm_PeriodicInformInterval");
+}
+jslSetValue("Frm_PeriodicInformInterval", "PeriodicInformInterval");
+PageAttrInfo();
+if(webEnable == "1")
+{
+DisableALL();
+}
+<%
+if(219 == getenv("CountryCode"))
+{
+%>
+jslEnable("Frm_URL");
+jslEnable("Btn_Submit");
+jslEnable("Btn_Cancel");
+<%
+}
+%>
+}
+function PageAttrInfo()
+{
+var urlattr = getValue("IF_URLATTR");
+if(urlattr == "3")
+{
+jslDisable("Frm_URL");
+}
+else
+{
+jslEnable("Frm_URL");
+}
+var usernameattr = getValue("IF_UsernameATTR");
+if(usernameattr == "3")
+{
+jslDisable("Frm_UserName");
+}
+else
+{
+jslEnable("Frm_UserName");
+}
+var passwordattr = getValue("IF_PasswordATTR");
+if(usernameattr == "3")
+{
+jslDisable("Frm_UserName");
+}
+else
+{
+jslEnable("Frm_UserName");
+}
+var passwordattr = getValue("IF_PasswordATTR");
+if(passwordattr == "3")
+{
+jslDisable("Frm_UserPassword");
+}
+else
+{
+jslEnable("Frm_UserPassword");
+}
+var cusernamedattr = getValue("IF_ConnectionRequestUsernameATTR");
+if(cusernamedattr == "3")
+{
+jslDisable("Frm_ConnectionRequestUsername");
+}
+else
+{
+jslEnable("Frm_ConnectionRequestUsername");
+}
+var cpasswordattr = getValue("IF_ConnectionRequestPasswordATTR");
+if(cpasswordattr == "3")
+{
+jslDisable("Frm_ConnectionRequestPassword");
+}
+else
+{
+jslEnable("Frm_ConnectionRequestPassword");
+}
+}
+function pageSetValue()
+{
+HiddenParaInit(TR069_PARA);
+if ( true == getDisplay("TR_DefaultWan") )
+{
+jslSetValue("DefaultWan", "Frm_DefaultWan");
+}
+jslSetValue("URL", "Frm_URL");
+jslSetValue("UserName", "Frm_UserName");
+jslSetValue("UserPassword", "Frm_UserPassword","SET");
+jslSetValue("ConnectionRequestUsername", "Frm_ConnectionRequestUsername");
+jslSetValue("ConnectionRequestPassword", "Frm_ConnectionRequestPassword","SET");
+jslViewToPostCheckBox("PeriodicInformEnable", "Frm_PeriodicInformEnable");
+jslSetValue("PeriodicInformInterval", "Frm_PeriodicInformInterval");
+jslViewToPostCheckBox("SupportCertAuth", "Frm_SupportCertAuth");
+}
+function pageCheckValue()
+{
+var msg = "";
+if(false == PageResetValueRmZero("Frm_PeriodicInformInterval","Fnt_PeriodicInformInterval"))
+{
+return  false;
+}
+if(false == checkTR069URL("Frm_URL", "Fnt_URL", 0, 0, 256))
+{
+return  false;
+}
+if(false == checkName("Frm_UserName", "Fnt_UserName", 1, 1, 256))
+{
+return  false;
+}
+if(false == checkName("Frm_UserPassword", "Fnt_UserPassword", 0, 0, 256))
+{
+return  false;
+}
+if(false == checkName("Frm_ConnectionRequestUsername", "Fnt_ConnectionRequestUsername", 0, 0, 256))
+{
+return  false;
+}
+if(false == checkName("Frm_ConnectionRequestPassword", "Fnt_ConnectionRequestPassword", 0, 0, 256))
+{
+return  false;
+}
+if(false == checkNum("Frm_PeriodicInformInterval", "Fnt_PeriodicInformInterval", 1, 1, 42949672))
+{
+return  false;
+}
+return  true;
+}
+function PageResetValueRmZero(frm_id, fnt_id)
+{
+if( false == ReSetValueRmZero(frm_id) )
+{
+var msg = getmsg(144);
+ShowErrorForCom(frm_id, fnt_id, msg);
+return false;
+}
+return true;
+}
+function checkTR069URL(frm_id, fnt_id, isNull, minLength, maxLength)
+{
+var msg ="";
+if(0 == isNull && false == checkNull(getValue(frm_id)))
+{
+return  true;
+}
+var url = getValue(frm_id);
+var urlCheck = checkURL(url);
+if("-1" == urlCheck)
+{
+msg = getmsg(101);
+ShowErrorForCom(frm_id, fnt_id, msg);
+return false;
+}
+else if("-3" == urlCheck)
+{
+msg = getmsg(102, minLength, maxLength);
+ShowErrorForCom(frm_id, fnt_id, msg);
+return false;
+}
+else if(false == urlCheck)
+{
+msg = getmsg(105);
+ShowErrorForCom(frm_id, fnt_id, msg);
+return false;
+}
+else if(url.match("^(http:\/\/)|(https:\/\/)") == null)
+{
+msg = getmsg(143);
+ShowErrorForCom(frm_id, fnt_id, msg);
+return false;
+}
+return  true;
+}
+function checkName(frm_id, fnt_id, isNull, minLength, maxLength)
+{
+var msg = "";
+if( 0 == isNull && false == checkNull(getValue(frm_id)) )
+{
+return  true;
+}
+var  nameCheck = checkStrLengthRange(getValue(frm_id), minLength, maxLength);
+if("-1" == nameCheck)
+{
+msg = getmsg(101);
+ShowErrorForCom(frm_id, fnt_id, msg);
+return false;
+}
+else if(false == checkGenStringForASC(getValue(frm_id)))
+{
+msg = getmsg(114);
+ShowErrorForCom(frm_id, fnt_id, msg);
+return false;
+}
+else if("-3" == nameCheck)
+{
+msg = getmsg(102, minLength, maxLength);
+ShowErrorForCom(frm_id, fnt_id, msg);
+return false;
+}
+return true;
+}
+function checkNum(frm_id, fnt_id, isNull, minValue, maxValue)
+{
+var msg = "";
+if( 0 == isNull && false == checkNull(getValue(frm_id)) )
+{
+return  true;
+}
+var numCheck = checkIntegerRange(getValue(frm_id), minValue, maxValue);
+if("-1" == numCheck)
+{
+msg = getmsg(101);
+ShowErrorForCom(frm_id, fnt_id, msg);
+return false;
+}
+else if("-2" == numCheck)
+{
+msg = getmsg(115);
+ShowErrorForCom(frm_id, fnt_id, msg);
+return false;
+}
+else if("-3" == numCheck)
+{
+msg = getmsg(116, minValue, maxValue);
+ShowErrorForCom(frm_id, fnt_id, msg);
+return false;
+}
+return  true;
+}
+function pageCancel()
+{
+DisableALL();
+getObj("fSubmit").submit();
+}
+function pageSubmit()
+{
+if(true == pageCheckValue())
+{
+DisableALL();
+pageSetValue();
+setValue("IF_ACTION", "apply");
+getObj("fSubmit").submit();
+}
+else
+{
+}
+}
+function Enable_Reported()
+{
+if(true == getChecked("Frm_PeriodicInformEnable"))
+{
+jslEnable("Frm_PeriodicInformInterval");
+}
+else
+{
+jslDisable("Frm_PeriodicInformInterval");
+}
+}
+</script>

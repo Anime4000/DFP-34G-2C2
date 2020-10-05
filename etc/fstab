@@ -1,0 +1,14 @@
+# <file system> <mount point>   <type>  <options>    <dump> <pass>
+
+# The syntax of busybox's fstab entry's a little different than traditional
+# mount, and doesn't work with the usual 'rootfs / rootfs rw 0 0' entry.
+# Actually, it's not needed unless you're mounting from a non-nfs device,
+# like a hard disk.  In that case, you probably need something like the 
+# following:
+
+# /dev/hda1       /               ext3    rw           1      1
+
+proc            /proc           proc    defaults     0      0
+sysfs           /sys            sysfs   defaults     0      0
+#devpts          /dev/pts        devpts  defaults     0      0
+#tmpfs           /var            tmpfs   rw     0      0

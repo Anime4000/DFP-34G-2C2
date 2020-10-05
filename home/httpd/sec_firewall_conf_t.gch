@@ -1,0 +1,62 @@
+<%
+IMPORT FILE "common_gch.gch";
+var OBJ_HANDLE = create_paralist();
+set_para(OBJ_HANDLE, "OBJNAME0", "OBJ_FWLEVEL_ID");
+ModuleLogic(OBJ_HANDLE);
+destroy_paralist(OBJ_HANDLE);
+IMPORT FILE "sec_firewall_conf_js.gch";
+%>
+<table id="TestContent"  class="table" width="450px" border="0">
+<tr>
+<td class="td11"><font id="Fnt_IsProtect">&?fico001;</font></td>
+<td class="td2">
+<input id="Frm_IsProtect" name="Frm_IsProtect" type="checkbox"/>
+</td>
+</tr>
+<tr>
+<td class="td11"><font id="Fnt_level">&?fico002;</font></td>
+<td class="td2"></td>
+</tr>
+<tr>
+<td class="td11"></td>
+<td class="td2">
+<input type="radio" name="Frm_level" id="Frm_level_off" value="0">
+&?fico005;
+</td>
+</tr>
+<tr>
+<td class="td11"></td>
+<td class="td2">
+<input type="radio" name="Frm_level" id="Frm_level_low" value="1">
+&?fico004;
+</td>
+</tr>
+<tr>
+<td class="td11"></td>
+<td class="td2">
+<input type="radio" name="Frm_level" id="Frm_level_medium" value="2">
+&?fico010;
+</td>
+</tr>
+<tr>
+<td class="td11"></td>
+<td class="td2">
+<input type="radio" name="Frm_level" id="Frm_level_high" value="3">
+&?fico003;
+</td>
+</tr>
+<tr>
+<td class="td11"></td>
+<td class="td2">
+<input type="radio" name="Frm_level" id="Frm_level_custom" value="4">
+<span class="hreftext">
+<a href="#" onclick="go2RuleMgrPage(4)">&?Firewall001; >></a>
+</span>
+</td>
+</tr>
+<tr>
+<td height="4"></td>
+<td></td>
+</tr>
+</table>
+<div id="div4"></div>

@@ -1,0 +1,54 @@
+#!/bin/sh
+
+echo "Pre-initialization script ..."
+
+echo "  Mounting ramdisk at /var"
+mount -t tmpfs -o size=15360k tmpfs /var
+
+mkdir -p /var/tmp
+mkdir -p /var/log
+mkdir -p /var/run
+
+
+
+#
+#	Check for flash partition mtd6 and obtain its size
+#
+
+mtd6_valid=0
+if [ -x /bin/mtd_debug -a -e /dev/mtd6 ]; then
+  mtd6_size=`/bin/mtd_debug info /dev/mtd6 | \
+    egrep '^mtd\.size' | \
+    sed -e 's/^mtd\.size \= \(.*\)\ (.*)/\1/'`
+  if [ -n "$mtd6_size" ]; then
+    if [ $mtd6_size -gt 0 ]; then
+      mtd6_valid=1
+    fi
+  fi
+fi
+
+#
+#	Check for a jffs2 filesystem on mtd6 and mount mtd6 to /userconfig
+#
+erase_mtd6=0
+if [ $mtd6_valid = "1" ]; then
+    echo "  Mounting /dev/mtdblock6 to /userconfig"
+    /bin/mount -n -t jffs2 /dev/mtdblock6 /userconfig
+      if [ $? = "0" ]; then
+      	echo "  Mount ok!"
+      else	
+        erase_mtd6=1 
+        echo "  Mount failed!!!!"
+      fi  
+fi
+
+#
+# If mtd6 needs erasing, do so and then mount it to /userconfig
+#
+if [ $mtd6_valid = "1" -a $erase_mtd6 = "1" ]; then
+    (echo "  Eraseing & mounting /dev/mtdblock6 to /userconfig, wait ..." && \
+    /bin/flash_eraseall -j /dev/mtd6 && \
+    /bin/mount -n -t jffs2 /dev/mtdblock6 /userconfig || mtd6_valid=0)
+fi
+# /userconfig/cfg used by csp 
+mkdir -p /userconfig/cfg

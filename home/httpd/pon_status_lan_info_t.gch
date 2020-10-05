@@ -1,0 +1,204 @@
+<SCRIPT LANGUAGE="javascript" src ="./js/common.js"></SCRIPT>
+<SCRIPT LANGUAGE="javascript" src ="./js/common_check.js"></SCRIPT>
+<%
+var FP_OBJNAME = "OBJ_PON_PORT_BASIC_STATUS_ID";
+var FP_INSTNUM = 1;
+FP_INSTNUM = query_list(FP_OBJNAME, "IGD");
+var PortNum = 1;
+var FP_IDENTITY="";
+for (var i=0; i<FP_INSTNUM; i++)
+{
+PortNum = i+1;
+FP_IDENTITY = query_identity(i);
+var FP_HANDLE = create_paralist();
+get_inst(FP_HANDLE, FP_OBJNAME, FP_IDENTITY);
+var Eth_LinkStatus     = get_para(FP_HANDLE, "Status");
+var Eth_Speed          = get_para(FP_HANDLE, "Speed");
+var Eth_Duplex         = get_para(FP_HANDLE, "Duplex");
+var InBytes     = get_para(FP_HANDLE, "InBytes");
+var InPkts      = get_para(FP_HANDLE, "InPkts");
+var InUnicast          = get_para(FP_HANDLE, "InUnicast");
+var InMulticast        = get_para(FP_HANDLE, "InMulticast");
+var InError     = get_para(FP_HANDLE, "InError");
+var InDiscard   = get_para(FP_HANDLE, "InDiscard");
+var OutBytes    = get_para(FP_HANDLE, "OutBytes");
+var OutPkts     = get_para(FP_HANDLE, "OutPkts");
+var OutUnicast   			 = get_para(FP_HANDLE, "OutUnicast");
+var OutMulticast 			 = get_para(FP_HANDLE, "OutMulticast");
+var OutError     			 = get_para(FP_HANDLE, "OutError");
+var OutDiscard   			 = get_para(FP_HANDLE, "OutDiscard");
+var Frm_MACAddress     = get_para(FP_HANDLE, "MACAddress");
+if (Frm_MACAddress==""||Frm_MACAddress IS NULL)
+{
+Frm_MACAddress = "00:00:00:00:00:00";
+}
+%>
+<!--分端口显示的内容开始-->
+<div class="space_0">
+<table id="TestContent"  class="infor" width="410" border="0" cellpadding="0" cellspacing="1" bgcolor="#979797">
+<tr class="white_1">
+<td class="tdleft">&?pdt001;</td>
+<td class="tdright">&?pdt002;<%=PortNum;%></td>
+</tr>
+<tr class="blue_1">
+<td class="tdleft">&?pdt_lan001;</td>
+<%
+if (Eth_LinkStatus == 0)
+{
+if (Eth_Speed == 0)
+{
+if (Eth_Duplex == 0)
+{
+%>
+<td id="Frm_Status" name="Frm_Status" class="tdright">&?pdt_lan002;/10Mbps/&?pdt_lan003;</td>
+<%
+}
+else if (Eth_Duplex == 1)
+{
+%>
+<td id="Frm_Status" name="Frm_Status" class="tdright">&?pdt_lan002;/10Mbps/&?pdt_lan004;</td>
+<%
+}
+else	if (Eth_Duplex == 2)
+{
+%>
+<td id="Frm_Status" name="Frm_Status" class="tdright">&?pdt_lan002;/&?pdt_lan005;</td>
+<%
+}
+}
+if (Eth_Speed == 1)
+{
+if (Eth_Duplex == 0)
+{
+%>
+<td id="Frm_Status" name="Frm_Status" class="tdright">&?pdt_lan002;/100Mbps/&?pdt_lan003;</td>
+<%
+}
+else if (Eth_Duplex == 1)
+{
+%>
+<td id="Frm_Status" name="Frm_Status" class="tdright">&?pdt_lan002;/100Mbps/&?pdt_lan004;</td>
+<%
+}
+else	if (Eth_Duplex == 2)
+{
+%>
+<td id="Frm_Status" name="Frm_Status" class="tdright">&?pdt_lan002;/&?pdt_lan005;</td>
+<%
+}
+}
+if (Eth_Speed == 2)
+{
+if (Eth_Duplex == 0)
+{
+%>
+<td id="Frm_Status" name="Frm_Status" class="tdright">&?pdt_lan002;/1000Mbps/&?pdt_lan003;</td>
+<%
+}
+else if (Eth_Duplex == 1)
+{
+%>
+<td id="Frm_Status" name="Frm_Status" class="tdright">&?pdt_lan002;/1000Mbps/&?pdt_lan004;</td>
+<%
+}
+else	if (Eth_Duplex == 2)
+{
+%>
+<td id="Frm_Status" name="Frm_Status" class="tdright">&?pdt_lan002;/&?pdt_lan005;</td>
+<%
+}
+}
+}
+else if (Eth_LinkStatus == 1)
+{
+%>
+<td id="Frm_Status" name="Frm_Status" class="tdright">&?pdt_lan006;</td>
+<%
+}
+else if (Eth_LinkStatus == 2)
+{
+%>
+<td id="Frm_Status" name="Frm_Status" class="tdright">&?pdt_lan007;</td>
+<%
+}
+else if (Eth_LinkStatus == 3)
+{
+%>
+<td id="Frm_Status" name="Frm_Status" class="tdright">&?pdt_lan008;</td>
+<%
+}
+%>
+</tr>
+<tr class="white_1">
+<td class="tdleft">&?pdt_lan009;</td>
+<td class="tdright"><%=Frm_MACAddress;%></td>
+</tr>
+<tr class="blue_1">
+<td class="tdleft">&?pdt_lan010;</td>
+<td class="tdright"><%=InBytes;%></td>
+</tr>
+<tr class="white_1">
+<td class="tdleft">&?pdt_lan011;</td>
+<td class="tdright"><%=InPkts;%></td>
+</tr>
+<tr class="blue_1">
+<td class="tdleft">&?pdt_lan012;</td>
+<td class="tdright"><%=InUnicast;%></td>
+</tr>
+<tr class="white_1">
+<td class="tdleft">&?pdt_lan013;</td>
+<td class="tdright"><%=InMulticast;%></td>
+</tr>
+<tr class="blue_1">
+<td class="tdleft">&?pdt_lan014;</td>
+<td class="tdright"><%=InError;%></td>
+</tr>
+<tr class="white_1">
+<td class="tdleft">&?pdt_lan015;</td>
+<td class="tdright"><%=InDiscard;%></td>
+</tr>
+<tr class="blue_1">
+<td class="tdleft">&?pdt_lan016;</td>
+<td class="tdright"><%=OutBytes;%></td>
+</tr>
+<tr class="white_1">
+<td class="tdleft">&?pdt_lan017;</td>
+<td class="tdright"><%=OutPkts;%></td>
+</tr>
+<tr class="blue_1">
+<td class="tdleft">&?pdt_lan018;</td>
+<td class="tdright"><%=OutUnicast;%></td>
+</tr>
+<tr class="white_1">
+<td class="tdleft">&?pdt_lan019;</td>
+<td class="tdright"><%=OutMulticast;%></td>
+</tr>
+<tr class="blue_1">
+<td class="tdleft">&?pdt_lan020;</td>
+<td class="tdright"><%=OutError;%></td>
+</tr>
+<tr class="white_1">
+<td class="tdleft">&?pdt_lan021;</td>
+<td class="tdright"><%=OutDiscard;%></td>
+</tr>
+</table>
+</div>
+<!--分端口显示的内容结束-->
+<div id="div4"></div>
+<%
+destroy_paralist(FP_HANDLE);
+}
+%>
+<form id="fSubmit" method="post" action="">
+<input type="hidden" id="IF_ERRORSTR" name="IF_ERRORSTR" value="">
+</form>
+<SCRIPT>
+function pageLoad(url)
+{
+document.getElementById("fSubmit").action = url;
+}
+function pageReFresh()
+{
+getObj("fSubmit").submit();
+}
+</SCRIPT> 

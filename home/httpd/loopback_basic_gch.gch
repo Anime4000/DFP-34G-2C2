@@ -1,0 +1,19 @@
+<%
+IMPORT FILE "common_gch.gch";
+var FP_OBJNAME      = "OBJ_LOOPBACK_BASIC_ID";
+var FP_MULTIDISPLAY = 0;
+var FP_PARANUM      = 6;
+var FP_INDEX        = getInstIndex("new");
+var FP_ACTION       = request("IF_ACTION");
+var FP_ERRORSTR     = "SUCC";
+var PARA[6] =
+{
+"DMac",
+"Ethertype",
+"Sendinterval",
+"RenewTime",
+"CheckInterval",
+"Standard"
+};
+return getPageGCH(FP_OBJNAME, FP_MULTIDISPLAY, PARA, FP_PARANUM);
+%>

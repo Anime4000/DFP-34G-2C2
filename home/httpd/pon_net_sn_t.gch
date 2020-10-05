@@ -1,0 +1,25 @@
+<%
+IMPORT FILE "pon_net_sn_gch.gch";
+IMPORT FILE "pon_net_sn_js.gch";
+%>
+<div class="space_0">
+<table width="450px" border="0" class="table">
+<tr>
+<td valign="top" style="width:30px;"><img src="img/info.gif"></td>
+<td height="18" align="left" style="padding-left:10px;">&?poninfo002;</td>
+</tr>
+</table>
+</div>
+<div class="space_0">
+<table id="OnuPwdConf"  class="table" width="550px" border="0">
+<tr height="20px" ><td colspan="2"></td></tr>
+<tr>
+<td class="td1"><font id="Fnt_Sn">&?ponloid011;</font></td>
+<td class="td2"><input name="Frm_Sn" id="Frm_Sn" type="text" value="" class="inputId" /></td>
+</tr>
+<tr>
+<td class="td1"><font id="Fnt_Pwd">&?poninfo001;</font></td>
+<td class="td2"><input name="Frm_Pwd" id="Frm_Pwd" type="text" value="" class="inputId" /></td>
+</tr>
+</table>
+</div>

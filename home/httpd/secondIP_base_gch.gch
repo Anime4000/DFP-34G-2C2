@@ -1,0 +1,16 @@
+<%
+IMPORT FILE "common_gch.gch";
+function second_IP(FP_ACTION,FP_INDEX,FP_ERRORSTR)
+{
+var FP_OBJNAME      = "OBJ_BRGRP2ndIP_ID";
+var FP_MULTIDISPLAY = 0;
+var FP_PARANUM      = 3;
+var PARA[3] =
+{
+"SecEnable",
+"SecIPAddr",
+"SecNetMask"
+};
+return getFunctionGCH(FP_OBJNAME, FP_MULTIDISPLAY, PARA, FP_PARANUM, FP_ACTION, FP_INDEX, FP_ERRORSTR);
+}
+%>

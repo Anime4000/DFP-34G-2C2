@@ -1,0 +1,957 @@
+<%
+function setpara(handle, para_name)
+{
+set_para(handle, para_name, request(para_name));
+}
+function set_multiinst_para(handle, para_name, index)
+{
+set_para(handle, para_name, request(para_name+index));
+}
+function init_request_para(para_name)
+{
+set_request(para_name, "NULL");
+}
+function create_form_start(ID, URL)
+{
+var v ="<FORM NAME="+ ID +" ID="+ ID +" METHOD='POST' action="+ URL +">\n";
+=v;
+recordServerOutput(v);
+}
+function create_form_start_ex(ID, URL, TARGET)
+{
+var v ="<FORM NAME="+ ID +" ID="+ ID +" METHOD='POST' action="+ URL +" target="+ TARGET +">\n";
+=v;
+recordServerOutput(v);
+}
+function create_form_end()
+{
+var v = "</FORM>\n";
+=v;
+recordServerOutput(v);
+}
+function create_hidden_sep(ID, value)
+{
+var v ="<INPUT type='hidden' name="+ ID +" ID="+ ID +" value=''>\n";
+v +="<script language=javascript>Transfer_meaning('";
+v +=ID;
+v +="','";
+v +=encodeJS(value);
+v +="');";
+v +="</script>\n";
+=v;
+recordServerOutput(v);
+}
+function set_hidden(ID, value)
+{
+var v="<script language=javascript>Transfer_meaning('";
+v +=ID;
+v +="','";
+v +=encodeJS(value);
+v +="');";
+v +="</script>\n";
+=v;
+recordServerOutput(v);
+}
+function create_hidden_newpara(PARA[], num)
+{
+var v = "";
+for(var i = 0; i < num ; i ++)
+{
+v +="<INPUT type='hidden' name="+ PARA[i] +"   ID="+ PARA[i] +" value=''>\n";
+v +="<script language=javascript>Transfer_meaning('";
+v +=PARA[i];
+v +="','";
+v +="');";
+v +="</script>\n";
+}
+=v;
+recordServerOutput(v);
+}
+function cover_hidden(handle, PARA[], num)
+{
+var v = "";
+for(var i = 0; i < num ; i ++)
+{
+v +="<script language=javascript>Transfer_meaning('";
+v +=PARA[i];
+v +="','";
+v +=encodeJS(get_para(handle, PARA[i]));
+v +="');";
+v +="</script>\n";
+}
+=v;
+recordServerOutput(v);
+}
+function filter_cover_hidden(handle, PARA[], MASK_PARA[], num)
+{
+var v = "";
+var value;
+for(var i = 0; i < num ; i ++)
+{
+value = MASK_PARA[i];
+if (value IS NULL)
+{
+value = get_para(handle, PARA[i]);
+}
+v +="<script language=javascript>Transfer_meaning('";
+v +=PARA[i];
+v +="','";
+v +=encodeJS(value);
+v +="');";
+v +="</script>\n";
+}
+=v;
+recordServerOutput(v);
+}
+function create_hidden_para(handle, PARA[], num)
+{
+var v = "";
+for(var i = 0; i < num ; i ++)
+{
+v +="<INPUT type='hidden' name="+ PARA[i] +"   ID="+ PARA[i] +" value=''>\n";
+v +="<script language=javascript>Transfer_meaning('";
+v +=PARA[i];
+v +="','";
+v +=encodeJS(get_para(handle, PARA[i]));
+v +="');";
+v +="</script>\n";
+}
+=v;
+recordServerOutput(v);
+}
+function filter_create_hidden_para(handle, PARA[], MASK_PARA[], num)
+{
+var v = "";
+var value;
+for(var i = 0; i < num ; i ++)
+{
+value = MASK_PARA[i];
+if (value IS NULL)
+{
+value = get_para(handle, PARA[i]);
+}
+v +="<INPUT type='hidden' name="+ PARA[i] +"   ID="+ PARA[i] +" value=''>\n";
+v +="<script language=javascript>Transfer_meaning('";
+v +=PARA[i];
+v +="','";
+v +=encodeJS(value);
+v +="');";
+v +="</script>\n";
+}
+=v;
+recordServerOutput(v);
+}
+function create_newwan_hidden_para(handle, PARA[], num)
+{
+var v = "";
+for(var i = 0; i < num ; i ++)
+{
+v +="<INPUT type='hidden' name="+ PARA[i] +"   ID="+ PARA[i] +" value='NULL'>\n";
+}
+=v;
+recordServerOutput(v);
+}
+function create_hidden_multiinstnewpara(handle, PARA[], instindex,  num)
+{
+var v = "";
+for(var i = 0; i < num ; i ++)
+{
+v +="<INPUT type='hidden' name="+ PARA[i] + instindex +"   ID="+ PARA[i] + instindex +" value=''>\n";
+}
+=v;
+recordServerOutput(v);
+}
+function create_hidden_multiinstpara(handle, PARA[], instindex,  num)
+{
+var v = "";
+for(var i = 0; i < num ; i ++)
+{
+v +="<INPUT type='hidden' name="+ PARA[i] + instindex +"   ID="+ PARA[i] + instindex +" value=''>\n";
+v +="<script language=javascript>Transfer_meaning('";
+v +=PARA[i] + instindex;
+v +="','";
+v +=encodeJS(get_para(handle, PARA[i]));
+v +="');";
+v +="</script>\n";
+}
+=v;
+recordServerOutput(v);
+}
+function filter_create_hidden_multiinstpara(handle, PARA[], MASK_PARA[], instindex, num)
+{
+var v = "";
+var value;
+for(var i = 0; i < num ; i ++)
+{
+value = MASK_PARA[i];
+if (value IS NULL)
+{
+value = get_para(handle, PARA[i]);
+}
+v +="<INPUT type='hidden' name="+ PARA[i] + instindex +"   ID="+ PARA[i] + instindex +" value=''>\n";
+v +="<script language=javascript>Transfer_meaning('";
+v +=PARA[i] + instindex;
+v +="','";
+v +=encodeJS(value);
+v +="');";
+v +="</script>\n";
+}
+=v;
+recordServerOutput(v);
+}
+function create_hidden_multiinstpara_user(handle, PARA[], instindex, num,user)
+{
+var v = "";
+for(var i = 0; i < num ; i ++)
+{
+v +="<INPUT type='hidden' name="+ PARA[i] + instindex +"   ID="+ PARA[i] + instindex + user +" value=''>\n";
+v +="<script language=javascript>Transfer_meaning('";
+v +=PARA[i] + instindex+user;
+v +="','";
+v +=encodeJS(get_para(handle, PARA[i]));
+v +="');";
+v +="</script>\n";
+}
+=v;
+recordServerOutput(v);
+}
+function create_hidden_multiinstpara1(handle, PARA[], instindex,  num)
+{
+var v = "";
+for(var i = 0; i < num ; i ++)
+{
+v +="<INPUT type='hidden' name="+ PARA[i] + instindex +"   ID="+ PARA[i] + instindex +" value=''>\n";
+v +="<script language=javascript>Transfer_meaning('";
+v +=PARA[i] + instindex;
+v +="','";
+v +=encodeJS(get_para(handle, PARA[i]+instindex));
+v +="');";
+v +="</script>\n";
+}
+=v;
+recordServerOutput(v);
+}
+function set_hidden_multiinstpara(handle, PARA[], instindex,  num)
+{
+var v = "";
+for(var i = 0; i < num ; i ++)
+{
+v +="<script language=javascript>Transfer_meaning('";
+v +=PARA[i] + instindex;
+v +="','";
+v +=encodeJS(get_para(handle, PARA[i]));
+v +="');";
+v +="</script>\n";
+}
+=v;
+recordServerOutput(v);
+}
+function create_special_hidden_multiinstpara(handle, inputName, handleName, instindex)
+{
+var v = "";
+v +="<INPUT type='hidden' name="+ inputName + instindex +"   ID="+ inputName + instindex +" value=''>\n";
+v +="<script language=javascript>Transfer_meaning('";
+v +=inputName + instindex;
+v +="','";
+v +=encodeJS(get_para(handle, handleName));
+v +="');";
+v +="</script>\n";
+=v;
+recordServerOutput(v);
+}
+function ifIndexNULL(flag, FP_INDEX)
+{
+if (FP_INDEX IS NULL)
+{
+if ("new" == flag)
+{
+return -1;
+}
+else if("old" == flag)
+{
+return 0;
+}
+}
+return FP_INDEX;
+}
+function getInstIndex(flag)
+{
+var FP_INDEX = request("IF_INDEX");
+FP_INDEX = ifIndexNULL(flag, FP_INDEX);
+return FP_INDEX;
+}
+function getInstNum(FP_OBJNAME)
+{
+return query_list(FP_OBJNAME, "IGD");
+}
+function getInstIdentity(FP_OBJNAME, FP_INDEX)
+{
+var FP_IDENTITY = "";
+var FP_INSTNUM = query_list(FP_OBJNAME, "IGD");
+if (FP_INSTNUM != 888 && FP_INSTNUM > 0 && FP_INDEX >= 0)
+{
+FP_IDENTITY = query_identity(FP_INDEX);
+}
+return FP_IDENTITY;
+}
+function getMultiInstIdentity(FP_OBJNAME, FP_MULTIDISPLAY, FP_INDEX)
+{
+var FP_IDENTITY = "";
+if(1 == FP_MULTIDISPLAY)
+{
+FP_IDENTITY = getInstIdentity(FP_OBJNAME, FP_INDEX);
+}
+return FP_IDENTITY;
+}
+function getInstNumByAction(FP_OBJNAME, FP_MULTIDISPLAY, FP_ACTION)
+{
+if(1 == FP_MULTIDISPLAY && (FP_ACTION == "apply" || FP_ACTION == "delete"))
+{
+return query_list(FP_OBJNAME, "IGD");
+}
+else
+{
+return "";
+}
+}
+function getInstIdentityByAction(FP_OBJNAME, FP_MULTIDISPLAY, FP_ACTION, FP_INDEX)
+{
+var FP_IDENTITY = "";
+if("new" != FP_ACTION)
+{
+FP_IDENTITY = getMultiInstIdentity(FP_OBJNAME, FP_MULTIDISPLAY, FP_INDEX);
+}
+return FP_IDENTITY;
+}
+function createBasicHidden()
+{
+create_hidden_sep("IF_ACTION", "");
+create_hidden_sep("IF_ERRORSTR", "SUCC");
+create_hidden_sep("IF_ERRORPARAM", "SUCC");
+create_hidden_sep("IF_ERRORTYPE", -1);
+}
+function createSingleInstHidden(PARA, FP_PARANUM)
+{
+create_hidden_newpara(PARA, FP_PARANUM);
+createBasicHidden();
+}
+function createHigherHidden(FP_INDEX)
+{
+createBasicHidden();
+create_hidden_sep("IF_INDEX", FP_INDEX);
+create_hidden_sep("IF_INSTNUM", "");
+}
+function createMultiInstHidden(PARA, FP_PARANUM, FP_INDEX)
+{
+create_hidden_newpara(PARA, FP_PARANUM);
+createHigherHidden(FP_INDEX);
+}
+function createSubmitHidden(FP_MULTIDISPLAY, PARA, FP_PARANUM, FP_INDEX)
+{
+if(0 == FP_MULTIDISPLAY)
+{
+createSingleInstHidden(PARA, FP_PARANUM);
+}
+else if(1 == FP_MULTIDISPLAY)
+{
+createMultiInstHidden(PARA, FP_PARANUM, FP_INDEX);
+}
+}
+function getNewInstError(FP_ERRORSTR)
+{
+var FP_ERRORPARAM, FP_ERRORTYPE;
+if (FP_ERRORSTR == "SUCC")
+{
+FP_ERRORSTR = get_cmret();
+if (FP_ERRORSTR != "SUCC")
+{
+if (FP_ERRORSTR != "FAIL")
+{
+var cmret = "cmret_"+FP_ERRORSTR;
+FP_ERRORSTR = load_string(cmret);
+}
+FP_ERRORPARAM = get_errorparam();
+FP_ERRORTYPE = get_cmret_type();
+set_hidden("IF_ERRORSTR", FP_ERRORSTR);
+set_hidden("IF_ERRORPARAM", FP_ERRORPARAM);
+set_hidden("IF_ERRORTYPE", FP_ERRORTYPE);
+}
+}
+return FP_ERRORSTR;
+}
+function setInst(FP_OBJNAME, FP_IDENTITY, PARA, FP_PARANUM)
+{
+var FP_HANDLE = create_paralist();
+for(var i = 0; i < FP_PARANUM; i++)
+{
+setpara(FP_HANDLE, PARA[i]);
+}
+FP_IDENTITY = set_inst(FP_HANDLE, FP_OBJNAME, FP_IDENTITY);
+return FP_IDENTITY;
+}
+function applyOrNewInst(FP_OBJNAME, FP_ACTION, FP_IDENTITY, PARA, FP_PARANUM, FP_ERRORSTR)
+{
+if ("apply" == FP_ACTION ||  "new" == FP_ACTION)
+{
+setInst(FP_OBJNAME, FP_IDENTITY, PARA, FP_PARANUM);
+}
+return getNewInstError(FP_ERRORSTR);
+}
+function setInstindex(FP_OBJNAME, FP_IDENTITY, PARA, FP_PARANUM,FP_INDEX)
+{
+var FP_HANDLE = create_paralist();
+for(var i = 0; i < FP_PARANUM; i++)
+{
+set_multiinst_para(FP_HANDLE, PARA[i],FP_INDEX);
+}
+FP_IDENTITY = set_inst(FP_HANDLE, FP_OBJNAME, FP_IDENTITY);
+return FP_IDENTITY;
+}
+function applyOrNewInstindex(FP_OBJNAME, FP_ACTION, FP_IDENTITY, PARA, FP_PARANUM, FP_INDEX,FP_ERRORSTR)
+{
+if ("apply" == FP_ACTION ||  "new" == FP_ACTION)
+{
+setInstindex(FP_OBJNAME, FP_IDENTITY, PARA, FP_PARANUM,FP_INDEX);
+}
+return getNewInstError(FP_ERRORSTR);
+}
+function applyOrNewOrDelInst(FP_OBJNAME, FP_ACTION, FP_IDENTITY, PARA, FP_PARANUM, FP_ERRORSTR)
+{
+if("apply" == FP_ACTION || "new" == FP_ACTION)
+{
+FP_ERRORSTR = applyOrNewInst(FP_OBJNAME, FP_ACTION, FP_IDENTITY, PARA, FP_PARANUM, FP_ERRORSTR);
+}
+else if("delete" == FP_ACTION && "" != FP_IDENTITY)
+{
+del_inst(FP_OBJNAME, FP_IDENTITY);
+FP_ERRORSTR = getNewInstError(FP_ERRORSTR);
+}
+return FP_ERRORSTR;
+}
+function applyOrNewOrDelInstindex(FP_OBJNAME, FP_ACTION, FP_IDENTITY, PARA, FP_PARANUM, FP_INDEX,FP_ERRORSTR)
+{
+if("apply" == FP_ACTION || "new" == FP_ACTION)
+{
+FP_ERRORSTR = applyOrNewInstindex(FP_OBJNAME, FP_ACTION, FP_IDENTITY, PARA, FP_PARANUM, FP_INDEX,FP_ERRORSTR);
+}
+else if("delete" == FP_ACTION && "" != FP_IDENTITY)
+{
+del_inst(FP_OBJNAME, FP_IDENTITY);
+FP_ERRORSTR = getNewInstError(FP_ERRORSTR);
+}
+return FP_ERRORSTR;
+}
+function displayOldSingleInst(FP_OBJNAME, FP_IDENTITY, PARA, FP_PARANUM, FP_ERRORSTR)
+{
+var FP_HANDLE = create_paralist();
+get_inst(FP_HANDLE, FP_OBJNAME, FP_IDENTITY);
+cover_hidden(FP_HANDLE, PARA, FP_PARANUM);
+destroy_paralist(FP_HANDLE);
+return getDisplayInstError(FP_ERRORSTR);
+}
+function displaySingleInst(FP_OBJNAME, PARA, FP_PARANUM)
+{
+var FP_HANDLE = create_paralist();
+get_inst(FP_HANDLE, FP_OBJNAME, "");
+cover_hidden(FP_HANDLE, PARA, FP_PARANUM);
+destroy_paralist(FP_HANDLE);
+}
+function displayInstByNum(FP_OBJNAME, FP_INSTNUM, PARA, FP_PARANUM)
+{
+var FP_IDENTITY = "";
+for (var i=0; i<FP_INSTNUM; i++)
+{
+var FP_HANDLE = create_paralist();
+FP_IDENTITY   = query_identity(i);
+get_inst(FP_HANDLE, FP_OBJNAME, FP_IDENTITY);
+create_hidden_multiinstpara(FP_HANDLE, PARA, i, FP_PARANUM);
+destroy_paralist(FP_HANDLE);
+}
+}
+function displayInstByNumUser(FP_OBJNAME, FP_INSTNUM, PARA, FP_PARANUM,USER)
+{
+var FP_IDENTITY = "";
+for (var i=0; i<FP_INSTNUM; i++)
+{
+var FP_HANDLE = create_paralist();
+FP_IDENTITY   = query_identity(i);
+get_inst(FP_HANDLE, FP_OBJNAME, FP_IDENTITY);
+create_hidden_multiinstpara_user(FP_HANDLE, PARA, i, FP_PARANUM,USER);
+destroy_paralist(FP_HANDLE);
+}
+}
+function displayMultiInst(FP_OBJNAME, PARA, FP_PARANUM)
+{
+var FP_INSTNUM = query_list(FP_OBJNAME, "IGD");
+displayInstByNum(FP_OBJNAME, FP_INSTNUM, PARA, FP_PARANUM);
+return FP_INSTNUM;
+}
+function displayFunctionInst(FP_OBJNAME, FP_MULTIDISPLAY, PARA, FP_PARANUM, FP_ERRORSTR)
+{
+if (FP_MULTIDISPLAY == 0)
+{
+displaySingleInst(FP_OBJNAME, PARA, FP_PARANUM);
+}
+else if (FP_MULTIDISPLAY == 1)
+{
+displayMultiInst(FP_OBJNAME, PARA, FP_PARANUM);
+}
+return getDisplayInstError(FP_ERRORSTR);
+}
+function displayInst(FP_OBJNAME, FP_MULTIDISPLAY, PARA, FP_PARANUM, FP_ERRORSTR)
+{
+var FP_INSTNUM  = 0;
+if (FP_MULTIDISPLAY == 0)
+{
+displaySingleInst(FP_OBJNAME, PARA, FP_PARANUM);
+}
+else if (FP_MULTIDISPLAY == 1)
+{
+FP_INSTNUM = displayMultiInst(FP_OBJNAME, PARA, FP_PARANUM);
+}
+getDisplayInstError(FP_ERRORSTR);
+return FP_INSTNUM;
+}
+function displayInstByAction(FP_OBJNAME, FP_MULTIDISPLAY, FP_INSTNUM, FP_ACTION, PARA, FP_PARANUM)
+{
+var FP_IDENTITY = "";
+if (FP_MULTIDISPLAY == 0)
+{
+displaySingleInst(FP_OBJNAME, PARA, FP_PARANUM);
+}
+else if (FP_MULTIDISPLAY == 1)
+{
+if("delete" == FP_ACTION || "new" == FP_ACTION)
+{
+FP_INSTNUM = query_list(FP_OBJNAME, "IGD");
+}
+displayInstByNum(FP_OBJNAME, FP_INSTNUM, PARA, FP_PARANUM);
+}
+return FP_INSTNUM;
+}
+function getDisplayInstError(FP_ERRORSTR)
+{
+var FP_ERRORPARAM, FP_ERRORTYPE;
+if ("SUCC" == FP_ERRORSTR)
+{
+FP_ERRORSTR = get_cmret();
+if (FP_ERRORSTR != "FAIL" && FP_ERRORSTR != "SUCC")
+{
+var cmret = "cmret_"+FP_ERRORSTR;
+FP_ERRORSTR = load_string(cmret);
+}
+FP_ERRORPARAM = get_errorparam();
+FP_ERRORTYPE = get_cmret_type();
+set_hidden("IF_ERRORSTR", FP_ERRORSTR);
+set_hidden("IF_ERRORPARAM", FP_ERRORPARAM);
+set_hidden("IF_ERRORTYPE", FP_ERRORTYPE);
+}
+return FP_ERRORSTR;
+}
+function setInstNumHidden(FP_OBJNAME, FP_MULTIDISPLAY)
+{
+if (FP_MULTIDISPLAY == 1)
+{
+set_hidden("IF_INSTNUM", getInstNum(FP_OBJNAME));
+}
+}
+function getBasicGCH(FP_OBJNAME, FP_MULTIDISPLAY, PARA, FP_PARANUM, FP_ACTION, FP_INDEX, FP_ERRORSTR)
+{
+var FP_INSTNUM  = 0;
+var FP_IDENTITY = "";
+if(1 == FP_MULTIDISPLAY && (FP_ACTION == "apply" || FP_ACTION == "delete"))
+{
+FP_INSTNUM = query_list(FP_OBJNAME, "IGD");
+if (FP_INSTNUM != 888 && FP_INSTNUM > 0 && FP_INDEX >= 0)
+{
+FP_IDENTITY = query_identity(FP_INDEX);
+}
+}
+FP_ERRORSTR = applyOrNewOrDelInst(FP_OBJNAME, FP_ACTION, FP_IDENTITY, PARA, FP_PARANUM, FP_ERRORSTR);
+if("SUCC" != FP_ERRORSTR)
+{
+FP_INDEX    = -1;
+FP_IDENTITY = "";
+}
+FP_INSTNUM = displayInst(FP_OBJNAME, FP_MULTIDISPLAY, PARA, FP_PARANUM, FP_ERRORSTR);
+getDisplayInstError(FP_ERRORSTR);
+return FP_ERRORSTR;
+}
+function getBasicGCHindex(FP_OBJNAME, FP_MULTIDISPLAY, PARA, FP_PARANUM, FP_ACTION, FP_INDEX, FP_ERRORSTR)
+{
+var FP_INSTNUM  = 0;
+var FP_IDENTITY = "";
+if(1 == FP_MULTIDISPLAY && (FP_ACTION == "apply" || FP_ACTION == "delete"))
+{
+FP_INSTNUM = query_list(FP_OBJNAME, "IGD");
+if (FP_INSTNUM != 888 && FP_INSTNUM > 0 && FP_INDEX >= 0)
+{
+FP_IDENTITY = query_identity(FP_INDEX);
+}
+}
+FP_ERRORSTR = applyOrNewOrDelInstindex(FP_OBJNAME, FP_ACTION, FP_IDENTITY, PARA, FP_PARANUM, FP_INDEX,FP_ERRORSTR);
+if("SUCC" != FP_ERRORSTR)
+{
+FP_INDEX    = -1;
+FP_IDENTITY = "";
+}
+FP_INSTNUM = displayInst(FP_OBJNAME, FP_MULTIDISPLAY, PARA, FP_PARANUM, FP_ERRORSTR);
+getDisplayInstError(FP_ERRORSTR);
+return FP_ERRORSTR;
+}
+function getSubmitGCH(FP_OBJNAME, FP_MULTIDISPLAY, PARA, FP_PARANUM)
+{
+var FP_ACTION   = request("IF_ACTION");
+var FP_INDEX    = getInstIndex("new");
+var FP_ERRORSTR = "SUCC";
+createSubmitHidden(FP_MULTIDISPLAY, PARA, FP_PARANUM, FP_INDEX);
+getBasicGCH(FP_OBJNAME, FP_MULTIDISPLAY, PARA, FP_PARANUM, FP_ACTION, FP_INDEX, FP_ERRORSTR);
+setInstNumHidden(FP_OBJNAME, FP_MULTIDISPLAY);
+}
+function getSubmitGCHindex(FP_OBJNAME, FP_MULTIDISPLAY, PARA, FP_PARANUM)
+{
+var FP_ACTION   = request("IF_ACTION");
+var FP_INDEX    = getInstIndex("new");
+var FP_ERRORSTR = "SUCC";
+createSubmitHidden(FP_MULTIDISPLAY, PARA, FP_PARANUM, FP_INDEX);
+getBasicGCHindex(FP_OBJNAME, FP_MULTIDISPLAY, PARA, FP_PARANUM, FP_ACTION, FP_INDEX, FP_ERRORSTR);
+setInstNumHidden(FP_OBJNAME, FP_MULTIDISPLAY);
+}
+function getFunctionGCH(FP_OBJNAME, FP_MULTIDISPLAY, PARA, FP_PARANUM, FP_ACTION, FP_INDEX, FP_ERRORSTR)
+{
+create_hidden_newpara(PARA, FP_PARANUM);
+FP_ERRORSTR = getBasicGCH(FP_OBJNAME, FP_MULTIDISPLAY, PARA, FP_PARANUM, FP_ACTION, FP_INDEX, FP_ERRORSTR);
+return FP_ERRORSTR;
+}
+function getPageGCH(FP_OBJNAME, FP_MULTIDISPLAY, PARA, FP_PARANUM)
+{
+create_form_start("fSubmit", "");
+getSubmitGCH(FP_OBJNAME, FP_MULTIDISPLAY, PARA, FP_PARANUM);
+create_form_end();
+}
+function getOldPageGCH(FP_OBJNAME, FP_MULTIDISPLAY, PARA, FP_PARANUM)
+{
+var FP_ACTION   = request("IF_ACTION");
+var FP_INDEX = getInstIndex("old");
+var FP_IDENTITY = getInstIdentity(FP_OBJNAME, FP_INDEX);
+var FP_ERRORSTR = "SUCC";
+create_form_start("fSubmit", "");
+createSubmitHidden(FP_MULTIDISPLAY, PARA, FP_PARANUM, FP_INDEX);
+FP_ERRORSTR = applyOrNewOrDelInst(FP_OBJNAME, FP_ACTION, FP_IDENTITY, PARA, FP_PARANUM, FP_ERRORSTR);
+FP_ERRORSTR = displayOldSingleInst(FP_OBJNAME, FP_IDENTITY, PARA, FP_PARANUM, FP_ERRORSTR);
+create_form_end();
+}
+function getOldFunctionGCH(FP_OBJNAME, FP_MULTIDISPLAY, PARA, FP_PARANUM, FP_ACTION, FP_INDEX, FP_ERRORSTR)
+{
+var FP_IDENTITY = getInstIdentity(FP_OBJNAME, FP_INDEX);
+create_hidden_newpara(PARA, FP_PARANUM);
+FP_ERRORSTR = applyOrNewOrDelInst(FP_OBJNAME, FP_ACTION, FP_IDENTITY, PARA, FP_PARANUM, FP_ERRORSTR);
+FP_ERRORSTR = displayOldSingleInst(FP_OBJNAME, FP_IDENTITY, PARA, FP_PARANUM, FP_ERRORSTR);
+return FP_ERRORSTR;
+}
+function getPageGCHindex(FP_OBJNAME, FP_MULTIDISPLAY, PARA, FP_PARANUM)
+{
+create_form_start("fSubmit", "");
+getSubmitGCHindex(FP_OBJNAME, FP_MULTIDISPLAY, PARA, FP_PARANUM);
+create_form_end();
+}
+function Escapquotes(para)
+{
+var paralen = strlen(para);
+var part = "";
+var tmp  = "";
+for(var i=0; i<paralen; i++)
+{
+part = substr(para,i,i+1);
+if('"' == part)
+tmp = tmp + '\"';
+else
+tmp = tmp + part;
+}
+return tmp;
+}
+function getXMLLabelStart(nodeName)
+{
+return "<" + nodeName + ">";
+}
+function getXMLLabelEnd(nodeName)
+{
+return "</" + nodeName + ">";
+}
+function getXMLNodeEntity(nodeName, nodeValue)
+{
+return getXMLLabelStart(nodeName)
++ nodeValue
++ getXMLLabelEnd(nodeName);
+}
+function getInstParaXML(OBJNAME, ID, PARA, PARANUM)
+{
+var xmlStr = "";
+var HANDLE = create_paralist();
+get_inst(HANDLE, OBJNAME, ID);
+for (var i=0; i<PARANUM; i++)
+{
+var paraVal = get_para(HANDLE, PARA[i]);
+var paraValTrans = encodeXML(paraVal);
+xmlStr += getXMLNodeEntity(PARA[i], paraValTrans);
+}
+destroy_paralist(HANDLE);
+return getXMLNodeEntity("Parameters", xmlStr);
+}
+function getSIXML(OBJNAME, PARA, PARANUM)
+{
+var xmlStr = getInstParaXML(OBJNAME, "", PARA, PARANUM);
+xmlStr += getXMLNodeEntity("ID", "IGD");
+xmlStr = getXMLNodeEntity("Instance", xmlStr);
+return getXMLNodeEntity(OBJNAME, xmlStr);
+}
+function getMIAllInstXML(OBJNAME, PARA, PARANUM)
+{
+var xmlStr = "";
+var n = query_list(OBJNAME, "IGD");
+for (var i=0; i<n; i++)
+{
+var id = query_identity(i);
+var a = getInstParaXML(OBJNAME, id, PARA, PARANUM);
+a += getXMLNodeEntity("ID", id);
+xmlStr += getXMLNodeEntity("Instance", a);
+}
+return getXMLNodeEntity(OBJNAME, xmlStr);
+}
+function getMIOneInstXML(OBJNAME, ID, PARA, PARANUM)
+{
+var xmlStr = "";
+var n = query_list(OBJNAME, "IGD");
+for (var i=0; i<n; i++)
+{
+var a = "";
+var cid = query_identity(i);
+if (cid == ID)
+{
+a += getInstParaXML(OBJNAME, cid, PARA, PARANUM);
+}
+a += getXMLNodeEntity("ID", cid);
+xmlStr += getXMLNodeEntity("Instance", a);
+}
+return getXMLNodeEntity(OBJNAME, xmlStr);
+}
+function getMIIDListXML(OBJNAME)
+{
+return getMIOneInstXML(OBJNAME, NULL, NULL, NULL);
+}
+function outputXML(xmlStr)
+{
+var ERRORSTR = get_cmret();
+if (ERRORSTR != "FAIL" && ERRORSTR != "SUCC")
+{
+var cmret = "cmret_"+ERRORSTR;
+ERRORSTR = load_string(cmret);
+ERRORSTR = encodeXML(ERRORSTR);
+}
+xmlStr += getXMLNodeEntity("IF_ERRORSTR", ERRORSTR);
+xmlStr += getXMLNodeEntity("IF_ERRORPARAM", get_errorparam());
+xmlStr += getXMLNodeEntity("IF_ERRORTYPE", get_cmret_type());
+= getXMLNodeEntity("ajax_response_xml_root", xmlStr);
+}
+function isExistParaName(FP_HANDLE, name)
+{
+var FP_PARANUM = query_paracount(FP_HANDLE);
+for( var j=0; j<FP_PARANUM; j++)
+{
+var paraName = query_paraname(FP_HANDLE, j);
+if ( name == paraName )
+{
+return 1;
+}
+}
+return 0;
+}
+function gchAlertStr(strval)
+{
+="<script type='text/javascript'>";
+="alert(\""+strval+"\");";
+="</script>";
+}
+function ModuleAction(MPrefixs, MNum, ERRORSTR)
+{
+var IACTION = "";
+var IMNAME = "";
+var IID = "";
+var IHandle = "";
+var MPrefix = "";
+for (var MIndex=0; MIndex<MNum; MIndex++)
+{
+MPrefix = MPrefixs[MIndex];
+IACTION = request(MPrefix + "IACTION");
+IMNAME = request(MPrefix + "IMNAME");
+IID = request(MPrefix + "IDENTITY");
+if ( "apply" == IACTION )
+{
+IHandle = create_paralist();
+query_paralist(IHandle, IMNAME);
+var paraNum = query_paracount(IHandle);
+for(var paraIndex=0; paraIndex<paraNum; paraIndex++)
+{
+var paraName = query_paraname(IHandle, paraIndex);
+var paraValue = request(MPrefix + paraName);
+set_para(IHandle, paraName, paraValue);
+}
+set_inst(IHandle, IMNAME, IID);
+}
+else if ( "delete" == IACTION )
+{
+del_inst(IMNAME, IID);
+}
+else
+{
+}
+ERRORSTR = getNewInstError(ERRORSTR);
+var INSTNUM = request(MPrefix+"INSTNUM");
+INSTNUM = integer(INSTNUM);
+for (var IIndex=0; IIndex<INSTNUM; IIndex++)
+{
+IACTION = request(MPrefix + "IACTION" + IIndex);
+IMNAME = request(MPrefix + "IMNAME" + IIndex);
+IID = request(MPrefix + "IDENTITY" + IIndex);
+if ( "apply" == IACTION )
+{
+IHandle = create_paralist();
+query_paralist(IHandle, IMNAME);
+var paraNum = query_paracount(IHandle);
+for(var paraIndex=0; paraIndex<paraNum; paraIndex++)
+{
+var paraName = query_paraname(IHandle, paraIndex);
+var paraValue = request(MPrefix + paraName + IIndex);
+set_para(IHandle, paraName, paraValue);
+}
+set_inst(IHandle, IMNAME, IID);
+}
+else if ( "delete" == IACTION )
+{
+del_inst(IMNAME, IID);
+}
+else
+{
+}
+ERRORSTR = getNewInstError(ERRORSTR);
+}
+}
+return ERRORSTR;
+}
+function ModuleLogic(MHandle)
+{
+var MNames[10] = {""};
+var MPrefixs[10] = {""};
+var MListIDs[10] = {""};
+var MINSTDISPs[10] = {""};
+var MNum = 0;
+var ERRORSTR = "SUCC";
+create_form_start("fSubmit", "");
+create_hidden_sep("IF_ERRORSTR", "SUCC");
+create_hidden_sep("IF_ERRORPARAM", "SUCC");
+create_hidden_sep("IF_ERRORTYPE", -1);
+var paraNum = query_paracount(MHandle);
+for(var paraIndex=0; paraIndex<paraNum; paraIndex++)
+{
+var paraName = query_paraname(MHandle, paraIndex);
+var paraValue = query_paravalue(MHandle, paraIndex);
+create_hidden_sep(paraName, paraValue);
+}
+for (var MIndex=0; MIndex<10; MIndex++)
+{
+var MNameTag = "OBJNAME"+MIndex;
+if ( 0 == isExistParaName(MHandle, "OBJNAME"+MIndex) )
+{
+break;
+}
+MNames[MIndex] = get_para(MHandle, MNameTag);
+var MPrefixTag = "OBJPREFIX"+MIndex;
+if ( 0 == isExistParaName(MHandle, MPrefixTag) )
+{
+MPrefixs[MIndex] = "";
+}
+else
+{
+MPrefixs[MIndex] = get_para(MHandle, MPrefixTag);
+}
+var MListID = "OBJLISTID"+MIndex;
+if ( 0 == isExistParaName(MHandle, MListID) )
+{
+MListIDs[MIndex] = "IGD";
+}
+else
+{
+MListIDs[MIndex] = get_para(MHandle, MListID);
+}
+var MINSTDISP = "OBJINSTDISP"+MIndex;
+if ( 0 == isExistParaName(MHandle, MINSTDISP) )
+{
+MINSTDISPs[MIndex] = "YES";
+}
+else
+{
+MINSTDISPs[MIndex] = get_para(MHandle, MINSTDISP);
+if ( "NO" != MINSTDISPs[MIndex] )
+{
+MINSTDISPs[MIndex] = "YES";
+}
+}
+}
+MNum = MIndex;
+ERRORSTR = ModuleAction(MPrefixs, MNum, ERRORSTR);
+for (var MIndex=0; MIndex<MNum; MIndex++)
+{
+var MName = MNames[MIndex];
+var MPrefix = MPrefixs[MIndex];
+var MINSTDISP = MINSTDISPs[MIndex];
+create_hidden_sep(MPrefix+"IACTION", "");
+create_hidden_sep(MPrefix+"IMNAME", MName);
+create_hidden_sep(MPrefix+"IDENTITY", "");
+var handle = create_paralist();
+query_paralist(handle, MName);
+var paraNum = query_paracount(handle);
+for(var paraIndex=0; paraIndex<paraNum; paraIndex++)
+{
+var paraName = query_paraname(handle, paraIndex);
+create_hidden_sep(MPrefix+paraName, "");
+}
+destroy_paralist(handle);
+if ( "NO" == MINSTDISPs[MIndex] )
+{
+continue;
+}
+var instNum = query_list(MName, MListIDs[MIndex]);
+var listFlag = 1;
+if ( 888 == instNum )
+{
+instNum = 1;
+listFlag = 0;
+}
+create_hidden_sep(MPrefix+"LISTFLAG", listFlag);
+create_hidden_sep(MPrefix+"INSTNUM", instNum);
+for (var instIndex=0; instIndex<instNum; instIndex++)
+{
+var identity = "";
+if ( listFlag )
+{
+identity = query_identity(instIndex);
+}
+create_hidden_sep(MPrefix+"IACTION"+instIndex, "");
+create_hidden_sep(MPrefix+"IMNAME"+instIndex, MName);
+create_hidden_sep(MPrefix+"IDENTITY"+instIndex, identity);
+var handle = create_paralist();
+get_inst(handle, MName, identity);
+var paraNum = query_paracount(handle);
+for( var paraIndex=0; paraIndex<paraNum; paraIndex++)
+{
+var paraName = query_paraname(handle, paraIndex);
+var paraValue = query_paravalue(handle, paraIndex);
+create_hidden_sep(MPrefix+paraName+instIndex, paraValue);
+}
+destroy_paralist(handle);
+ERRORSTR = getNewInstError(ERRORSTR);
+}
+}
+create_form_end();
+}
+%>

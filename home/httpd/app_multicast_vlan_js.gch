@@ -1,0 +1,202 @@
+<script language="javascript">
+var Enable_PARA = new Array(
+"PortViewName",
+"MultSrcVid",
+"MultDstVid"
+);
+var Instnum= getValue("FP_INSTNUM_LAN");
+function IGMPModePageShow()
+{
+<%
+var tmp = getenv("DevIPv6Effect");
+if((tmp == "N/A") || (tmp == "NULL") || (tmp IS NULL)|| tmp=="")
+{
+tmp=0;
+}
+%>
+if ( <%=tmp;%> == 0)
+{
+getObj("Div_IGMPInfo").innerHTML= "&?IGMP_028;";
+}
+else
+{
+getObj("Div_IGMPInfo").innerHTML= "&?IGMP_028;";
+}
+}
+function getmsg(id)
+{
+var str     = new Array();
+str[0]   = new Array(116, "&?error_116;");
+str[1]   = new Array(117, "&?error_117;");
+str[2]   = new Array(115, "&?error_115;");
+str[3]   = new Array(101, "&?error_101;");
+str[4]   = new Array(230, "&?error_230;");
+return getMsgFormArray(str, arguments);
+}
+function pageLoad(url)
+{
+getObj("fSubmit").action = url;
+var errstr  = getValue("IF_ERRORSTR");
+var errpara = getValue("IF_ERRORPARAM");
+ProcessRet(errstr, errpara);
+moveErrLayer(590,75);
+showEthName();
+showTable();
+IGMPModePageShow();
+}
+function getNameValue(size, value)
+{
+return ("<input type=\"text\" class=\"uiNoBorder\" size=\"" + size +"\" value=\""
++ value + "\"readonly>");
+}
+
+function addline(i,index)
+{
+var newline = getObj("IGMP_Vlan_Table").insertRow(-1);
+var cellSize = 16;
+newline.setAttribute("class", "white");
+newline.setAttribute("className", "white");
+newline.insertCell(-1).innerHTML = getValue("lanname"+i);
+newline.insertCell(-1).innerHTML = getValue("MultSrcVid"+i+index);
+newline.insertCell(-1).innerHTML = getValue("MultDstVid"+i+index);
+newCell = newline.insertCell(-1);
+newCell.innerHTML = getImagefrmClass("multiImg_delete", "pageDel("+index+")", "delete" + index);
+}
+function showEthName()
+{
+var LANNameObj   = getObj("Frm_LANName");
+for(var i = 0; i < Instnum; i++)
+{
+LANNameObj.options[i] = new Option(getValue("lanname"+i),i);
+}
+if ((getValue("IF_INDEX") == "") || (getValue("IF_INDEX") == "-1") )
+{
+setValue("Frm_LANName","0");
+}
+else
+{
+jslSetValue("Frm_LANName","IF_INDEX");
+}
+}
+function showTable()
+{
+var tmp=getValue("Frm_LANName");
+var num=getValue("FP_INSTNUM_VLAN"+tmp);
+if ( num <=0 )
+{
+var newline = getObj("IGMP_Vlan_Table").insertRow(-1);
+newline.setAttribute("align", "center");
+newline.setAttribute("class", "white");
+newline.setAttribute("className", "white");
+var objcell =  newline.insertCell(-1);
+objcell.colSpan = 4;
+objcell.innerHTML= "&?note_007;";
+}
+else
+{
+for (var j = 0; j < num; j++)
+{
+addline(tmp,j);
+}
+}
+}
+function pageSetValue()
+{
+HiddenParaInit(Enable_PARA);
+var ETHIndex=getValue("Frm_LANName");
+setValue("PortViewName",getValue("identity"+ETHIndex));
+jslSetValue("MultSrcVid", "Frm_MultSrcVid");
+jslSetValue("MultDstVid", "Frm_MultDstVid");
+}
+function pageSubmit()
+{
+pageSetValue();
+setValue("IF_ACTION","apply");
+DisableALL();
+getObj("fSubmit").submit();
+}
+function pageCancel()
+{
+DisableALL();
+getObj("fSubmit").submit();
+}
+function pageDel(i)
+{
+var Pindex=getValue("Frm_LANName");
+setValue("IF_INDEX",Pindex);
+setValue("IF_INDEX_VLAN",i);
+setValue("IF_ACTION","del");
+DisableALL();
+getObj("fSubmit").submit();
+}
+function pageAdd()
+{
+jslEnDisplay("Btn_Add");
+ReSetValueRmZero("Frm_MultSrcVid","Frm_MultDstVid");
+if(true == pageCheckValue())
+{
+pageSetValue();
+var tmp=getValue("Frm_LANName");
+setValue("IF_ACTION", "new");
+setValue("IF_INDEX", tmp);
+DisableALL();
+getObj("fSubmit").submit();
+}
+else
+{
+}
+}
+function pageCheckValue()
+{
+var msg  = "";
+var check  = "";
+var VlanValue=getValue("Frm_MultSrcVid");
+check=checkIntegerRange(VlanValue,1,4094);
+if (check == -1)
+{
+msg = getmsg(101);
+ShowErrorForCom("Frm_MultSrcVid","Fnt_MultSrcVid",msg);
+return false;
+}
+if (check == -2)
+{
+msg = getmsg(115);
+ShowErrorForCom("Frm_MultSrcVid","Fnt_MultSrcVid",msg);
+return false;
+}
+if (check == -3)
+{
+msg = getmsg(116,1,4094);
+ShowErrorForCom("Frm_MultSrcVid","Fnt_MultSrcVid",msg);
+return false;
+}
+VlanValue=getValue("Frm_MultDstVid");
+check=checkIntegerRange(VlanValue,1,4094);
+if (check == -1)
+{
+msg = getmsg(101);
+ShowErrorForCom("Frm_MultDstVid","Fnt_MultDstVid",msg);
+return false;
+}
+if (check == -2)
+{
+msg = getmsg(115);
+ShowErrorForCom("Frm_MultDstVid","Fnt_MultDstVid",msg);
+return false;
+}
+if (check == -3)
+{
+msg = getmsg(116,1,4094);
+ShowErrorForCom("Frm_MultDstVid","Fnt_MultDstVid",msg);
+return false;
+}
+return true;
+}
+function Change_LAN()
+{
+var tmp=getValue("Frm_LANName");
+setValue("IF_INDEX", tmp);
+DisableALL();
+getObj("fSubmit").submit();
+}
+</script>

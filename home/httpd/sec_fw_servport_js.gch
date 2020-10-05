@@ -1,0 +1,205 @@
+<script language="javascript">
+function pageBack()
+{
+DisableALL();
+window.location.href = getURL("sec_sc_t.gch");
+}
+var PARA = new Array
+(
+"ServName",
+"ServPort"
+);
+var CHECK_PARA = "ServName";
+var index  = "";
+function getmsg(id)
+{
+var str  = new Array();
+str[0]   = new Array(102, "&?error_102;");
+str[1]   = new Array(103, "&?error_103;");
+str[2]   = new Array(115, "&?error_115;");
+str[3]   = new Array(116, "&?error_116;");
+str[4]   = new Array(117, "&?error_117;");
+str[0]  = new Array(101, "&?error_101;");
+str[9]  = new Array(144, "&?error_144;");
+return getMsgFormArray(str, arguments);
+}
+function pageLoad(url)
+{
+moveErrLayer(580,95);
+getObj("fSubmit").action = url;
+var errstr= getValue("IF_ERRORSTR");
+var errpara = getValue("IF_ERRORPARAM");
+ProcessRet(errstr, errpara);
+showTable();
+pageGetValue();
+}
+function getInput(id,len)
+{
+return ("<input class=\"uiNoBorder\"  type=\"text\"  size=\""+len+"\" id=\""+id+"\" readonly>");
+}
+function addline(index)
+{
+var newline = getObj("ServPort_Table").insertRow(-1);
+newline.setAttribute("class", "white");
+newline.setAttribute("className", "white");
+for(var i = 0; i < PARA.length ; i++)
+{
+if(PARA[i] == "ServName")
+{
+newline.insertCell(-1).innerHTML = getInput("Frm_"+PARA[i]+index,24);
+}
+else
+{
+newline.insertCell(-1).innerHTML = getInput("Frm_"+PARA[i]+index,8);
+}
+}
+newline.insertCell(-1).innerHTML=getImagefrmClass("multiImg_modify", "Modify("+index+")", "BtnMod"+index);
+}
+function checkIndex(i)
+{
+return getObj("" + CHECK_PARA + i) ? true : false;
+}
+function showTable()
+{
+var num = getValue("IF_INSTNUM");
+for(var i = 0; i < num; i++)
+{
+if (checkIndex(i))
+{
+addline(i);
+}
+}
+}
+function pageGetValue()
+{
+var index = getValue("IF_INSTNUM");
+for(var i = 0; i < index; i++)
+{
+if (checkIndex(i))
+{
+for(var j = 0; j < PARA.length ; j++)
+{
+if(PARA[i] == "ServName")
+{
+var servname = getValue(PARA[j]+i);
+if ( "WEB" == servname )
+{
+servname = "HTTP";
+}
+setValue("Frm_"+PARA[j]+i, servname);
+}
+else
+{
+setValue("Frm_"+PARA[j]+i,getValue(PARA[j]+i));
+}
+}
+}
+}
+}
+function pageSetValue()
+{
+HiddenParaInit(PARA);
+jslSetValue("ServName", "Frm_ServName");
+jslSetValue("ServPort", "Frm_ServPort");
+}
+function PageResetValueRmZero(frm_id, fnt_id)
+{
+if( false == ReSetValueRmZero(frm_id) )
+{
+var msg = getmsg(144);
+ShowErrorForCom(frm_id, fnt_id, msg);
+return false;
+}
+return true;
+}
+function checkPort(frm_id, fnt_id, isNull, minValue, maxValue)
+{
+var msg = "";
+if( 0 == isNull && false == checkNull(getValue(frm_id)) )
+{
+return true;
+}
+var portCheck = checkIntegerRange(getValue(frm_id), minValue, maxValue);
+if("-1" == portCheck)
+{
+msg = getmsg(101);
+ShowErrorForCom(frm_id, fnt_id, msg);
+return false;
+}
+if("-2" == portCheck)
+{
+msg = getmsg(115);
+ShowErrorForCom(frm_id, fnt_id, msg);
+return false;
+}
+else
+if("-3" == portCheck)
+{
+msg = getmsg(116, minValue, maxValue);
+ShowErrorForCom(frm_id, fnt_id, msg);
+return false;
+}
+return  true;
+}
+function pageCheckValue()
+{
+PageResetValueRmZero("Frm_ServPort");
+if(false == checkPort("Frm_ServPort", "Fnt_ServPort", 1, 1, 65535))
+{
+return  false;
+}
+return true;
+}
+function pageCancel()
+{
+DisableALL();
+getObj("fSubmit").submit();
+}
+function pageSubmit()
+{
+if(pageCheckValue() == true)
+{
+pageSetValue();
+setValue("IF_ACTION", "apply");
+setValue("IF_INDEX",index);
+DisableALL();
+getObj("fSubmit").submit();
+}
+else
+{
+}
+}
+function ModifyGetValue(i)
+{
+jslSetValue("Frm_ServName", "ServName"+i);
+jslSetValue("Frm_ServPort", "ServPort"+i);
+}
+function Modify(i)
+{
+getObj("modify").style.display="";
+document.getElementById("back").style.display="";
+jslEnable("Frm_ServPort");
+ModifyGetValue(i);
+index=i;
+}
+function ModifySubmit()
+{
+if(pageCheckValue() == true)
+{
+pageSetValue();
+setValue("IF_ACTION", "apply");
+setValue("IF_INDEX",index);
+DisableALL();
+getObj("fSubmit").submit();
+}
+else
+{
+}
+}
+function back4add()
+{
+var number = getValue("IF_INSTNUM");
+DisableALL();
+getObj("fSubmit").submit();
+}
+</script>

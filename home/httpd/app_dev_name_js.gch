@@ -1,0 +1,266 @@
+<script language="javascript">
+var DNSHOST_PARA = new Array(
+"HostName",
+"IPAddress"
+);
+var DNSDHCP_PARA = new Array(
+"HostName",
+"IPAddress"
+);
+var index ="";
+function getmsg(id)
+{
+var str      = new Array();
+str[0]   = new Array(101, "&?error_101;");
+str[1]   = new Array(106, "&?error_106;");
+str[2]   = new Array(108, "&?error_108;");
+str[3]   = new Array(118, "&?error_118;");
+str[4]   = new Array(119, "&?error_119;");
+str[5]   = new Array(122, "&?error_122;");
+str[6]   = new Array(127, "&?error_127;");
+str[7]   = new Array(102, "&?error_102;");
+str[8]   = new Array(103, "&?error_103;");
+return getMsgFormArray(str, arguments);
+}
+function pageLoad(url)
+{
+getObj("fSubmit").action = url;
+moveErrLayer(580,50);
+var errstr1= getValue("HOST_ERRORSTR");
+var errpara1 = getValue("HOST_ERRORPARAM");
+OldProcessRet(errstr1, errpara1);
+var errstr2= getValue("DNSDHCP_ERRORSTR");
+var errpara2 = getValue("DNSDHCP_ERRORPARAM");
+OldProcessRet(errstr2, errpara2);
+showTable();
+}
+function getImageDisabled(src)
+{
+return ("<input type=\"image\" src=\""+src+"\" disabled>");
+}
+function getInput(value,len)
+{
+return ("<input class=\"uiNoBorder\"  type=\"text\"  width=\""+len+"px\" value=\""+value+"\" readonly>");
+}
+function addline(index)
+{
+<%
+if ( 0 == getenv("DevIPv6Effect") )
+{
+%>
+if ( true == checkIPV6Address(getValue("IPAddress"+index)) )
+{
+return ;
+}
+<%
+}
+%>
+var newline = getObj("DEVtable").insertRow(-1);
+newline.setAttribute("class", "white");
+newline.setAttribute("className", "white");
+for(var i = 0; i < DNSHOST_PARA.length ; i++)
+{
+if(DNSHOST_PARA[i] == "HostName")
+{
+newline.insertCell(-1).innerHTML =getInput(getValue(DNSHOST_PARA[i]+index),164);
+}
+else
+{
+newline.insertCell(-1).innerHTML =getInput(getValue(DNSHOST_PARA[i]+index),196);
+}
+}
+newline.insertCell(-1).innerHTML=getImagefrmClass("multiImg_modify", "Modify("+index+")", "Btn_Modify"+index);
+newline.insertCell(-1).innerHTML=getImagefrmClass("multiImg_delete", "Delete("+index+")", "Btn_Delete"+index);
+}
+function addlinedhcp(index)
+{
+<%
+if ( 0 == getenv("DevIPv6Effect") )
+{
+%>
+if ( true == checkIPV6Address(getValue("IPAddressdhcp"+index)) )
+{
+return ;
+}
+<%
+}
+%>
+var newline = getObj("DEVtable").insertRow(-1);
+newline.setAttribute("class", "white");
+newline.setAttribute("className", "white");
+for(var i = 0; i < DNSDHCP_PARA.length ; i++)
+{
+if(DNSDHCP_PARA[i] == "HostName")
+{
+newline.insertCell(-1).innerHTML = getInput(getValue(DNSDHCP_PARA[i]+"dhcp"+index),164);
+}
+else
+{
+newline.insertCell(-1).innerHTML = getInput(getValue(DNSDHCP_PARA[i]+"dhcp"+index),196);
+}
+}
+newline.insertCell(-1).innerHTML=getImagefrmClass("multiImg_modifydis", "Modify("+index+")","Btn_Modify"+index);
+newline.insertCell(-1).innerHTML=getImagefrmClass("multiImg_deletedis", "Delete("+index+")","Btn_Delete"+index);
+jslDisable("Btn_Delete" + index,"Btn_Modify" + index);
+}
+function NullCofig()
+{
+var newline = getObj("DEVtable").insertRow(-1);
+newline.setAttribute("class", "white");
+newline.setAttribute("className", "white");
+newline.setAttribute("align", "center");
+var objcell =  newline.insertCell(-1);
+objcell.colSpan = 4;
+objcell.innerHTML= "&?note_007;";
+}
+function showTable()
+{
+var num = getValue("HOST_INSTNUM");
+var numdhcp = getValue("DNSDHCP_INSTNUM");
+if (0 == numdhcp && 0 == num)
+{
+NullCofig();
+}
+else
+{
+for(var i = 0; i < numdhcp; i++)
+{
+addlinedhcp(i);
+}
+for(var i = 0; i < num; i++)
+{
+addline(i);
+}
+}
+}
+function pageGetValue(i)
+{
+jslSetValue("Frm_IPAddress", "IPAddress"+i);
+jslSetValue("Frm_HostName", "HostName"+i);
+}
+function pageSetValue()
+{
+HiddenParaInit(DNSHOST_PARA);
+jslSetValue("HostName", "Frm_HostName");
+jslSetValue("IPAddress", "Frm_IPAddress");
+}
+function pageCheckValue()
+{
+var msg  = "";
+var msg1 = "";
+var msg2 = "";
+var num  = checkName(getValue("Frm_HostName"), 255);
+if(-1 == num)
+{
+msg = getmsg(101);
+ShowErrorForCom("Frm_HostName","Fnt_HostName",msg);
+return false;
+}
+if (-3 == num)
+{
+msg = getmsg(102, 1, 255);
+ShowErrorForCom("Frm_HostName","Fnt_HostName",msg);
+return false;
+}
+if(num == false)
+{
+msg = getmsg(106);
+ShowErrorForCom("Frm_HostName", "Fnt_HostName", msg);
+return false;
+}
+if(checkNull(getValue("Frm_IPAddress")) == false)
+{
+msg = getmsg(101);
+ShowErrorForCom("Frm_IPAddress","Fnt_IPAddress",msg);
+return false;
+}
+if( ((checkIpAddress(getValue("Frm_IPAddress")) == false) || ("0.0.0.0" == getValue("Frm_IPAddress")))
+<%
+if ( 0 != getenv("DevIPv6Effect") )
+{
+%>
+&& ((false == checkIPV6Address(getValue("Frm_IPAddress"))) || ("::" == getValue("Frm_IPAddress")))
+<%
+}
+%>
+)
+{
+msg = getmsg(108);
+ShowErrorForCom("Frm_IPAddress", "Fnt_IPAddress", msg);
+return false;
+}
+return true;
+}
+function Add()
+{
+var number = getValue("HOST_INSTNUM");
+document.getElementById("Btn_Add").style.display="";
+document.getElementById("Btn_DoEdit").style.display="none";
+ReSetIpRmZero("Frm_IPAddress");
+if(pageCheckValue() == true)
+{
+for(var i = 0; i < number; i++)
+{
+try
+{
+jslDisable("Btn_Delete" + i,"Btn_Modify" + i);
+}
+catch(e){}
+}
+pageSetValue();
+setValue("IF_ACTION", "new");
+setValue("IF_INDEX", "-1");
+DisableALL();
+getObj("fSubmit").submit();
+}
+else
+{
+}
+}
+function Modify(i)
+{
+document.getElementById("Btn_Add").style.display="none";
+document.getElementById("Btn_DoEdit").style.display="";
+document.getElementById("back").style.display="";
+pageGetValue(i);
+index=i;
+}
+function ModifySubmit()
+{
+ReSetIpRmZero("Frm_IPAddress");
+var number = getValue("HOST_INSTNUM");
+if(pageCheckValue() == true)
+{
+for(var i = 0; i < number; i++)
+{
+try
+{
+jslDisable("Btn_Delete" + i,"Btn_Modify" + i);
+}
+catch(e){}
+}
+pageSetValue();
+setValue("IF_ACTION", "apply");
+setValue("IF_INDEX",index);
+DisableALL();
+getObj("fSubmit").submit();
+}
+else
+{
+}
+}
+function Delete(i)
+{
+var number = getValue("HOST_INSTNUM");
+setValue("IF_ACTION", "delete");
+setValue("IF_INDEX",i);
+DisableALL();
+getObj("fSubmit").submit();
+}
+function back4add()
+{
+var number = getValue("HOST_INSTNUM");
+DisableALL();
+getObj("fSubmit").submit();
+}
+</script>

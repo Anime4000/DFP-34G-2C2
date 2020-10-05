@@ -1,0 +1,29 @@
+<%
+IMPORT FILE "global.gch";
+var head      = "<!DOCTYPE html PUBLIC \"-\/\/W3C\/\/DTD XHTML 1.0 Transitional\/\/EN\"";
+var head1     = "\"http:\/\/www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">";
+var head_html = "<html xmlns=\"http:\/\/www.w3.org/1999/xhtml\">";
+=head + head1;
+=head_html;
+%>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=&?LANG;" />
+<title><%=getenv("WEBTitle");%></title>
+<style>
+<%
+IMPORT FILE "&?css2path;";
+IMPORT FILE "&?csslang;";
+%>
+</style>
+</head>
+<body>
+<div id="container">
+<div id="head">
+<!--
+<div class="type"><font id=""><%=getenv("WEBTitle");%></font></div>
+-->
+<div id="banner"  style="background:white;"></div>
+</div>
+</div>
+</body>
+</html>

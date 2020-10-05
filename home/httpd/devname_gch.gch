@@ -1,0 +1,24 @@
+<%
+IMPORT FILE "common_gch.gch";
+IMPORT FILE "dns_host_gch.gch";
+IMPORT FILE "dns_dhcphost_gch.gch";
+var DNSDHCP_ERRORSTR, HOST_ERRORSTR;
+var DNSHOST_TAG = "Y";
+var DNSDHCP_TAG = "Y";
+create_form_start("fSubmit", "");
+createBasicHidden();
+create_hidden_sep("IF_INDEX", "");
+create_hidden_sep("DHCP_INDEX", "");
+var FP_ACTION = request("IF_ACTION");
+var DNSHOST_INDEX = request("IF_INDEX");
+var DHCP_INDEX = request("DHCP_INDEX");
+var FP_ERRORSTR = "SUCC";
+if (DNSDHCP_TAG == "Y")
+DNSDHCP_ERRORSTR = hostdhcp_func(FP_ACTION,DHCP_INDEX,FP_ERRORSTR);
+if (DNSHOST_TAG == "Y")
+HOST_ERRORSTR = dnshost_func(FP_ACTION,DNSHOST_INDEX,FP_ERRORSTR);
+
+create_hidden_sep("HOST_ERRORSTR", HOST_ERRORSTR);
+create_hidden_sep("DNSDHCP_ERRORSTR", DNSDHCP_ERRORSTR);
+create_form_end();
+%>

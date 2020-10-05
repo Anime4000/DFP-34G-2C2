@@ -1,0 +1,19 @@
+<%
+IMPORT FILE "common_gch.gch";
+var FP_OBJNAME      = "OBJ_FWALG_ID";
+var FP_MULTIDISPLAY = 0;
+var FP_PARANUM      = 9;
+var PARA[9] =
+{
+"IsSIPAlg",
+"IsFTPAlg",
+"IsH323Alg",
+"IsRTSPAlg",
+"IsL2TPAlg",
+"IsPPTPAlg",
+"IsTFTPAlg",
+"IsSNMPAlg",
+"IsIPSECAlg"
+};
+getPageGCH(FP_OBJNAME, FP_MULTIDISPLAY, PARA, FP_PARANUM);
+%>

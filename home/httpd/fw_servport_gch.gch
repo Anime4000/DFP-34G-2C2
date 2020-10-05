@@ -1,0 +1,53 @@
+<%
+IMPORT FILE "common_gch.gch";
+var FP_OBJNAME      = "OBJ_FW_SERVPORT_ID";
+var FP_MULTIDISPLAY = 1;
+var FP_PARANUM      = 2;
+var PARA[2] =
+{
+"ServName",
+"ServPort"
+};
+create_form_start("fSubmit", "");
+var FP_ACTION   = request("IF_ACTION");
+var FP_INDEX    = getInstIndex("new");
+var FP_ERRORSTR = "SUCC";
+createSubmitHidden(FP_MULTIDISPLAY, PARA, FP_PARANUM, FP_INDEX);
+var FP_INSTNUM  = 0;
+var FP_IDENTITY = "";
+if(1 == FP_MULTIDISPLAY && (FP_ACTION == "apply" || FP_ACTION == "delete"))
+{
+FP_INSTNUM = query_list(FP_OBJNAME, "IGD");
+if (FP_INSTNUM != 888 && FP_INSTNUM > 0 && FP_INDEX >= 0)
+{
+FP_IDENTITY = query_identity(FP_INDEX);
+}
+}
+FP_ERRORSTR = applyOrNewOrDelInst(FP_OBJNAME, FP_ACTION, FP_IDENTITY, PARA, FP_PARANUM, FP_ERRORSTR);
+if("SUCC" != FP_ERRORSTR)
+{
+FP_INDEX    = -1;
+FP_IDENTITY = "";
+}
+var FP_INSTNUM = query_list(FP_OBJNAME, "IGD");
+var FP_IDENTITY = "";
+for (var i=0; i<FP_INSTNUM; i++)
+{
+var FP_HANDLE = create_paralist();
+FP_IDENTITY  = query_identity(i);
+get_inst(FP_HANDLE, FP_OBJNAME, FP_IDENTITY);
+var ServName = get_para(FP_HANDLE, "ServName");
+if ( ServName == "WEB"
+|| ServName == "FTP"
+|| ServName == "SSH"
+|| ServName == "TELNET"
+|| ServName == "HTTPS" )
+{
+create_hidden_multiinstpara(FP_HANDLE, PARA, i, FP_PARANUM);
+}
+destroy_paralist(FP_HANDLE);
+}
+getDisplayInstError(FP_ERRORSTR);
+setInstNumHidden(FP_OBJNAME, FP_MULTIDISPLAY);
+create_form_end();
+%>

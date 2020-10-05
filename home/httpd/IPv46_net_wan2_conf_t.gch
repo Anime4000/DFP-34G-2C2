@@ -1,0 +1,4 @@
+<%
+setenv("upModeValue", 2);
+IMPORT FILE  "IPv46_net_wan_conf_t.gch";
+%>

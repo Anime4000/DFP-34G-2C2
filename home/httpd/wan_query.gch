@@ -1,0 +1,21 @@
+
+<%
+IMPORT FILE "common_gch.gch";
+var currUpMode = getenv("TypeValue");
+if(currUpMode == "1")
+{
+IMPORT FILE "wan_dsl_query.gch";
+}
+else if(currUpMode == "2")
+{
+IMPORT FILE "wan_eth_query.gch";
+}
+else if (currUpMode == "4")
+{
+IMPORT FILE "wan_tty_query.gch";
+}
+else
+{
+IMPORT FILE "wan_dsl_query.gch";
+}
+%>

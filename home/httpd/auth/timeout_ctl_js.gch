@@ -1,0 +1,19 @@
+<%
+var callback_func = getenv("request/callback");
+unsetenv("request/callback");
+if (callback_func IS NOT NULL && callback_func != "N/A" && callback_func != "")
+{
+var timeout = session_get("timeout");
+if (timeout != "N/A" && timeout != "")
+{
+%>
+timeid = setTimeout("<%=callback_func;%>", <%=timeout;%> * 1000 + 5000);
+function callbackfuncReset()
+{
+clearTimeout(timeid);
+timeid = setTimeout("<%=callback_func;%>", <%=timeout;%> * 1000 + 5000);
+}
+<%
+}
+}
+%>

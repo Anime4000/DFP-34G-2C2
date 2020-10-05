@@ -1,0 +1,85 @@
+<%
+IMPORT FILE "common_gch.gch";
+var FP_OBJNAME       = "OBJ_LOOPBACK_VLAN_ID";
+var FP_MULTIDISPLAY = 1;
+var FP_PARANUM      = 3;
+var FP_ERRORSTR     = "SUCC";
+var lanIdentity[10]     = {0};
+var FP_INDEX = getInstIndex("new");
+var FP_INDEX_VLAN = request("IF_INDEX_VLAN");
+var FP_INSTNUM;
+var FP_OBJNAME_LAN;
+var FP_INSTNUM_LAN  =0;
+var FP_INSTNUM_VLAN,FP_INSTNUM_WANLAN;
+var FP_HANDLE,identity,WLname,LAN_Type,LAN_BRType;
+var FP_ACTION   = request("IF_ACTION");
+var PARA[3] =
+{
+"PortID",
+"vlanCount",
+"VidStr"
+};
+create_form_start("fSubmit", "");
+createBasicHidden();
+create_hidden_sep("IF_INDEX", FP_INDEX);
+create_hidden_sep("IF_INDEX_VLAN", FP_INDEX_VLAN);
+create_hidden_newpara(PARA, FP_PARANUM);
+FP_INSTNUM_WANLAN = query_list("OBJ_WANLAN_ID", "IGD");
+for (var i=0; i<FP_INSTNUM_WANLAN; i++)
+{
+identity = query_identity(i);
+FP_HANDLE = create_paralist();
+get_inst(FP_HANDLE, "OBJ_WANLAN_ID", identity);
+LAN_BRType= get_para(FP_HANDLE, "BRType");
+LAN_Type  = get_para(FP_HANDLE, "WANLANType");
+WLname    = get_para(FP_HANDLE, "Name");
+if(LAN_BRType == "0" && LAN_Type == "2")
+{
+var tmp=strstr(identity, 0, "ETH");
+if (tmp >=0)
+{
+lanIdentity[FP_INSTNUM_LAN]=identity;
+create_hidden_sep("identity"+FP_INSTNUM_LAN, identity);
+create_hidden_sep("lanname"+FP_INSTNUM_LAN, WLname);
+FP_INSTNUM_LAN++;
+}
+}
+destroy_paralist(FP_HANDLE);
+}
+if ("apply" == FP_ACTION)
+{
+query_list(FP_OBJNAME, lanIdentity[integer(FP_INDEX)]);
+identity = query_identity(integer(FP_INDEX_VLAN));
+FP_ERRORSTR=applyOrNewInst(FP_OBJNAME, "apply", identity, PARA, FP_PARANUM, FP_ERRORSTR);
+}
+else if ("new" == FP_ACTION)
+{
+identity = "";
+FP_ERRORSTR=applyOrNewInst(FP_OBJNAME, "new", identity, PARA, FP_PARANUM, FP_ERRORSTR);
+}
+else if ("del" == FP_ACTION)
+{
+query_list(FP_OBJNAME, lanIdentity[integer(FP_INDEX)]);
+identity = query_identity(integer(FP_INDEX_VLAN));
+del_inst(FP_OBJNAME, identity);
+}
+else
+{
+}
+for (var i=0; i<FP_INSTNUM_LAN; i++)
+{
+FP_INSTNUM_VLAN=query_list(FP_OBJNAME, lanIdentity[i]);
+for (var j=0;j<FP_INSTNUM_VLAN;j++)
+{
+FP_HANDLE = create_paralist();
+identity = query_identity(j);
+get_inst(FP_HANDLE, FP_OBJNAME, identity);
+create_hidden_multiinstpara_user(FP_HANDLE, PARA, i, FP_PARANUM,j);
+destroy_paralist(FP_HANDLE);
+FP_ERRORSTR=getNewInstError(FP_ERRORSTR);
+}
+create_hidden_sep("FP_INSTNUM_VLAN"+i, FP_INSTNUM_VLAN);
+}
+create_hidden_sep("FP_INSTNUM_LAN", FP_INSTNUM_LAN);
+create_form_end();
+%>
