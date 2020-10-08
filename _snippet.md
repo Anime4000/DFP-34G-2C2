@@ -19,3 +19,28 @@ ifconfig mirror add pon0 eth0  //镜像wan口的报文包到eth0口
 双向数据镜像至LAN1口:
 switchtst -spmirr wan 1 2 eth0
 ```
+
+https://forum.mikrotik.com/viewtopic.php?t=116364&start=150#p755992
+```
+sfp partition mapping can be obtained by command.
+
+root@SFP:/# cat proc/mtd
+dev: size erasesize name
+mtd0: 00040000 00010000 "uboot"
+mtd1: 00080000 00010000 "uboot_env"
+mtd2: 00740000 00010000 "linux"
+mtd3: 0061eedc 00010000 "rootfs"
+mtd4: 00370000 00010000 "rootfs_data"
+mtd5: 00800000 00010000 "image1"
+
+to transfer mtd partition search for and use live linux distribution. e.g. Ubuntu
+On the linux computer setup a fixed IP (same subnet as sfp stick) e.g. 192.168.1.12. Open terminal.
+
+root@ubuntu:/# nc -l -p 4444 > mtd1.bin
+-l listen
+-p port number
+
+now on the sfp stick send the mtd to the linux pc
+
+root@SFP:/# cat /dev/mtd1 | nc 192.168.1.12 4444
+```
