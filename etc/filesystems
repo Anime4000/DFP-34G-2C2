@@ -1,8 +1,0 @@
-ext3
-ext2
-nodev proc
-nodev devpts
-iso9660
-vfat
-hfs
-hfsplus

@@ -1,4 +1,0 @@
-#!/bin/sh
-
-# insmod BSP driver module
-/sbin/insmod /kmodule/bspdriver.ko

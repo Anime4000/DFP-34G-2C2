@@ -1,5 +1,0 @@
-<%
-IMPORT FILE "pageinfo_func.gch";
-initEnv();
-setenv("Lastvisit", timestamp());
-%>
